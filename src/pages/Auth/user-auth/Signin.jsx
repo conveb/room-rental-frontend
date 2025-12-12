@@ -74,12 +74,14 @@ const SignIn = () => {
                   >
                     Password
                   </label>
+                  <a href="/forgot-password">
                   <button
                     type="button"
                     className="text-xs font-medium text-gray-500 hover:text-gray-900"
-                  >
+                    >
                     Forgot password?
                   </button>
+                    </a>
                 </div>
                 <input
                   id="password"
