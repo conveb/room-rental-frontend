@@ -4,7 +4,7 @@ export default function MonthlyRentals() {
      <section className="mb-20">
               <div className="relative grid md:grid-cols-7 gap-5 items-start">
                 <div className=" md:col-span-2 flex flex-col justify-end h-full">
-                  <h2 className="absolute top-0 md:top-20 left-0 z-20 max-w-6xl special-font text-4xl md:text-6xl font-extrabold leading-tight">Monthly Rentals<br />Available Across<br />France</h2>
+                  <h2 className="absolute top-0 md:top-20 left-0 z-10 max-w-6xl special-font text-4xl md:text-6xl font-extrabold leading-tight">Monthly Rentals<br />Available Across<br />France</h2>
 
                   <div className="mt-32 md:mt-0">
                     <p className=" mt-6 text-sm text-gray-600 max-w-md">Monthly rentals are available across France, offering flexible stays, furnished options, and convenient locations for anyone needing a comfortable home for a month or more.</p>
