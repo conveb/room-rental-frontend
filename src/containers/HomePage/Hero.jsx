@@ -23,7 +23,11 @@ export default function HeroSection() {
         <li>Find a Room</li>
         <li>Rent a Room</li>
         <li>Contact</li>
-        <li className="bg-black  px-6 py-2 rounded-full">Sign In</li>
+         <a href="/signin">
+          <li className="bg-black text-white px-6 py-2 rounded-full w-fit" >
+            Sign In
+          </li>
+          </a>
       </ul>
 
       {/* Mobile Menu Icon */}
