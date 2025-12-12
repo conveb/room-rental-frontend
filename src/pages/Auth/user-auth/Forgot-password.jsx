@@ -12,10 +12,10 @@ const ForgotPassword = () => {
 
       {/* Centered Form Card */}
       <div className="w-full max-w-md  p-8 md:p-12">
-        <h1 className="text-3xl md:text-4xl font-semibold text-gray-900 text-center mb-4">
+        <h1 className="text-3xl md:text-4xl font-semibold text-gray-900 text-start mb-4">
           Forgot Password
         </h1>
-        <p className="text-sm md:text-base text-gray-500 text-center mb-8">
+        <p className="text-sm md:text-base text-gray-500 text-start mb-8">
           Enter your email address below and we'll send you a link to reset your password.
         </p>
 
