@@ -1,5 +1,5 @@
 import React from "react";
-import PrivacyPolicyImg from '../Assets/Images/privacypolicy.jpg'
+import PrivacyPolicyImg from '../../Assets/Images/privacypolicy.jpg';
 
 const PrivacyPolicy = () => {
     return (

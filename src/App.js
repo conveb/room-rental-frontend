@@ -1,11 +1,13 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
 import SignIn from "./pages/Auth/user-auth/Signin";
 import SignUp from "./pages/Auth/user-auth/SIgnUp";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
+
 import ForgotPassword from "./pages/Auth/user-auth/Forgot-password";
-import Accommodation from "./pages/user/Accommodation";
 import Layouts from "./components/btns/Layouts/Layouts";
+import Home from "./pages/public/Home";
+import PrivacyPolicy from "./pages/public/PrivacyPolicy";
+import Accommodation from "./pages/public/accommodation/Accommodation";
+import AccommodationDetails from "./pages/public/accommodation/AccommodationDetails";
 
 function App() {
   return (
@@ -16,6 +18,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/accommodation" element={<Accommodation />} />
+          <Route path="/accommodation/:id" element={<AccommodationDetails />} />
         </Route>
 
         <Route path="/forgot-password" element={<ForgotPassword />} />
