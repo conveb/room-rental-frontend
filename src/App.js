@@ -8,12 +8,17 @@ import Home from "./pages/public/Home";
 import PrivacyPolicy from "./pages/public/PrivacyPolicy";
 import Accommodation from "./pages/public/accommodation/Accommodation";
 import AccommodationDetails from "./pages/public/accommodation/AccommodationDetails";
+import SplashScreen from "./components/SplashScreen";
+import { useSplash } from "./hooks/useSplash";
 
 function App() {
+  const showSplash = useSplash(1800); // 1.8s splash
+
   return (
     <BrowserRouter>
-      <Routes>
+      {showSplash && <SplashScreen />}
 
+      <Routes>
         <Route element={<Layouts />}>
           <Route path="/" element={<Home />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
@@ -24,10 +29,11 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
-
       </Routes>
     </BrowserRouter>
   );
 }
+
+
 
 export default App;
