@@ -47,6 +47,8 @@ const Accommodation = () => {
 
     setFilteredRooms(data);
   };
+  const [openFilters, setOpenFilters] = useState(false);
+
 
   return (
     <div className="min-h-screen bg-gray-50 pb-14">

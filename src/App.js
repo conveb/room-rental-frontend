@@ -10,9 +10,13 @@ import Accommodation from "./pages/public/accommodation/Accommodation";
 import AccommodationDetails from "./pages/public/accommodation/AccommodationDetails";
 import SplashScreen from "./components/SplashScreen";
 import { useSplash } from "./hooks/useSplash";
+import AdminLayout from "./pages/admin/AdminLayout";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminStudents from "./pages/admin/AdminStudents";
+import StudentProfile from "./pages/student/account/studentProfile";
 
 function App() {
-  const showSplash = useSplash(1800); // 1.8s splash
+  const showSplash = useSplash(1800);
 
   return (
     <BrowserRouter>
@@ -29,6 +33,13 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
+
+        {/* Admin */}
+      <Route path="/admin" element={<AdminLayout />}>
+        <Route index element={<AdminDashboard />} />
+        <Route path="rooms" element={<AdminStudents />} />
+        <Route path="student/:id" element={<StudentProfile />} />
+      </Route>
       </Routes>
     </BrowserRouter>
   );

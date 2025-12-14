@@ -42,13 +42,13 @@ export default function MonthlyRentals() {
                         <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url('https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=60')` }} />
                         <div className="absolute inset-0 bg-black/30" />
                         <div className="absolute inset-0 flex items-center justify-center  px-3 py-1 rounded text-sm">
-                          <p className='bg-black/50 px-4 py-2 text-white'>
+                          <p className='bg-black/50 px-4 py-2 text-white rounded-md special-font'>
                           
                             {i % 2 === 0 ? 'Paris' : 'Bordeaux'}
                             </p>
                         </div>
 
-                        <div className="absolute right-3 bottom-3 bg-white rounded-full p-1 px-2  text-2xl">→</div>
+                        <div className="absolute right-3 bottom-3 bg-white rounded-full pb-2 md:pb-1 px-2  text-2xl">→</div>
                       </div>
                     ))}
                   </div>

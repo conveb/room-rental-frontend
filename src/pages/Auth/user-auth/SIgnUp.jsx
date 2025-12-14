@@ -175,12 +175,9 @@ const SignUp = () => {
               <div className="flex-1 h-px bg-gray-200" />
             </div>
 
-            <div className="mt-4 grid grid-cols-2 gap-3">
-              <button className="flex items-center justify-center space-x-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition">
-                <FaFacebook className="text-blue-600" />
-                <span> Facebook</span>
-              </button>
-              <button className="flex items-center justify-center space-x-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition">
+            <div className="mt-4  w-full">
+             
+              <button className="flex items-center justify-center w-full space-x-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition">
                 <FcGoogle/>
                 <span> Google</span>
               </button>

@@ -1,0 +1,1 @@
+export const baseUrl = 'https://rental-homes-france.onrender.com'

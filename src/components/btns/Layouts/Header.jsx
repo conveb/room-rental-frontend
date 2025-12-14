@@ -37,7 +37,7 @@ export default function Header() {
       <div
         className={`fixed top-0 right-0 h-full w-[70%] bg-white text-black shadow-xl transform ${open ? "translate-x-0" : "translate-x-full"
           } transition-transform duration-300 z-50`}
-      >
+        >
         {/* Close Button */}
         <div className="flex justify-end p-5 text-3xl" onClick={() => setOpen(false)}>
           <HiX />
