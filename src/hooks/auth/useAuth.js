@@ -11,15 +11,17 @@ export const useAuth = () => {
   const signin = async (payload) => {
     setError("");
 
-    // Frontend validation
+    // FRONTEND VALIDATION
     if (!payload.email || !payload.password) {
       setError("Email and password are required");
       return;
     }
+
     if (!isValidEmail(payload.email)) {
       setError("Invalid email format");
       return;
     }
+
     if (!isStrongPassword(payload.password)) {
       setError(
         "Password must be at least 8 characters, include uppercase, number, and special character"
@@ -27,23 +29,31 @@ export const useAuth = () => {
       return;
     }
 
+    if (!payload.privacy_policy) {
+      setError("Please accept the privacy policy");
+      return;
+    }
+
     try {
       setLoading(true);
+
+      // 🔥 SUCCESS = REQUEST SUCCEEDS (COOKIES SET)
       const res = await signinAPI(payload);
 
-        if (!res?.access) {
-        throw new Error(
-          res?.detail || "No active account found with the given credentials"
-        );
+      if (!res || !res.data) {
+        throw new Error("Login failed");
       }
-
 
       navigate("/");
     } catch (err) {
+      const backendError =
+        err?.response?.data?.user ||
+        err?.response?.data?.email ||
+        err?.response?.data?.detail ||
+        err?.message ||
+        "Invalid email or password";
 
-      const message =
-        err?.detail || err?.message || "Invalid email or password";
-      setError(message);
+      setError(backendError);
     } finally {
       setLoading(false);
     }

@@ -1,4 +1,4 @@
-// src/pages/admin/AdminLayout.jsx
+// src/pages/admin/UserLayout.jsx
 import React, { useState } from "react";
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 import { HiMiniHome } from "react-icons/hi2";
@@ -16,7 +16,7 @@ const navItems = [
   { to: "/admin/rooms", label: "Rooms", icon: <BsFillHousesFill /> },
 ];
 
-const AdminLayout = () => {
+const UserLayout = () => {
   const location = useLocation();
 const [open, setOpen] = useState(false);
   return (
@@ -135,4 +135,4 @@ const [open, setOpen] = useState(false);
   );
 };
 
-export default AdminLayout;
+export default UserLayout;

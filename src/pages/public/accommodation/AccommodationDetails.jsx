@@ -24,7 +24,7 @@ const AccommodationDetails = () => {
       {/* HEADER */}
       <header className="border-b bg-black">
         <div className="max-w-6xl mx-auto px-4 py-12">
-          
+
         </div>
       </header>
 
@@ -52,11 +52,10 @@ const AccommodationDetails = () => {
             {/* ---------------- MOBILE STACK ---------------- */}
             <div className="absolute bottom-3 right-3 flex items-center lg:hidden">
               <div
-                className={`flex items-center gap-2 transition-all duration-300 ${
-                  openStack
+                className={`flex items-center gap-2 transition-all duration-300 ${openStack
                     ? "translate-x-0 opacity-100"
                     : "translate-x-12 opacity-0 pointer-events-none"
-                }`}
+                  }`}
               >
                 {images.map((img, i) => (
                   <button
@@ -65,11 +64,10 @@ const AccommodationDetails = () => {
                       setActiveImage(img);
                       setOpenStack(false);
                     }}
-                    className={`h-14 w-14 overflow-hidden rounded-lg border-2 ${
-                      activeImage === img
+                    className={`h-14 w-14 overflow-hidden rounded-lg border-2 ${activeImage === img
                         ? "border-black"
                         : "border-white"
-                    } bg-white shadow`}
+                      } bg-white shadow`}
                   >
                     <img
                       src={img}
@@ -93,11 +91,10 @@ const AccommodationDetails = () => {
                 <button
                   key={i}
                   onClick={() => setActiveImage(img)}
-                  className={`h-28 w-28 overflow-hidden rounded-xl border-2 transition ${
-                    activeImage === img
+                  className={`h-28 w-28 overflow-hidden rounded-xl border-2 transition ${activeImage === img
                       ? "border-black"
                       : "border-transparent hover:border-gray-300"
-                  }`}
+                    }`}
                 >
                   <img
                     src={img}
@@ -153,9 +150,13 @@ const AccommodationDetails = () => {
                 </div>
               </div>
 
-              <button className="w-full mt-2 rounded-lg bg-black px-4 py-2.5 text-sm font-medium text-white hover:bg-gray-900 transition">
+              <button
+                className="w-full mt-2 rounded-lg bg-black px-4 py-2.5 text-sm font-medium text-white hover:bg-gray-900 transition"
+                onClick={() => navigate("/payment", { state: { room: currentRoom } })}
+              >
                 Request booking
               </button>
+
               <button className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-800 hover:border-gray-900 hover:bg-gray-50 transition">
                 Chat with landlord
               </button>

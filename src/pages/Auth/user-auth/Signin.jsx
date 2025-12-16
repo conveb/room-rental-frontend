@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import BacktoHome from "../../../components/btns/BacktoHome";
 import { FcGoogle } from "react-icons/fc";
-import { FaFacebook } from "react-icons/fa";
 import { useAuth } from "../../../hooks/auth/useAuth";
 
 const SignIn = () => {
@@ -10,16 +9,22 @@ const SignIn = () => {
   const [form, setForm] = useState({
     email: "",
     password: "",
+    privacy_policy: false,
   });
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value, type, checked } = e.target;
+    setForm({
+      ...form,
+      [name]: type === "checkbox" ? checked : value,
+    });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    signin(form);
+    await signin(form);
   };
+
   return (
     <div className="relative min-h-screen bg-white flex items-center justify-center">
       <div className="absolute top-0 right-5">
@@ -67,96 +72,60 @@ const SignIn = () => {
               </p>
             </div>
 
-            <form className="space-y-4" onSubmit={handleSubmit}>
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Email address
-                </label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={form.email}
-                  onChange={handleChange}
-                  placeholder="student@university.edu"
-                  className="mt-1 block w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm outline-none focus:border-black focus:bg-white focus:ring-1 focus:ring-black"
-                />
-              </div>
+            <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-md p-6 space-y-4"
+      >
+        <h1 className="text-xl font-semibold">Sign in</h1>
 
-              <div>
-                <div className="flex items-center justify-between">
-                  <label
-                    htmlFor="password"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Password
-                  </label>
-                  <a href="/forgot-password">
-                    <button
-                      type="button"
-                      className="text-xs font-medium text-gray-500 hover:text-gray-900"
-                    >
-                      Forgot password?
-                    </button>
-                  </a>
-                </div>
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  value={form.password}
-                  onChange={handleChange}
-                  placeholder="Enter your password"
-                  className="mt-1 block w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm outline-none focus:border-black focus:bg-white focus:ring-1 focus:ring-black"
-                />
-              </div>
+        <input
+          name="email"
+          type="email"
+          value={form.email}
+          onChange={handleChange}
+          placeholder="Email"
+          className="w-full border p-2 rounded"
+        />
 
-              <div className="flex items-center space-x-2">
-                <input
-                  id="remember"
-                  type="checkbox"
-                  className="h-4 w-4 rounded border-gray-300 text-black focus:ring-black"
-                />
-                <label
-                  htmlFor="remember"
-                  className="text-xs text-gray-600 select-none"
-                >
-                  <a href="/privacy-policy" className="hover:underline">
-                  Agree to privacy policy 
-                  </a>
-                </label>
-              </div>
+        <input
+          name="password"
+          type="password"
+          value={form.password}
+          onChange={handleChange}
+          placeholder="Password"
+          className="w-full border p-2 rounded"
+        />
 
-              {error && (
-                <p className="text-xs text-red-600 bg-red-50 p-2 rounded-lg">
-                  {error}
-                </p>
-              )}
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full mt-2 inline-flex justify-center rounded-lg bg-black px-4 py-2.5 text-sm font-medium text-white hover:bg-gray-900 transition"
-              >
-               {loading ? "Signing in..." : "Sign in to find rooms"}
-              </button>
-            </form>
+        <label className="flex items-center gap-2 text-sm">
+          <input
+            type="checkbox"
+            name="privacy_policy"
+            checked={form.privacy_policy}
+            onChange={handleChange}
+          />
+          Agree to privacy policy
+        </label>
 
-            <div className="mt-6 flex items-center">
-              <div className="flex-1 h-px bg-gray-200" />
-              <span className="px-3 text-xs text-gray-400">OR</span>
-              <div className="flex-1 h-px bg-gray-200" />
-            </div>
+        {error && (
+          <p className="text-red-600 text-sm">{error}</p>
+        )}
 
-            <div className="mt-4 w-full">
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full bg-black text-white py-2 rounded"
+        >
+          {loading ? "Signing in..." : "Sign in"}
+        </button>
 
-              <button className="flex items-center justify-center w-full space-x-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition">
-                <FcGoogle />
-                <span> Google</span>
-              </button>
-            </div>
+        <button
+          type="button"
+          className="w-full flex items-center justify-center gap-2 border py-2 rounded"
+        >
+          <FcGoogle />
+          Google
+        </button>
+      </form>
 
             <p className="mt-6 text-xs text-gray-500 text-center">
               New to CampusRooms?{" "}

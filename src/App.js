@@ -13,7 +13,13 @@ import { useSplash } from "./hooks/useSplash";
 import AdminLayout from "./pages/admin/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminStudents from "./pages/admin/AdminStudents";
-import StudentProfile from "./pages/student/account/studentProfile";
+
+import PaymentPage from "./pages/public/accommodation/PaymentPage";
+import ConfirmationPage from "./pages/public/accommodation/ConfirmationPage";
+import UserProfilePage from "./pages/users/account/UserProfilePage";
+import LandownerProfile from "./pages/landlord/account/LandownerProfile";
+import LandOwnerProfile from "./pages/landlord/account/LandownerProfile";
+import LandOwnerLayout from "./pages/landlord/account/LandOwnerLayout";
 
 function App() {
   const showSplash = useSplash(1800);
@@ -25,9 +31,13 @@ function App() {
       <Routes>
         <Route element={<Layouts />}>
           <Route path="/" element={<Home />} />
+           <Route path="/student/1" element={<UserProfilePage />} />
+           <Route path="/landowner/1" element={<LandownerProfile />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/accommodation" element={<Accommodation />} />
           <Route path="/accommodation/:id" element={<AccommodationDetails />} />
+          <Route path="/payment" element={<PaymentPage />} />
+          <Route path="/confirmation" element={<ConfirmationPage />} />
         </Route>
 
         <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -35,11 +45,17 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
 
         {/* Admin */}
-      <Route path="/admin" element={<AdminLayout />}>
-        <Route index element={<AdminDashboard />} />
-        <Route path="rooms" element={<AdminStudents />} />
-        <Route path="student/:id" element={<StudentProfile />} />
-      </Route>
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<AdminDashboard />} />
+          <Route path="rooms" element={<AdminStudents />} />
+         
+        </Route>
+
+        <Route path="/landowner" element={<LandOwnerLayout />}>
+          <Route index element={<LandOwnerProfile />} />
+          <Route path="rooms" element={<AdminStudents />} />
+         
+        </Route>
       </Routes>
     </BrowserRouter>
   );

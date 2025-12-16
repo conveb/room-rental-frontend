@@ -1,13 +1,13 @@
-// src/pages/admin/AdminLayout.jsx
+// src/pages/admin/LandOwnerLayout.jsx
 import React, { useState } from "react";
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 import { HiMiniHome } from "react-icons/hi2";
 import { PiStudentFill } from "react-icons/pi";
 import { FaHouseFlag } from "react-icons/fa6";
 import { BsFillHousesFill } from "react-icons/bs";
-import colors from "../../theme/colors";
+import colors from "../../../theme/colors";
 import { HiMenu } from "react-icons/hi";
-import Logo from '../../Assets/pngs/logo.png';
+import Logo from '../../../Assets/pngs/logo.png';
 
 const navItems = [
   { to: "/admin", label: "Dashboard", icon: <HiMiniHome /> },
@@ -16,7 +16,7 @@ const navItems = [
   { to: "/admin/rooms", label: "Rooms", icon: <BsFillHousesFill /> },
 ];
 
-const AdminLayout = () => {
+const LandOwnerLayout = () => {
   const location = useLocation();
 const [open, setOpen] = useState(false);
   return (
@@ -135,4 +135,4 @@ const [open, setOpen] = useState(false);
   );
 };
 
-export default AdminLayout;
+export default LandOwnerLayout;
