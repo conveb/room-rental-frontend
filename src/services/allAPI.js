@@ -7,10 +7,10 @@ export const signupAPI = async (user) => {
 
 // 2. Login
 export const signinAPI = async (data) => {
-  return await commonAPI("post", "/api/v1/token", data);
+  return await commonAPI("post", "/api/v1/token/", data);
 };
 
 // 3. Get all properties
 export const getAllPropertiesAPI = async () => {
-  return await commonAPI("get", "api/v1/properties/");
+  return await commonAPI("get", "api/v1/properties");
 };
