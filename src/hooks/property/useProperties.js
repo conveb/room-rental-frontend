@@ -1,11 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { getAllPropertiesAPI } from "../../services/allAPI";
 
 export const useProperties = () => {
   const [properties, setProperties] = useState([]);
   const [filteredProperties, setFilteredProperties] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
   const [filters, setFilters] = useState({
     city: "",
@@ -15,17 +13,18 @@ export const useProperties = () => {
     rooms: "",
   });
 
-  // 🔥 FETCH ALL PROPERTIES ON PAGE LOAD
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  // FETCH ALL PROPERTIES (DEFAULT LIST)
   useEffect(() => {
     const fetchProperties = async () => {
       try {
         setLoading(true);
         const res = await getAllPropertiesAPI();
-
-        // IMPORTANT: set both
         setProperties(res.data);
-        setFilteredProperties(res.data); // 👈 default listing
-      } catch {
+        setFilteredProperties(res.data); // 👈 list all by default
+      } catch (err) {
         setError("Failed to load properties");
       } finally {
         setLoading(false);
@@ -35,35 +34,46 @@ export const useProperties = () => {
     fetchProperties();
   }, []);
 
-  // HANDLE FILTER INPUT
+  // FILTER CHANGE
   const handleFilterChange = (e) => {
-    setFilters({ ...filters, [e.target.name]: e.target.value });
+    setFilters((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
   };
 
-  // APPLY FILTERS ONLY WHEN SEARCH CLICKED
+  // APPLY FILTERS
   const applyFilters = () => {
     let data = [...properties];
 
     if (filters.city) {
-      data = data.filter((r) =>
-        r.city.toLowerCase().includes(filters.city.toLowerCase())
+      data = data.filter((p) =>
+        p.city?.toLowerCase().includes(filters.city.toLowerCase())
       );
     }
 
     if (filters.date) {
-      data = data.filter((r) => r.availableFrom >= filters.date);
+      data = data.filter(
+        (p) => p.available_from && p.available_from >= filters.date
+      );
     }
 
     if (filters.type) {
-      data = data.filter((r) => r.type === filters.type);
+      data = data.filter(
+        (p) => p.property_type === filters.type
+      );
     }
 
     if (filters.budget) {
-      data = data.filter((r) => r.price <= Number(filters.budget));
+      data = data.filter(
+        (p) => Number(p.rent_per_month) <= Number(filters.budget)
+      );
     }
 
     if (filters.rooms) {
-      data = data.filter((r) => r.rooms === Number(filters.rooms));
+      data = data.filter(
+        (p) => p.rooms === Number(filters.rooms)
+      );
     }
 
     setFilteredProperties(data);
