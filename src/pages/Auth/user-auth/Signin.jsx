@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import BacktoHome from "../../../components/btns/BacktoHome";
 import { FcGoogle } from "react-icons/fc";
-import { useAuth } from "../../../hooks/auth/useAuth";
+import { useSignin } from "../../../hooks/auth/useSignin";
 
 const SignIn = () => {
-  const { signin, loading, error } = useAuth();
+  const { signin, loading, error } = useSignin();
 
   const [form, setForm] = useState({
     email: "",

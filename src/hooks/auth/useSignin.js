@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { signinAPI } from "../../services/allAPI";
 import { isValidEmail, isStrongPassword } from "../../utils/validation";
 
-export const useAuth = () => {
+export const useSignin = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -37,7 +37,6 @@ export const useAuth = () => {
     try {
       setLoading(true);
 
-      // 🔥 SUCCESS = REQUEST SUCCEEDS (COOKIES SET)
       const res = await signinAPI(payload);
 
       if (!res || !res.data) {
