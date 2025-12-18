@@ -1,5 +1,5 @@
 import React from "react";
-import Logo from '../Assets/pngs/logo-silver.png';
+import Logo from '../Assets/pngs/logo.png';
 
 const SplashScreen = () => {
   return (
