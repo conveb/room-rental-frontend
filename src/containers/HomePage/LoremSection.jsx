@@ -19,7 +19,9 @@ export default function LoremSection() {
               </p>
 
               <button className="mt-6 px-4 py-2 bg-black text-white rounded">
+                <a href="/accommodation">
                 Explore student rooms
+                </a>
               </button>
 
               <div className="mt-6 text-2xl text-gray-400">2025</div>

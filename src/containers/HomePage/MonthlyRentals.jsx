@@ -9,7 +9,7 @@ export default function MonthlyRentals() {
                   <div className="mt-32 md:mt-0">
                     <p className=" mt-6 text-sm text-gray-600 max-w-md">Monthly rentals are available across France, offering flexible stays, furnished options, and convenient locations for anyone needing a comfortable home for a month or more.</p>
 
-                    <button className="mt-6 px-4 py-2 bg-black text-white rounded">View all cities</button>
+                    <button className="mt-6 px-4 py-2 bg-black text-white rounded"><a href="/accommodation">View all cities</a></button>
 
                     <div className="mt-6 text-2xl text-gray-400">2025</div>
                   </div>
