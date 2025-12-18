@@ -1,7 +1,7 @@
 import { HiMenu, HiX } from "react-icons/hi";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
-import Logo from "../../../Assets/pngs/logo.png";
+import Logo from "../../../Assets/pngs/logo-silver.png";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
@@ -11,6 +11,7 @@ export default function Header() {
   const blackHeaderPages = [
     "/accommodation",
     "/student/1",
+    
   ];
 
   const isBlackHeader = blackHeaderPages.includes(location.pathname);
@@ -24,9 +25,11 @@ export default function Header() {
       <div className="max-w-6xl mx-auto flex items-center justify-between transition-colors duration-300">
 
       {/* Logo */}
-      <a href="/" className="text-lg font-semibold flex gap-2 items-center">
-        <img src={Logo} alt="aliveparis-logo" className="w-10 h-auto" />
+      <a href="/" className="text-lg font-semibold flex items-end gap-2 ">
+        <img src={Logo} alt="aliveparis-logo" className="w-10 md:w-14 h-auto" />
+        <p className="text-end special-font">
         Alive Paris
+        </p>
       </a>
 
       {/* Desktop Menu */}

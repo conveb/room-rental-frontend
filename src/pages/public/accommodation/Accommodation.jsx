@@ -75,7 +75,7 @@ const Accommodation = () => {
       </div>
 
       {/* STATES */}
-      {loading && <p className="text-center mt-10">Loading...</p>}
+      {loading && <p className="text-center mt-10">Loading...(working on demo)</p>}
       {error && <p className="text-center text-red-500 mt-10">{error}</p>}
 
       {/* PROPERTY LIST */}
@@ -126,7 +126,7 @@ const Accommodation = () => {
       {/* NO RESULTS */}
       {!loading && filteredProperties.length === 0 && (
         <p className="text-center text-gray-500 mt-10">
-          No properties match your filters.
+          No properties match your filters.(working on demo)
         </p>
       )}
     </div>
