@@ -1,7 +1,8 @@
-// src/pages/admin/UserLayout.jsx
+// src/pages/admin/Layout.jsx
 import React, { useState } from "react";
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 import { HiMiniHome } from "react-icons/hi2";
+import { FaMoneyCheckDollar } from "react-icons/fa6";
 import { IoBug } from "react-icons/io5";
 import { MdOutlineReport } from "react-icons/md";
 import { FaUserGear } from "react-icons/fa6";
@@ -9,18 +10,17 @@ import colors from "../../../theme/colors";
 import { HiMenu } from "react-icons/hi";
 import Logo from '../../../Assets/pngs/logo.png';
 import { FaDoorOpen } from "react-icons/fa6";
-import { IoBookmark } from "react-icons/io5";
-import { MdOutlineSupportAgent } from "react-icons/md";
 import { IoIosNotifications } from "react-icons/io";
+
+
 const navItems = [
-  { to: "/user", label: "Dashboard", icon: <HiMiniHome /> },
-  { to: "/user/bookings", label: "Bookings", icon: <FaDoorOpen /> },
-  { to: "/user/account", label: "Account", icon: <FaUserGear /> },
-  { to: "/user/saved", label: "Saved", icon: <IoBookmark /> },
-  { to: "/user/support", label: "Support", icon: <MdOutlineSupportAgent /> },
+  { to: "/landowner", label: "Dashboard", icon: <HiMiniHome /> },
+  { to: "/landowner/properties", label: "Properties", icon: <FaDoorOpen /> },
+  { to: "/landowner/stats", label: "Stats", icon: <FaMoneyCheckDollar /> },
+  { to: "/landowner/account", label: "Account", icon: <FaUserGear /> },
 ];
 
-const UserLayout = () => {
+const Layout = () => {
   const location = useLocation();
   const [open, setOpen] = useState(false);
   return (
@@ -32,7 +32,7 @@ const UserLayout = () => {
           <img src={Logo} alt="alive_paris_logo" className="w-20 h-20" />
           <div className="text-center leading-tight">
             <p className="text-sm font-semibold tracking-wide special-font">Alive Paris</p>
-            <p className="text-xs text-gray-400">User Console</p>
+            <p className="text-xs text-gray-400">Admin Console</p>
           </div>
         </div>
 
@@ -61,7 +61,7 @@ const UserLayout = () => {
 
         {/* FOOTER */}
         <div className="px-6 py-4 border-t border-white/10 text-xs text-gray-400 text-center">
-          Logged in as <span className="text-gray-300">User</span>
+          Logged in as <span className="text-gray-300">Landowner</span>
 
         </div>
       </aside>
@@ -72,17 +72,17 @@ const UserLayout = () => {
         <header className="py-3 md:py-4 bg-white/70 backdrop-blur-xl border-b border-white/30 flex items-center justify-between px-6 shadow-sm">
           <div>
             <h1 className="text-md md:text-lg font-semibold text-gray-900">
-              Hi, Walkingtoy <span className="text-xs md:text-sm text-white px-2 py-1 rounded-full" style={{ backgroundColor: `${colors.studentColor}` }}>User</span>
+              Hi, Walkingtoy <span className="text-xs md:text-sm text-white px-2 py-1 rounded-full" style={{ backgroundColor: `${colors.landLordColor}` }}>Landowner</span>
             </h1>
             <span className="text-xs md:text-sm text-gray-500">admin@campusrooms.com</span>
           </div>
           <div className="relative gap-3 md:gap-5 flex items-center text-sm">
-          <a href='/notifications' className="relative text-2xl">
-          <p className="absolute -top-2 -right-1 text-xs bg-red-500 text-white rounded-full h-5 w-5 flex items-center justify-center">
-            6
-          </p>
-          <IoIosNotifications/>
-          </a>
+            <a href='/notifications' className="relative text-2xl">
+              <p className="absolute -top-2 -right-1 text-xs bg-red-500 text-white rounded-full h-5 w-5 flex items-center justify-center">
+                6
+              </p>
+              <IoIosNotifications />
+            </a>
             <button
               onClick={() => setOpen(!open)}
               className="rounded-full text-3xl text-gray-700 hover:bg-gray-50 transition p-1"
@@ -149,4 +149,4 @@ const UserLayout = () => {
   );
 };
 
-export default UserLayout;
+export default Layout;

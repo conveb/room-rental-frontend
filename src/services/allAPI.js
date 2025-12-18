@@ -15,6 +15,13 @@ export const getAllPropertiesAPI = async () => {
   return await commonAPI("get", "/api/v1/properties");
 };
 
+export const getPropertyByIdAPI = (propertyId) => {
+  return commonAPI(
+    "get",
+    `/api/v1/properties/${propertyId}/`
+  );
+};
+
 // VERIFY OTP
 export const verifyOtpAPI = async (data) => {
   return await commonAPI("post", "/api/v1/verify-otp/", data);

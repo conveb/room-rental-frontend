@@ -8,6 +8,7 @@ import { BsFillHousesFill } from "react-icons/bs";
 import colors from "../../theme/colors";
 import { HiMenu } from "react-icons/hi";
 import Logo from '../../Assets/pngs/logo.png';
+import { IoIosNotifications } from "react-icons/io";
 
 const navItems = [
   { to: "/admin", label: "Dashboard", icon: <HiMiniHome /> },
@@ -18,14 +19,14 @@ const navItems = [
 
 const AdminLayout = () => {
   const location = useLocation();
-const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-gradient-to-br from-slate-100 to-indigo-100">
       {/* SIDEBAR (DESKTOP ONLY) */}
       <aside className="hidden md:flex w-64 bg-gradient-to-b from-zinc-950 to-zinc-900 text-gray-200 flex-col shadow-2xl flex-shrink-0">
         {/* LOGO */}
         <div className="flex flex-col items-center justify-center px-6 my-10 gap-2">
-          <img src={Logo} alt="alive_paris_logo" className="w-20 h-20"/>
+          <img src={Logo} alt="alive_paris_logo" className="w-20 h-20" />
           <div className="text-center leading-tight">
             <p className="text-sm font-semibold tracking-wide special-font">Alive Paris</p>
             <p className="text-xs text-gray-400">Admin Console</p>
@@ -68,35 +69,41 @@ const [open, setOpen] = useState(false);
             </h1>
             <span className="text-xs md:text-sm text-gray-500">admin@campusrooms.com</span>
           </div>
-          <div className="relative flex items-center text-sm">
-      <button
-        onClick={() => setOpen(!open)}
-        className="rounded-full text-3xl text-gray-700 hover:bg-gray-50 transition p-1"
-      >
-        <HiMenu />
-      </button>
+          <div className="relative gap-3 md:gap-5 flex items-center text-sm">
+            <a href='/notifications' className="relative text-2xl">
+              <p className="absolute -top-2 -right-1 text-xs bg-red-500 text-white rounded-full h-5 w-5 flex items-center justify-center">
+                6
+              </p>
+              <IoIosNotifications />
+            </a>
+            <button
+              onClick={() => setOpen(!open)}
+              className="rounded-full text-3xl text-gray-700 hover:bg-gray-50 transition p-1"
+            >
+              <HiMenu />
+            </button>
 
-      {open && (
-        <div className="absolute right-0 top-12 w-32 bg-white border rounded-lg shadow-md">
-          <Link
-            to="/"
-            className="block px-4 py-2 hover:bg-gray-100"
-            onClick={() => setOpen(false)}
-          >
-            Home
-          </Link>
-          <button
-            className="w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600"
-            onClick={() => {
-              setOpen(false);
-              // logout logic here
-            }}
-          >
-            Logout
-          </button>
-        </div>
-      )}
-    </div>
+            {open && (
+              <div className="absolute right-0 top-12 w-32 bg-white border rounded-lg shadow-md">
+                <Link
+                  to="/"
+                  className="block px-4 py-2 hover:bg-gray-100"
+                  onClick={() => setOpen(false)}
+                >
+                  Home
+                </Link>
+                <button
+                  className="w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600"
+                  onClick={() => {
+                    setOpen(false);
+                    // logout logic here
+                  }}
+                >
+                  Logout
+                </button>
+              </div>
+            )}
+          </div>
         </header>
 
         {/* OUTLET */}

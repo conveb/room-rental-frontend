@@ -16,10 +16,19 @@ import AdminStudents from "./pages/admin/AdminStudents";
 
 import PaymentPage from "./pages/public/accommodation/PaymentPage";
 import ConfirmationPage from "./pages/public/accommodation/ConfirmationPage";
-import UserProfilePage from "./pages/users/account/UserProfilePage";
-import LandownerProfile from "./pages/landlord/account/LandownerProfile";
-import LandOwnerProfile from "./pages/landlord/account/LandownerProfile";
-import LandOwnerLayout from "./pages/landlord/account/LandOwnerLayout";
+import UserProfilePage from "./pages/users/account/UserAccount";
+import Dashboard from "./pages/landlord/account/Dashboard";
+import Layout from "./pages/landlord/account/Layout";
+import PropertiesList from "./pages/landlord/account/Properties";
+import Stats from "./pages/landlord/account/stats";
+import Account from "./pages/landlord/account/Account";
+
+import UserAccount from "./pages/users/account/UserAccount";
+import UserLayout from "./pages/users/account/UserLayout";
+import UserDashboard from "./pages/users/account/UserDashboard";
+import UserBookings from "./pages/users/account/UserBookings";
+import UserSupport from "./pages/users/account/UserSupport";
+import UserSaved from "./pages/users/account/UserSaved";
 
 function App() {
   const showSplash = useSplash(1800);
@@ -30,16 +39,16 @@ function App() {
 
       <Routes>
         <Route element={<Layouts />}>
-          <Route path="/" element={<Home />} />
+        {/* public */}
+        <Route path="/" element={<Home />} />
            <Route path="/student/1" element={<UserProfilePage />} />
-           <Route path="/landowner/1" element={<LandownerProfile />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/accommodation" element={<Accommodation />} />
           <Route path="/accommodation/:id" element={<AccommodationDetails />} />
           <Route path="/payment" element={<PaymentPage />} />
           <Route path="/confirmation" element={<ConfirmationPage />} />
         </Route>
-
+      
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
@@ -48,14 +57,25 @@ function App() {
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />
           <Route path="rooms" element={<AdminStudents />} />
-         
         </Route>
 
-        <Route path="/landowner" element={<LandOwnerLayout />}>
-          <Route index element={<LandOwnerProfile />} />
-          <Route path="rooms" element={<AdminStudents />} />
-         
+        {/* Landowner */}
+        <Route path="/landowner" element={<Layout />}>
+          <Route index element={<Dashboard />} />
+          <Route path="properties" element={<PropertiesList />} />
+          <Route path="stats" element={<Stats />} />
+          <Route path="account" element={<Account />} />
         </Route>
+
+         <Route path="/user" element={<UserLayout />}>
+          <Route index element={<UserDashboard />} />
+          <Route path="account" element={<UserAccount />} />
+          <Route path="bookings" element={<UserBookings />} />
+          <Route path="saved" element={<UserSaved />} />
+          <Route path="support" element={<UserSupport />} />
+ 
+        </Route>
+
       </Routes>
     </BrowserRouter>
   );

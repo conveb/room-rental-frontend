@@ -79,7 +79,7 @@ const Accommodation = () => {
       {error && <p className="text-center text-red-500 mt-10">{error}</p>}
 
       {/* PROPERTY LIST */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 px-4 md:px-20">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 px-4 md:px-20 mt-6">
         {filteredProperties.map((property) => (
           <div
             key={property.id}
