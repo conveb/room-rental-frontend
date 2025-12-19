@@ -71,25 +71,46 @@ const SignUp = () => {
     }
   };
 
-  // STEP 2 + 3 — VERIFY OTP → REGISTER
   const handleVerifyOtp = async () => {
-    await verifyOtp({
+  try {
+    // 1️⃣ Verify OTP
+    const otpRes = await verifyOtp({
       email: form.email,
       otp: otp.join(""),
     });
 
-    await register({
+    console.log("OTP VERIFIED:", otpRes?.data || otpRes);
+
+    // 2️⃣ Frontend validation BEFORE register
+    if (!form.terms) {
+      throw new Error("You must accept the terms and conditions");
+    }
+
+    if (form.password !== form.confirm_password) {
+      throw new Error("Passwords do not match");
+    }
+
+    // 3️⃣ Register user
+    const registerRes = await register({
       email: form.email,
       name: form.full_name,
-      phone: "8136465219",
+      phone: "8136436219",
       password: form.password,
       confirm_password: form.confirm_password,
-      privacy_policy: form.terms,
+      privacy_policy: true,
       role: "STUDENT",
     });
 
+    console.log("REGISTER SUCCESS:", registerRes?.data || registerRes);
+
+    // 4️⃣ Navigate ONLY after full success
     navigate("/signin");
-  };
+
+  } catch (err) {
+    console.error("SIGNUP FLOW ERROR:", err?.message || err);
+  }
+};
+
 
   // RESEND TIMER
   useEffect(() => {

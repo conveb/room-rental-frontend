@@ -29,25 +29,24 @@ export const useSignup = () => {
     }
   };
 
-  // STEP 2 — VERIFY OTP
-  const verifyOtp = async ({ email, otp }) => {
-    setError("");
-    try {
-      setLoading(true);
-      const res = await verifyOtpAPI({
-        email,
-        otp,
-        purpose: "ONBOARDING",
-      });
-      console.log("OTP VERIFIED:", res.data);
-      return res;
-    } catch (err) {
-      setError("Invalid OTP");
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
+const verifyOtp = async (payload) => {
+  setError("");
+  try {
+    setLoading(true);
+    const res = await verifyOtpAPI(payload);
+
+    console.log("OTP VERIFIED:", res.data);
+
+    return res;
+  } catch (err) {
+    setError("Invalid OTP");
+    console.error(err?.response?.data || err);
+    throw err;
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   // STEP 3 — REGISTER USER
   const register = async (payload) => {
@@ -55,6 +54,7 @@ export const useSignup = () => {
     try {
       setLoading(true);
       const res = await signupAPI(payload);
+      console.log(res.data)
       return res;
     } catch (err) {
       const data = err?.response?.data;
@@ -62,6 +62,7 @@ export const useSignup = () => {
       let message = "Registration failed";
       if (Array.isArray(data?.email)) message = data.email[0];
       else if (data?.detail) message = data.detail;
+
 
       setError(message);
       throw err;
