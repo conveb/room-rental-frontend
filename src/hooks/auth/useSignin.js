@@ -17,17 +17,17 @@ export const useSignin = () => {
       return;
     }
 
-    if (!isValidEmail(payload.email)) {
-      setError("Invalid email format");
-      return;
-    }
+    // if (!isValidEmail(payload.email)) {
+    //   setError("Invalid email format");
+    //   return;
+    // }
 
-    if (!isStrongPassword(payload.password)) {
-      setError(
-        "Password must be at least 8 characters, include uppercase, number, and special character"
-      );
-      return;
-    }
+    // if (!isStrongPassword(payload.password)) {
+    //   setError(
+    //     "Password must be at least 8 characters, include uppercase, number, and special character"
+    //   );
+    //   return;
+    // }
 
     if (!payload.privacy_policy) {
       setError("Please accept the privacy policy");
