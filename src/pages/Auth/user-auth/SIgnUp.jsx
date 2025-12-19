@@ -2,19 +2,30 @@ import React, { useEffect, useRef, useState } from "react";
 import { Stepper } from "primereact/stepper";
 import { StepperPanel } from "primereact/stepperpanel";
 import { Button } from "primereact/button";
-import BacktoHome from "../../../components/btns/BacktoHome";
 import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
+import BacktoHome from "../../../components/btns/BacktoHome";
 import { useSignup } from "../../../hooks/auth/useSignup";
 
 const SignUp = () => {
   const stepperRef = useRef(null);
+  const inputsRef = useRef([]);
   const navigate = useNavigate();
-  const { createAccount, verifyOtp, resendOtp, loading, error } = useSignup();
+
+  const {
+    sendOtp,
+    verifyOtp,
+    register,
+    resendOtp,
+    loading,
+    error,
+  } = useSignup();
 
   const OTP_LENGTH = 6;
-  const inputsRef = useRef([]);
+
   const [otp, setOtp] = useState(Array(OTP_LENGTH).fill(""));
+  const [counter, setCounter] = useState(60);
+  const [disableResend, setDisableResend] = useState(true);
 
   const [form, setForm] = useState({
     full_name: "",
@@ -24,27 +35,20 @@ const SignUp = () => {
     terms: false,
   });
 
-  // ---------------- FORM ----------------
+  // FORM HANDLER
   const handleFormChange = (e) => {
     const { name, value, type, checked } = e.target;
     setForm({ ...form, [name]: type === "checkbox" ? checked : value });
   };
 
+  // STEP 1 — SEND OTP
   const handleCreateAccount = async (e) => {
     e.preventDefault();
-
-    await createAccount({
-      name: form.full_name,
-      email: form.email,
-      password: form.password,
-      confirm_password: form.confirm_password,
-      privacy_policy: form.terms,
-    });
-
+    await sendOtp(form.email);
     stepperRef.current.nextCallback();
   };
 
-  // ---------------- OTP HANDLERS ----------------
+  // OTP INPUT HANDLERS
   const handleOtpChange = (e, index) => {
     const digit = e.target.value.replace(/\D/g, "");
     if (!digit) return;
@@ -67,19 +71,27 @@ const SignUp = () => {
     }
   };
 
+  // STEP 2 + 3 — VERIFY OTP → REGISTER
   const handleVerifyOtp = async () => {
     await verifyOtp({
       email: form.email,
       otp: otp.join(""),
     });
 
+    await register({
+      email: form.email,
+      name: form.full_name,
+      phone: "8136465219",
+      password: form.password,
+      confirm_password: form.confirm_password,
+      privacy_policy: form.terms,
+      role: "STUDENT",
+    });
+
     navigate("/signin");
   };
 
-  // ---------------- OTP RESEND TIMER ----------------
-  const [counter, setCounter] = useState(60);
-  const [disableResend, setDisableResend] = useState(true);
-
+  // RESEND TIMER
   useEffect(() => {
     if (counter === 0) {
       setDisableResend(false);
@@ -95,7 +107,6 @@ const SignUp = () => {
     setDisableResend(true);
   };
 
-  // ---------------- UI ----------------
   return (
     <div className="relative min-h-screen bg-white flex items-center justify-center">
       <div className="absolute top-0 right-5">
@@ -115,7 +126,7 @@ const SignUp = () => {
         {/* RIGHT */}
         <div className="flex-1 px-6">
           <Stepper ref={stepperRef}>
-            {/* SIGNUP STEP */}
+            {/* SIGNUP */}
             <StepperPanel header="Signup">
               <form onSubmit={handleCreateAccount} className="space-y-4">
                 <input
@@ -135,8 +146,8 @@ const SignUp = () => {
                 />
 
                 <input
-                  name="password"
                   type="password"
+                  name="password"
                   placeholder="Password"
                   value={form.password}
                   onChange={handleFormChange}
@@ -144,8 +155,8 @@ const SignUp = () => {
                 />
 
                 <input
-                  name="confirm_password"
                   type="password"
+                  name="confirm_password"
                   placeholder="Confirm password"
                   value={form.confirm_password}
                   onChange={handleFormChange}
@@ -169,7 +180,7 @@ const SignUp = () => {
                   disabled={loading}
                   className="w-full bg-black text-white py-2 rounded"
                 >
-                  {loading ? "Creating..." : "Create account"}
+                  {loading ? "Sending OTP..." : "Create account"}
                 </button>
 
                 <button
@@ -181,7 +192,7 @@ const SignUp = () => {
               </form>
             </StepperPanel>
 
-            {/* OTP STEP */}
+            {/* OTP */}
             <StepperPanel header="OTP">
               <div className="flex gap-3 justify-center mt-4">
                 {otp.map((val, i) => (

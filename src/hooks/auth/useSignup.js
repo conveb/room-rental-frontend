@@ -1,23 +1,27 @@
 import { useState } from "react";
-import { signupAPI, verifyOtpAPI, resendOtpAPI } from "../../services/allAPI";
-import {useNavigate} from "react-router-dom";
+import {
+  sendOtpAPI,
+  verifyOtpAPI,
+  signupAPI,
+  resendOtpAPI,
+} from "../../services/allAPI";
+
 export const useSignup = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const navigate = useNavigate();
-  // STEP 1 — CREATE ACCOUNT
-  const createAccount = async (payload) => {
+
+  // STEP 1 — SEND OTP
+  const sendOtp = async (email) => {
     setError("");
     try {
       setLoading(true);
-      const res = await signupAPI(payload);
+      const res = await sendOtpAPI({
+        email,
+        purpose: "ONBOARDING",
+      });
       return res;
     } catch (err) {
-      setError(
-        err?.response?.data?.email ||
-        err?.response?.data?.detail ||
-        "Signup failed"
-      );
+      setError(err?.response?.data?.detail || "Failed to send OTP");
       throw err;
     } finally {
       setLoading(false);
@@ -25,36 +29,58 @@ export const useSignup = () => {
   };
 
   // STEP 2 — VERIFY OTP
-const verifyOtp = async (payload) => {
-  setError("");
-  try {
-    setLoading(true);
-    const res = await verifyOtpAPI(payload);
+  const verifyOtp = async ({ email, otp }) => {
+    setError("");
+    try {
+      setLoading(true);
+      const res = await verifyOtpAPI({
+        email,
+        otp,
+        purpose: "ONBOARDING",
+      });
+      console.log("OTP VERIFIED:", res.data);
+      return res;
+    } catch (err) {
+      setError("Invalid OTP");
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    console.log(res.data);        // 👈 shows backend text
-    // or if backend sends { message: "OTP verified" }
-    console.log(res.data.message);
+  // STEP 3 — REGISTER USER
+  const register = async (payload) => {
+    setError("");
+    try {
+      setLoading(true);
+      const res = await signupAPI(payload);
+      return res;
+    } catch (err) {
+      const data = err?.response?.data;
 
-    navigate("/signin");
-    return res;
-  } catch (err) {
-    setError("Invalid OTP");
-    console.error(err);
-    throw new Error("Invalid OTP");
-  } finally {
-    setLoading(false);
-  }
-};
+      let message = "Registration failed";
+      if (Array.isArray(data?.email)) message = data.email[0];
+      else if (data?.detail) message = data.detail;
 
+      setError(message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  // STEP 3 — RESEND OTP
+  // RESEND OTP
   const resendOtp = async (email) => {
-    await resendOtpAPI({ email });
+    return await resendOtpAPI({
+      email,
+      purpose: "ONBOARDING",
+    });
   };
 
   return {
-    createAccount,
+    sendOtp,
     verifyOtp,
+    register,
     resendOtp,
     loading,
     error,
