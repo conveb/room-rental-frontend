@@ -2,7 +2,7 @@ import { commonAPI } from "./commonAPI";
 
 // 1. Register
 export const signupAPI = async (payload) => {
-  return await commonAPI("post", "/api/v1/register/", payload);
+  return await commonAPI("post", "/api/v1/auth/register/", payload);
 };
 
 // 2. Login
