@@ -19,6 +19,7 @@ export const useSignup = () => {
         email,
         purpose: "ONBOARDING",
       });
+      console.log(res.data.message);
       return res;
     } catch (err) {
       setError(err?.response?.data?.detail || "Failed to send OTP");
