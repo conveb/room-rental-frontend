@@ -2,14 +2,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { signinAPI } from "../../services/allAPI";
 import { isValidEmail, isStrongPassword } from "../../utils/validation";
-import { useAuth } from "../../context/AuthContext";
 
 
 export const useSignin = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const { login } = useAuth();
   
   const signin = async (payload) => {
     setError("");
@@ -46,7 +44,6 @@ export const useSignin = () => {
         throw new Error("Login failed");
       }
       console.log("LOGIN SUCCESS:", res.data);
-      login(res.data);
       navigate("/");
     } catch (err) {
       const backendError =
