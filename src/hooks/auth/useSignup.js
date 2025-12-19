@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { signupAPI, verifyOtpAPI, resendOtpAPI } from "../../services/allAPI";
-
+import {useNavigate} from "react-router-dom";
 export const useSignup = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
+  const navigate = useNavigate();
   // STEP 1 — CREATE ACCOUNT
   const createAccount = async (payload) => {
     setError("");
@@ -30,6 +30,7 @@ export const useSignup = () => {
     try {
       setLoading(true);
       const res = await verifyOtpAPI(payload);
+      navigate("/signin");
       return res;
     } catch {
       setError("Invalid OTP");

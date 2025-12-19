@@ -1,8 +1,8 @@
 import { commonAPI } from "./commonAPI";
 
 // 1. Register
-export const signupAPI = async (data) => {
-  return await commonAPI("post", "/api/v1/register/", data);
+export const signupAPI = async (payload) => {
+  return await commonAPI("post", "/api/v1/register/", payload);
 };
 
 // 2. Login
@@ -23,8 +23,8 @@ export const getPropertyByIdAPI = (propertyId) => {
 };
 
 // VERIFY OTP
-export const verifyOtpAPI = async (data) => {
-  return await commonAPI("post", "/api/v1/verify-otp/", data);
+export const verifyOtpAPI = async (payload) => {
+  return await commonAPI("post", "/api/v1/verify/", payload);
 };
 
 // RESEND OTP
