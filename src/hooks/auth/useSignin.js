@@ -29,10 +29,10 @@ export const useSignin = () => {
     //   return;
     // }
 
-    if (!payload.privacy_policy) {
-      setError("Please accept the privacy policy");
-      return;
-    }
+    // if (!payload.privacy_policy) {
+    //   setError("Please accept the privacy policy");
+    //   return;
+    // }
 
     try {
       setLoading(true);
@@ -42,7 +42,7 @@ export const useSignin = () => {
       if (!res || !res.data) {
         throw new Error("Login failed");
       }
-
+      console.log("LOGIN SUCCESS:", res.data);
       navigate("/");
     } catch (err) {
       const backendError =
