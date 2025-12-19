@@ -33,4 +33,8 @@ export const signupAPI = (payload) =>
 export const resendOtpAPI = (payload) =>
   commonAPI("post", "/api/v1/auth/resend-otp/", payload);
 
+// RESEND OTP
+export const AuthAPI = () =>
+  commonAPI("GET", "/api/v1/auth/me/");
+
 

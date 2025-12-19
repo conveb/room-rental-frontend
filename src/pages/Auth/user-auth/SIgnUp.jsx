@@ -98,7 +98,7 @@ const SignUp = () => {
       const registerRes = await register({
         email: form.email,
         name: form.full_name,
-        phone: "8136436219",
+        phone: form.ph_no,
         password: form.password,
         confirm_password: form.confirm_password,
         privacy_policy: form.privacy_policy,
@@ -204,6 +204,13 @@ const SignUp = () => {
                   name="email"
                   placeholder="Email"
                   value={form.email}
+                  onChange={handleFormChange}
+                  className="w-full border p-2 rounded"
+                />
+                <input
+                  name="phone"
+                  placeholder="phone"
+                  value={form.ph_no}
                   onChange={handleFormChange}
                   className="w-full border p-2 rounded"
                 />
