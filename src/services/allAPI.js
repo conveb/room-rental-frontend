@@ -13,22 +13,19 @@ export const getAllPropertiesAPI = async () => {
 };
 
 export const getPropertyByIdAPI = (propertyId) => {
-  return commonAPI(
-    "get",
-    `/api/v1/properties/${propertyId}/`
-  );
+  return commonAPI("get",`/api/v1/properties/${propertyId}/`);
 };
 
 
-// STEP 1 — SEND OTP
+// SEND OTP
 export const sendOtpAPI = (payload) =>
-  commonAPI("post", "/api/v1/auth/email-verification/", payload);
+  commonAPI("post", "/api/v1/auth/email/", payload);
 
-// STEP 2 — VERIFY OTP
+//  VERIFY OTP
 export const verifyOtpAPI = (payload) =>
-  commonAPI("post", "/api/v1/auth/verify-otp/", payload);
+  commonAPI("post", "/api/v1/auth/verify/", payload);
 
-// STEP 3 — REGISTER USER
+// REGISTER USER
 export const signupAPI = (payload) =>
   commonAPI("post", "/api/v1/auth/register/", payload);
 
