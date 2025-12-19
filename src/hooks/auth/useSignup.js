@@ -25,20 +25,27 @@ export const useSignup = () => {
   };
 
   // STEP 2 — VERIFY OTP
-  const verifyOtp = async (payload) => {
-    setError("");
-    try {
-      setLoading(true);
-      const res = await verifyOtpAPI(payload);
-      navigate("/signin");
-      return res;
-    } catch {
-      setError("Invalid OTP");
-      throw new Error("Invalid OTP");
-    } finally {
-      setLoading(false);
-    }
-  };
+const verifyOtp = async (payload) => {
+  setError("");
+  try {
+    setLoading(true);
+    const res = await verifyOtpAPI(payload);
+
+    console.log(res.data);        // 👈 shows backend text
+    // or if backend sends { message: "OTP verified" }
+    console.log(res.data.message);
+
+    navigate("/signin");
+    return res;
+  } catch (err) {
+    setError("Invalid OTP");
+    console.error(err);
+    throw new Error("Invalid OTP");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   // STEP 3 — RESEND OTP
   const resendOtp = async (email) => {
