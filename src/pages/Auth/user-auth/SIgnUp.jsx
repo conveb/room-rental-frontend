@@ -12,14 +12,8 @@ const SignUp = () => {
   const inputsRef = useRef([]);
   const navigate = useNavigate();
 
-  const {
-    sendOtp,
-    verifyOtp,
-    register,
-    resendOtp,
-    loading,
-    error,
-  } = useSignup();
+  const { sendOtp, verifyOtp, register, resendOtp, loading, error } =
+    useSignup();
 
   const OTP_LENGTH = 6;
 
@@ -32,23 +26,31 @@ const SignUp = () => {
     email: "",
     password: "",
     confirm_password: "",
-    terms: false,
+    privacy_policy: false,
+    account_type: "STUDENT", // default
   });
 
-  // FORM HANDLER
+  // ---------------- FORM HANDLER ----------------
   const handleFormChange = (e) => {
     const { name, value, type, checked } = e.target;
     setForm({ ...form, [name]: type === "checkbox" ? checked : value });
   };
 
-  // STEP 1 — SEND OTP
+  // ---------------- STEP 1: SEND OTP ----------------
   const handleCreateAccount = async (e) => {
     e.preventDefault();
-    await sendOtp(form.email);
-    stepperRef.current.nextCallback();
+    const purpose = form.account_type === "STUDENT" ? "ONBOARDING" : "SELLER";
+
+    try {
+      const otpRes = await sendOtp({ email: form.email, purpose });
+      console.log("OTP SENT:", otpRes?.data || otpRes);
+      stepperRef.current.nextCallback();
+    } catch (err) {
+      console.error("SEND OTP ERROR:", err?.message || err);
+    }
   };
 
-  // OTP INPUT HANDLERS
+  // ---------------- OTP INPUT HANDLERS ----------------
   const handleOtpChange = (e, index) => {
     const digit = e.target.value.replace(/\D/g, "");
     if (!digit) return;
@@ -71,48 +73,47 @@ const SignUp = () => {
     }
   };
 
+  // ---------------- STEP 2+3: VERIFY OTP + REGISTER ----------------
   const handleVerifyOtp = async () => {
-  try {
-    // 1️⃣ Verify OTP
-    const otpRes = await verifyOtp({
-      email: form.email,
-      otp: otp.join(""),
-    });
+    const purpose = form.account_type === "STUDENT" ? "ONBOARDING" : "SELLER";
 
-    console.log("OTP VERIFIED:", otpRes?.data || otpRes);
+    try {
+      // 1️⃣ Verify OTP
+      const otpRes = await verifyOtp({
+        email: form.email,
+        otp: otp.join(""),
+        purpose,
+      });
+      console.log("OTP VERIFIED:", otpRes?.data || otpRes);
 
-    // 2️⃣ Frontend validation BEFORE register
-    if (!form.terms) {
-      throw new Error("You must accept the terms and conditions");
+      // 2️⃣ Frontend validation
+      if (!form.privacy_policy) {
+        throw new Error("You must accept the privacy policy");
+      }
+      if (form.password !== form.confirm_password) {
+        throw new Error("Passwords do not match");
+      }
+
+      // 3️⃣ Register
+      const registerRes = await register({
+        email: form.email,
+        name: form.full_name,
+        phone: "8136436219",
+        password: form.password,
+        confirm_password: form.confirm_password,
+        privacy_policy: form.privacy_policy,
+        role: form.account_type,
+      });
+      console.log("REGISTER SUCCESS:", registerRes?.data || registerRes);
+
+      // 4️⃣ Navigate after success
+      navigate("/signin");
+    } catch (err) {
+      console.error("SIGNUP FLOW ERROR:", err?.message || err);
     }
+  };
 
-    if (form.password !== form.confirm_password) {
-      throw new Error("Passwords do not match");
-    }
-
-    // 3️⃣ Register user
-    const registerRes = await register({
-      email: form.email,
-      name: form.full_name,
-      phone: "8136436219",
-      password: form.password,
-      confirm_password: form.confirm_password,
-      privacy_policy: true,
-      role: "STUDENT",
-    });
-
-    console.log("REGISTER SUCCESS:", registerRes?.data || registerRes);
-
-    // 4️⃣ Navigate ONLY after full success
-    navigate("/signin");
-
-  } catch (err) {
-    console.error("SIGNUP FLOW ERROR:", err?.message || err);
-  }
-};
-
-
-  // RESEND TIMER
+  // ---------------- RESEND OTP ----------------
   useEffect(() => {
     if (counter === 0) {
       setDisableResend(false);
@@ -123,7 +124,8 @@ const SignUp = () => {
   }, [counter]);
 
   const handleResend = async () => {
-    await resendOtp(form.email);
+    const purpose = form.account_type === "STUDENT" ? "ONBOARDING" : "SELLER";
+    await resendOtp({ email: form.email, purpose });
     setCounter(60);
     setDisableResend(true);
   };
@@ -134,8 +136,8 @@ const SignUp = () => {
         <BacktoHome />
       </div>
 
-      <div className="w-full max-w-5xl mx-auto flex bg-white">
-        {/* LEFT */}
+      <div className="w-full max-w-5xl mx-auto flex flex-col md:flex-row bg-white">
+        {/* LEFT IMAGE */}
         <div className="hidden md:flex w-1/2 rounded-3xl overflow-hidden shadow-xl">
           <img
             src="https://images.pexels.com/photos/210205/pexels-photo-210205.jpeg"
@@ -144,12 +146,52 @@ const SignUp = () => {
           />
         </div>
 
-        {/* RIGHT */}
-        <div className="flex-1 px-6">
-          <Stepper ref={stepperRef}>
-            {/* SIGNUP */}
-            <StepperPanel header="Signup">
-              <form onSubmit={handleCreateAccount} className="space-y-4">
+        {/* RIGHT STEP FORMS */}
+        <div className="flex-1 px-6 py-6">
+          <Stepper
+            ref={stepperRef}
+            className="w-full"
+            style={{
+              "--stepper-circle-size": "40px",
+              "--stepper-active-color": "#000",
+              "--stepper-inactive-color": "#d1d5db",
+              "--stepper-title-font-size": "14px",
+              "--stepper-subtitle-font-size": "12px",
+            }}
+          >
+            {/* STEP 1: ACCOUNT TYPE + EMAIL */}
+            <StepperPanel header="Account Type">
+              <div className="space-y-4">
+                <div className="flex gap-4 justify-center mt-4">
+                  <button
+                    type="button"
+                    className={`px-4 py-2 rounded ${
+                      form.account_type === "STUDENT"
+                        ? "bg-black text-white"
+                        : "border"
+                    }`}
+                    onClick={() =>
+                      setForm({ ...form, account_type: "STUDENT" })
+                    }
+                  >
+                    User
+                  </button>
+
+                  <button
+                    type="button"
+                    className={`px-4 py-2 rounded ${
+                      form.account_type === "LANDOWNER"
+                        ? "bg-black text-white"
+                        : "border"
+                    }`}
+                    onClick={() =>
+                      setForm({ ...form, account_type: "LANDOWNER" })
+                    }
+                  >
+                    Landowner
+                  </button>
+                </div>
+
                 <input
                   name="full_name"
                   placeholder="Full name"
@@ -187,11 +229,11 @@ const SignUp = () => {
                 <label className="flex gap-2 text-sm">
                   <input
                     type="checkbox"
-                    name="terms"
-                    checked={form.terms}
+                    name="privacy_policy"
+                    checked={form.privacy_policy}
                     onChange={handleFormChange}
                   />
-                  Agree to terms
+                  Agree to privacy policy
                 </label>
 
                 {error && <p className="text-red-600 text-sm">{error}</p>}
@@ -200,8 +242,9 @@ const SignUp = () => {
                   type="submit"
                   disabled={loading}
                   className="w-full bg-black text-white py-2 rounded"
+                  onClick={handleCreateAccount}
                 >
-                  {loading ? "Sending OTP..." : "Create account"}
+                  {loading ? "Sending OTP..." : "Continue"}
                 </button>
 
                 <button
@@ -210,12 +253,12 @@ const SignUp = () => {
                 >
                   <FcGoogle /> Google
                 </button>
-              </form>
+              </div>
             </StepperPanel>
 
-            {/* OTP */}
+            {/* STEP 2: OTP */}
             <StepperPanel header="OTP">
-              <div className="flex gap-3 justify-center mt-4">
+              <div className="flex gap-3 justify-center mt-4 flex-wrap">
                 {otp.map((val, i) => (
                   <input
                     key={i}
