@@ -111,7 +111,7 @@ export default function HeroSection() {
                 </div>
 
                 {/* BUTTON */}
-                <button className="col-span-3 md:col-span-1 w-full rounded-full px-8 py-3 bg-stone-950 text-white font-medium border border-white/20">
+                <button className="col-span-3 md:col-span-1 w-full rounded-full px-8 py-4 bg-stone-950 text-white font-medium border border-white/20">
                   <a href="/accommodation">
                   Find
                   </a>

@@ -29,6 +29,7 @@ import UserDashboard from "./pages/users/account/UserDashboard";
 import UserBookings from "./pages/users/account/UserBookings";
 import UserSupport from "./pages/users/account/UserSupport";
 import UserSaved from "./pages/users/account/UserSaved";
+import WorkingOnIt from "./pages/public/WorkingOnIt";
 
 function App() {
   const showSplash = useSplash(1800);
@@ -40,8 +41,9 @@ function App() {
       <Routes>
         <Route element={<Layouts />}>
         {/* public */}
-        <Route path="/" element={<Home />} />
-           <Route path="/student/1" element={<UserProfilePage />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/workingonit" element={<WorkingOnIt />} />
+          <Route path="/student/1" element={<UserProfilePage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/accommodation" element={<Accommodation />} />
           <Route path="/accommodation/:id" element={<AccommodationDetails />} />
