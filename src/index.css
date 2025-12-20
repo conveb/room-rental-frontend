@@ -22,3 +22,29 @@
   font-style: normal;
   font-variation-settings: "wdth" 100;
 }
+.avatar-scroll::-webkit-scrollbar {
+  height: 4px;
+}
+
+.avatar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.avatar-scroll::-webkit-scrollbar-thumb {
+  background-color: #000;
+  border-radius: 999px;
+}
+
+.avatar-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #000 transparent;
+}
+/* Hide scrollbar but still allow scrolling */
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;             /* Chrome, Safari, Opera */
+}

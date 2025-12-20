@@ -11,7 +11,8 @@ export default function Header() {
   const blackHeaderPages = [
     "/accommodation",
     "/student/1",
-    "/workingonit"
+    "/workingonit",
+    '/notifications'
 
   ];
 
@@ -19,7 +20,7 @@ export default function Header() {
 
   return (
     <nav
-      className={`fixed left-0 right-0 z-30 w-full  px-5 md:px-0 py-4 md:py-6 
+      className={`fixed left-0 right-0 z-30 w-full  px-5 md:px-0 py-4 md:py-2 
         ${isBlackHeader ? "bg-black text-white" : "bg-transparent text-white"}
       `}
     >

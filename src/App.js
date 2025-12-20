@@ -30,6 +30,7 @@ import UserBookings from "./pages/users/account/UserBookings";
 import UserSupport from "./pages/users/account/UserSupport";
 import UserSaved from "./pages/users/account/UserSaved";
 import WorkingOnIt from "./pages/public/WorkingOnIt";
+import NotificationPage from "./pages/public/NotificationPage";
 
 function App() {
   const showSplash = useSplash(1800);
@@ -49,6 +50,7 @@ function App() {
           <Route path="/accommodation/:id" element={<AccommodationDetails />} />
           <Route path="/payment" element={<PaymentPage />} />
           <Route path="/confirmation" element={<ConfirmationPage />} />
+          <Route path="/notifications" element={<NotificationPage />} />
         </Route>
       
         <Route path="/forgot-password" element={<ForgotPassword />} />
