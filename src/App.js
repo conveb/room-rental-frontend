@@ -3,7 +3,7 @@ import SignIn from "./pages/Auth/user-auth/Signin";
 import SignUp from "./pages/Auth/user-auth/SIgnUp";
 
 import ForgotPassword from "./pages/Auth/user-auth/Forgot-password";
-import Layouts from "./components/btns/Layouts/Layouts";
+import Layouts from "./components/Layouts/Layouts";
 import Home from "./pages/public/Home";
 import PrivacyPolicy from "./pages/public/PrivacyPolicy";
 import Accommodation from "./pages/public/accommodation/Accommodation";

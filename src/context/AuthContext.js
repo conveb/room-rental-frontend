@@ -7,11 +7,9 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // 🔐 Check session using cookie
+
   const fetchCurrentUser = async () => {
     try {
-      // call any protected endpoint that returns user
-      // ask backend team if /auth/me exists
       const res = await AuthAPI();
       setUser(res.data);
     } catch (err) {

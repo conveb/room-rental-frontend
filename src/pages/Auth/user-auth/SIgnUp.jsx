@@ -6,7 +6,7 @@ import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
 import BacktoHome from "../../../components/btns/BacktoHome";
 import { useSignup } from "../../../hooks/auth/useSignup";
-
+import { FiEye, FiEyeOff } from "react-icons/fi";
 const SignUp = () => {
   const stepperRef = useRef(null);
   const inputsRef = useRef([]);
@@ -20,6 +20,9 @@ const SignUp = () => {
   const [otp, setOtp] = useState(Array(OTP_LENGTH).fill(""));
   const [counter, setCounter] = useState(60);
   const [disableResend, setDisableResend] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
 
   const [form, setForm] = useState({
     full_name: "",
@@ -27,7 +30,7 @@ const SignUp = () => {
     password: "",
     confirm_password: "",
     privacy_policy: false,
-    account_type: "STUDENT", // default
+    account_type: "STUDENT",
   });
 
   // ---------------- FORM HANDLER ----------------
@@ -36,10 +39,10 @@ const SignUp = () => {
     setForm({ ...form, [name]: type === "checkbox" ? checked : value });
   };
 
-  // ---------------- STEP 1: SEND OTP ----------------
+  // ---------------- SEND OTP ----------------
   const handleCreateAccount = async (e) => {
     e.preventDefault();
-    const purpose = form.account_type === "STUDENT" ? "ONBOARDING" : "SELLER";
+    const purpose = form.account_type === "STUDENT" ? "ONBOARDING" : "RESET";
 
     try {
       const otpRes = await sendOtp({ email: form.email, purpose });
@@ -75,7 +78,7 @@ const SignUp = () => {
 
   // ---------------- STEP 2+3: VERIFY OTP + REGISTER ----------------
   const handleVerifyOtp = async () => {
-    const purpose = form.account_type === "STUDENT" ? "ONBOARDING" : "SELLER";
+    const purpose = form.account_type === "STUDENT" ? "ONBOARDING" : "RESET";
 
     try {
       // 1️⃣ Verify OTP
@@ -106,7 +109,6 @@ const SignUp = () => {
       });
       console.log("REGISTER SUCCESS:", registerRes?.data || registerRes);
 
-      // 4️⃣ Navigate after success
       navigate("/signin");
     } catch (err) {
       console.error("SIGNUP FLOW ERROR:", err?.message || err);
@@ -124,7 +126,7 @@ const SignUp = () => {
   }, [counter]);
 
   const handleResend = async () => {
-    const purpose = form.account_type === "STUDENT" ? "ONBOARDING" : "SELLER";
+    const purpose = form.account_type === "STUDENT" ? "ONBOARDING" : "RESET";
     await resendOtp({ email: form.email, purpose });
     setCounter(60);
     setDisableResend(true);
@@ -138,52 +140,44 @@ const SignUp = () => {
 
       <div className="w-full max-w-5xl mx-auto flex flex-col md:flex-row bg-white">
         {/* LEFT IMAGE */}
-        <div className="hidden md:flex w-1/2 rounded-3xl overflow-hidden shadow-xl">
+        <div className="hidden md:flex w-1/2  overflow-hidden  py-10">
           <img
             src="https://images.pexels.com/photos/210205/pexels-photo-210205.jpeg"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover rounded-3xl"
             alt="housing"
           />
         </div>
 
         {/* RIGHT STEP FORMS */}
-        <div className="flex-1 px-6 py-6">
+        <div className="flex-1 px-3 md:px-6 py-6">
           <Stepper
             ref={stepperRef}
             className="w-full"
-            style={{
-              "--stepper-circle-size": "40px",
-              "--stepper-active-color": "#000",
-              "--stepper-inactive-color": "#d1d5db",
-              "--stepper-title-font-size": "14px",
-              "--stepper-subtitle-font-size": "12px",
-            }}
+
           >
             {/* STEP 1: ACCOUNT TYPE + EMAIL */}
-            <StepperPanel header="Account Type">
-              <div className="space-y-4">
-                <div className="flex gap-4 justify-center mt-4">
+            <StepperPanel header="Account Type" >
+              <div className="space-y-2">
+                <div className="flex gap-2 md:gap-4 justify-center mt-4 w-full">
                   <button
                     type="button"
-                    className={`px-4 py-2 rounded ${
-                      form.account_type === "STUDENT"
-                        ? "bg-black text-white"
-                        : "border"
-                    }`}
+                    className={`px-4 py-2 rounded-xl w-full ${form.account_type === "STUDENT"
+                      ? "bg-black text-white"
+                      : "border"
+                      }`}
                     onClick={() =>
                       setForm({ ...form, account_type: "STUDENT" })
                     }
                   >
-                    User
+                    Student
                   </button>
 
                   <button
                     type="button"
-                    className={`px-4 py-2 rounded ${
-                      form.account_type === "LANDOWNER"
-                        ? "bg-black text-white"
-                        : "border"
-                    }`}
+                    className={`px-4 py-2 rounded-xl w-full ${form.account_type === "LANDOWNER"
+                      ? "bg-black text-white"
+                      : "border"
+                      }`}
                     onClick={() =>
                       setForm({ ...form, account_type: "LANDOWNER" })
                     }
@@ -197,7 +191,7 @@ const SignUp = () => {
                   placeholder="Full name"
                   value={form.full_name}
                   onChange={handleFormChange}
-                  className="w-full border p-2 rounded"
+                  className="w-full border p-2 rounded-xl py-3"
                 />
 
                 <input
@@ -205,42 +199,68 @@ const SignUp = () => {
                   placeholder="Email"
                   value={form.email}
                   onChange={handleFormChange}
-                  className="w-full border p-2 rounded"
+                  className="w-full border p-2 rounded-xl py-3"
                 />
                 <input
                   name="phone"
                   placeholder="phone"
                   value={form.ph_no}
                   onChange={handleFormChange}
-                  className="w-full border p-2 rounded"
+                  className="w-full border p-2 rounded-xl py-3"
                 />
 
-                <input
-                  type="password"
-                  name="password"
-                  placeholder="Password"
-                  value={form.password}
-                  onChange={handleFormChange}
-                  className="w-full border p-2 rounded"
-                />
+                {/* PASSWORD */}
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    placeholder="Password"
+                    value={form.password}
+                    onChange={handleFormChange}
+                    className="w-full border rounded-xl py-3 px-4 pr-12 focus:outline-none focus:ring-1 focus:ring-black"
+                  />
 
-                <input
-                  type="password"
-                  name="confirm_password"
-                  placeholder="Confirm password"
-                  value={form.confirm_password}
-                  onChange={handleFormChange}
-                  className="w-full border p-2 rounded"
-                />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black transition"
+                  >
+                    {showPassword ? <FiEye size={18} /> : <FiEyeOff size={18} />}
+                  </button>
+                </div>
 
-                <label className="flex gap-2 text-sm">
+                {/* CONFIRM PASSWORD */}
+                <div className="relative">
+                  <input
+                    type={showConfirmPassword ? "text" : "password"}
+                    name="confirm_password"
+                    placeholder="Confirm password"
+                    value={form.confirm_password}
+                    onChange={handleFormChange}
+                    className="w-full border rounded-xl py-3 px-4 pr-12 focus:outline-none focus:ring-1 focus:ring-black"
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword((prev) => !prev)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black transition"
+                  >
+                    {showConfirmPassword ? <FiEye size={18} /> : <FiEyeOff size={18} />}
+                  </button>
+                </div>
+
+
+                <label className="flex gap-2 text-sm py-2">
                   <input
                     type="checkbox"
                     name="privacy_policy"
+                    className="w-5 h-5 "
                     checked={form.privacy_policy}
                     onChange={handleFormChange}
                   />
-                  Agree to privacy policy
+                  <a href="/privacy-policy">
+                    Agree to privacy policy
+                  </a>
                 </label>
 
                 {error && <p className="text-red-600 text-sm">{error}</p>}
@@ -248,23 +268,37 @@ const SignUp = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-black text-white py-2 rounded"
+                  className="w-full bg-black text-white py-2 rounded-xl"
                   onClick={handleCreateAccount}
                 >
                   {loading ? "Sending OTP..." : "Continue"}
                 </button>
+                <div className="flex items-center my-4">
+                  <div className="flex-grow h-px bg-black/20" />
+                  <span className="mx-3 text-xs font-semibold text-black/60">OR</span>
+                  <div className="flex-grow h-px bg-black/20" />
+                </div>
+
 
                 <button
                   type="button"
-                  className="w-full border py-2 rounded flex justify-center gap-2"
+                  className="flex flex-row items-center w-full border py-2 rounded-xl flex justify-center gap-2"
                 >
                   <FcGoogle /> Google
                 </button>
               </div>
+              <p className="mt-6 text-xs text-gray-500 text-center">
+              Already have an Account?{" "}
+              <a href="/signup">
+                <button className="font-semibold text-gray-900 hover:underline">
+                  Signin to your account
+                </button>
+              </a>
+            </p>
             </StepperPanel>
 
             {/* STEP 2: OTP */}
-            <StepperPanel header="OTP">
+            <StepperPanel header="Verify OTP">
               <div className="flex gap-3 justify-center mt-4 flex-wrap">
                 {otp.map((val, i) => (
                   <input

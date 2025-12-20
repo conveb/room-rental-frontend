@@ -73,59 +73,64 @@ const SignIn = () => {
             </div>
 
             <form
-        onSubmit={handleSubmit}
-        className="w-full max-w-md p-6 space-y-4"
-      >
-        <h1 className="text-xl font-semibold">Sign in</h1>
+              onSubmit={handleSubmit}
+              className="w-full max-w-md p-6 space-y-4"
+            >
+              <h1 className="text-xl font-semibold">Sign in</h1>
 
-        <input
-          name="email"
-          type="email"
-          value={form.email}
-          onChange={handleChange}
-          placeholder="Email"
-          className="w-full border p-2 rounded"
-        />
+              <input
+                name="email"
+                type="email"
+                value={form.email}
+                onChange={handleChange}
+                placeholder="Email"
+                className="w-full border p-2 rounded"
+              />
 
-        <input
-          name="password"
-          type="password"
-          value={form.password}
-          onChange={handleChange}
-          placeholder="Password"
-          className="w-full border p-2 rounded"
-        />
+              <input
+                name="password"
+                type="password"
+                value={form.password}
+                onChange={handleChange}
+                placeholder="Password"
+                className="w-full border p-2 rounded"
+              />
 
-        <label className="flex items-center gap-2 text-sm">
-          <input
-            type="checkbox"
-            name="privacy_policy"
-            checked={form.privacy_policy}
-            onChange={handleChange}
-          />
-          Agree to privacy policy
-        </label>
+              <label className="flex items-center gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  name="privacy_policy"
+                  checked={form.privacy_policy}
+                  onChange={handleChange}
+                />
+                Agree to privacy policy
+              </label>
 
-        {error && (
-          <p className="text-red-600 text-sm">{error}</p>
-        )}
+              {error && (
+                <p className="text-red-600 text-sm">{error}</p>
+              )}
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-black text-white py-2 rounded"
-        >
-          {loading ? "Signing in..." : "Sign in"}
-        </button>
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-black text-white py-2 rounded"
+              >
+                {loading ? "Signing in..." : "Sign in"}
+              </button>
+              <div className="flex items-center my-4">
+                <div className="flex-grow h-px bg-black/20" />
+                <span className="mx-3 text-xs font-semibold text-black/60">OR</span>
+                <div className="flex-grow h-px bg-black/20" />
+              </div>
 
-        <button
-          type="button"
-          className="w-full flex items-center justify-center gap-2 border py-2 rounded"
-        >
-          <FcGoogle />
-          Google
-        </button>
-      </form>
+              <button
+                type="button"
+                className="w-full flex items-center justify-center gap-2 border py-2 rounded"
+              >
+                <FcGoogle />
+                Google
+              </button>
+            </form>
 
             <p className="mt-6 text-xs text-gray-500 text-center">
               New to CampusRooms?{" "}

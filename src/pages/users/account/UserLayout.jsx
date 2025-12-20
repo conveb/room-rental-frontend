@@ -13,7 +13,7 @@ import { IoBookmark } from "react-icons/io5";
 import { MdOutlineSupportAgent } from "react-icons/md";
 import { IoIosNotifications } from "react-icons/io";
 const navItems = [
-  { to: "/user", label: "Dashboard", icon: <HiMiniHome /> },
+  { to: "/user", label: "Home", icon: <HiMiniHome /> },
   { to: "/user/bookings", label: "Bookings", icon: <FaDoorOpen /> },
   { to: "/user/account", label: "Account", icon: <FaUserGear /> },
   { to: "/user/saved", label: "Saved", icon: <IoBookmark /> },
