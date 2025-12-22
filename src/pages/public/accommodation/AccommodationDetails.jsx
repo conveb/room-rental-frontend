@@ -60,11 +60,10 @@ const AccommodationDetails = () => {
             {/* MOBILE STACK */}
             <div className="absolute bottom-3 right-3 lg:hidden flex items-center">
               <div
-                className={`flex gap-2 transition ${
-                  openStack
+                className={`flex gap-2 transition ${openStack
                     ? "opacity-100 translate-x-0"
                     : "opacity-0 translate-x-12 pointer-events-none"
-                }`}
+                  }`}
               >
                 {images.map((img, i) => (
                   <button
@@ -89,16 +88,15 @@ const AccommodationDetails = () => {
             </div>
 
             {/* DESKTOP THUMBNAILS */}
-            <div className="hidden lg:flex gap-3 mt-4">
+            <div className="hidden lg:grid grid-cols-4 gap-3 mt-4">
               {images.map((img, i) => (
                 <button
                   key={i}
                   onClick={() => setActiveImage(img)}
-                  className={`h-28 w-28 rounded-xl overflow-hidden border-2 ${
-                    mainImage === img
+                  className={`h-28 w-28 rounded-xl overflow-hidden border-2 ${mainImage === img
                       ? "border-black"
                       : "border-transparent hover:border-gray-300"
-                  }`}
+                    }`}
                 >
                   <img src={img} className="h-full w-full object-cover" />
                 </button>
@@ -165,11 +163,12 @@ const AccommodationDetails = () => {
                     key={a.id}
                     className="px-3 py-1 border rounded-full"
                   >
-                    Amenity
+                    {a.amenity} {/* Displays the ID for now */}
                   </span>
                 ))}
               </div>
             </div>
+
           </section>
         </div>
       </main>

@@ -41,6 +41,7 @@ const Accommodation = () => {
             className="text-sm bg-gray-50 px-4 py-3 rounded-xl"
           >
             <option value="">Type</option>
+            <option value="ENTIRE_HOME">Entire Home</option>
             <option value="PRIVATE_ROOM">Private Room</option>
             <option value="SHARED_ROOM">Shared Room</option>
             <option value="STUDIO">Studio</option>
@@ -75,8 +76,17 @@ const Accommodation = () => {
       </div>
 
       {/* STATES */}
-      {loading && <p className="text-center mt-10">Loading...(working on demo)</p>}
-      {error && <p className="text-center text-red-500 mt-10">{error}</p>}
+      {loading && (
+        <p className="text-center mt-10">
+          Loading properties...
+        </p>
+      )}
+
+      {error && (
+        <p className="text-center text-red-500 mt-10">
+          {error}
+        </p>
+      )}
 
       {/* PROPERTY LIST */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 px-4 md:px-20 mt-6">
@@ -85,11 +95,9 @@ const Accommodation = () => {
             key={property.id}
             className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition"
           >
-            {/* COVER IMAGE */}
             <img
               src={
-                property.cover_image ||
-                "https://via.placeholder.com/400x300?text=No+Image"
+                property.cover_image
               }
               alt={property.title}
               className="w-full h-52 object-cover"
@@ -126,7 +134,7 @@ const Accommodation = () => {
       {/* NO RESULTS */}
       {!loading && filteredProperties.length === 0 && (
         <p className="text-center text-gray-500 mt-10">
-          No properties match your filters.(working on demo)
+          No properties match your filters.
         </p>
       )}
     </div>

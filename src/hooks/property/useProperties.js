@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { getAllPropertiesAPI } from "../../services/allAPI";
 
 export const useProperties = () => {
@@ -16,14 +16,15 @@ export const useProperties = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // FETCH ALL PROPERTIES (DEFAULT LIST)
+  // FETCH PROPERTIES
   useEffect(() => {
     const fetchProperties = async () => {
       try {
         setLoading(true);
         const res = await getAllPropertiesAPI();
+
         setProperties(res.data);
-        setFilteredProperties(res.data); // 👈 list all by default
+        setFilteredProperties(res.data);
       } catch (err) {
         setError("Failed to load properties");
       } finally {
@@ -34,11 +35,12 @@ export const useProperties = () => {
     fetchProperties();
   }, []);
 
-  // FILTER CHANGE
+  // HANDLE INPUT CHANGE
   const handleFilterChange = (e) => {
+    const { name, value } = e.target;
     setFilters((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [name]: value,
     }));
   };
 
@@ -53,8 +55,9 @@ export const useProperties = () => {
     }
 
     if (filters.date) {
+      const selectedDate = new Date(filters.date);
       data = data.filter(
-        (p) => p.available_from && p.available_from >= filters.date
+        (p) => new Date(p.available_from) >= selectedDate
       );
     }
 
@@ -80,7 +83,6 @@ export const useProperties = () => {
   };
 
   return {
-    filters,
     loading,
     error,
     filteredProperties,

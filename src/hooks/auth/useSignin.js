@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { signinAPI } from "../../services/allAPI";
-
+import { useAuth } from "../../context/AuthContext";
 
 export const useSignin = () => {
   const navigate = useNavigate();
+  const { login } = useAuth(); // 🔥 IMPORTANT
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  
+
   const signin = async (payload) => {
     setError("");
 
@@ -21,20 +22,33 @@ export const useSignin = () => {
 
       const res = await signinAPI(payload);
 
-      if (!res || !res.data) {
+      if (!res?.data) {
         throw new Error("Login failed");
       }
+
       console.log("LOGIN SUCCESS:", res.data);
 
-      if (res.data.role === "STUDENT") {
-        navigate("/user");
-      } else if (res.data.role === "LANDOWNER") {
-        navigate("/landowner");
-      } else if (res.data.role === "ADMIN") {
-        navigate("/admin");
-      } else {
-        navigate("/");
-      }
+      // ✅ UPDATE GLOBAL AUTH STATE
+      login(res.data);
+
+      // ✅ ROLE-BASED NAVIGATION
+     if (res.data.role === "STUDENT") {
+  console.log("User : Student");
+  navigate("/user");
+
+} else if (res.data.role === "LAND_OWNER") {
+  console.log("User : Landowner");
+  navigate("/landowner");
+
+} else if (res.data.role === "ADMIN") {
+  console.log("User : Admin");
+  navigate("/admin");
+
+} else {
+  console.log("User : Viewer");
+  navigate("/");
+}
+
 
     } catch (err) {
       const backendError =

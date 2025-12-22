@@ -2,7 +2,7 @@ import axios from "axios";
 
 const api = axios.create({
   baseURL: "https://rental-homes-france.onrender.com",
-  withCredentials: true, // 🔐 REQUIRED for HttpOnly cookies
+  withCredentials: true, 
 });
 
 /* AUTO REFRESH LOGIC */
@@ -18,7 +18,7 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        await api.post("/auth/refresh/");
+        await api.post("/api/v1/auth/refresh/");
         return api(originalRequest); // retry original request
       } catch (refreshError) {
         return Promise.reject(refreshError);

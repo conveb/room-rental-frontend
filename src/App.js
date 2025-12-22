@@ -41,7 +41,6 @@ function App() {
 
       <Routes>
         <Route element={<Layouts />}>
-        {/* public */}
           <Route path="/" element={<Home />} />
           <Route path="/workingonit" element={<WorkingOnIt />} />
           <Route path="/student/1" element={<UserProfilePage />} />
@@ -52,18 +51,16 @@ function App() {
           <Route path="/confirmation" element={<ConfirmationPage />} />
           <Route path="/notifications" element={<NotificationPage />} />
         </Route>
-      
+
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
 
-        {/* Admin */}
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />
           <Route path="rooms" element={<AdminStudents />} />
         </Route>
 
-        {/* Landowner */}
         <Route path="/landowner" element={<Layout />}>
           <Route index element={<Dashboard />} />
           <Route path="properties" element={<PropertiesList />} />
@@ -71,13 +68,12 @@ function App() {
           <Route path="account" element={<Account />} />
         </Route>
 
-         <Route path="/user" element={<UserLayout />}>
+        <Route path="/user" element={<UserLayout />}>
           <Route index element={<UserDashboard />} />
           <Route path="account" element={<UserAccount />} />
           <Route path="bookings" element={<UserBookings />} />
           <Route path="saved" element={<UserSaved />} />
           <Route path="support" element={<UserSupport />} />
- 
         </Route>
 
       </Routes>
