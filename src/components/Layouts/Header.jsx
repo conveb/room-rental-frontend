@@ -1,12 +1,27 @@
 import { HiMenu, HiX } from "react-icons/hi";
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Logo from "../../Assets/pngs/logo-silver.png";
-
+import { useAuth } from "../../context/AuthContext";
+import { FaRegUser } from "react-icons/fa";
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+  const { user, loading } = useAuth();
+
+  const getAccountRoute = (role) => {
+    switch (role) {
+      case "STUDENT":
+        return "/user";
+      case "LANDOWNER":
+        return "/landowner";
+      case "ADMIN":
+        return "/admin";
+      default:
+        return "/signin";
+    }
+  };
 
   // Pages that always need black header
   const blackHeaderPages = [
@@ -32,10 +47,9 @@ export default function Header() {
     <nav
       className={`fixed left-0 right-0 z-30 w-full px-2 md:px-0 
         transition-all duration-300
-        ${
-          isBlackRoute || scrolled
-            ? "bg-black text-white shadow-lg py-2 md:py-3"
-            : "bg-transparent text-white py-2 md:py-3"
+        ${isBlackRoute || scrolled
+          ? "bg-black text-white shadow-lg py-2 md:py-3"
+          : "bg-transparent text-white py-2 md:py-3"
         }
       `}
     >
@@ -46,9 +60,8 @@ export default function Header() {
           <img
             src={Logo}
             alt="aliveparis-logo"
-            className={`transition-all duration-300 ${
-              scrolled ? "w-8" : "w-14"
-            } h-auto`}
+            className={`transition-all duration-300 ${scrolled ? "w-8" : "w-14"
+              } h-auto`}
           />
           <p className="special-font text-end">Alive Paris</p>
         </a>
@@ -61,11 +74,24 @@ export default function Header() {
           <li><a href="/workingonit">Rent a Room</a></li>
           <li><a href="/workingonit">Contact</a></li>
 
-          <a href="/signin">
-            <li className="bg-black text-white px-6 py-2 rounded-full border border-stone-700">
-              Sign In
-            </li>
-          </a>
+          {
+            !loading && (
+              user ? (
+                <li className="bg-black text-white px-3 py-3 border border-white border-2 rounded-full border border-stone-700">
+                  <Link to={getAccountRoute(user.role)}>
+                   <FaRegUser/>
+                  </Link>
+                </li>
+              ) : (
+                <li className="bg-black text-white px-6 py-2 rounded-full border border-stone-700">
+                  <Link to="/signin">
+                    Sign In
+                  </Link>
+                </li>
+              )
+            )
+          }
+
         </ul>
 
         {/* Mobile Menu Icon */}
@@ -111,9 +137,26 @@ export default function Header() {
             <li onClick={() => setOpen(false)}>
               <a href="/workingonit">Contact</a>
             </li>
-            <li className="bg-black text-white px-6 py-2 rounded-full">
-              <a href="/signin">Sign In</a>
-            </li>
+             {
+            !loading && (
+              user ? (
+                <li className="bg-black text-white px-3 py-3 border border-white border-2 rounded-full border border-stone-700">
+                  <Link to={getAccountRoute(user.role)}>
+                   <FaRegUser/>
+                  </Link>
+                </li>
+              ) : (
+                <li className="bg-black text-white px-6 py-2 rounded-full border border-stone-700">
+                  <Link to="/signin">
+                    Sign In
+                  </Link>
+                </li>
+              )
+            )
+          }
+
+
+
           </ul>
         </div>
       </div>
