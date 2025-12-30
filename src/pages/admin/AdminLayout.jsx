@@ -12,6 +12,7 @@ import { IoIosNotifications } from "react-icons/io";
 import { LuHousePlus } from "react-icons/lu";
 import { TbReport } from "react-icons/tb";
 import { FaRegCommentDots } from "react-icons/fa";
+import { useAuth } from "../../context/AuthContext";
 
 const navItems = [
   { to: "/auth/admin", label: "Dashboard", icon: <HiMiniHome /> },
@@ -22,6 +23,7 @@ const navItems = [
 
 const AdminLayout = () => {
   const location = useLocation();
+  const { user, loading } = useAuth();
   const [open, setOpen] = useState(false);
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-stone-100">
@@ -68,7 +70,7 @@ const AdminLayout = () => {
         <header className="py-3 md:py-4 bg-white/70 backdrop-blur-xl border-b border-white/30 flex items-center justify-between px-6 shadow-sm">
           <div>
             <h1 className="text-md md:text-lg font-semibold text-gray-900">
-              Hi, Walkingtoy <span className="bg-black text-xs md:text-sm text-white px-2 py-1 rounded-full">Admin</span>
+              Hi, user <span className="bg-black text-xs md:text-sm text-white px-2 py-1 rounded-full">Admin</span>
             </h1>
             <span className="text-xs md:text-sm text-gray-500">admin@campusrooms.com</span>
           </div>
