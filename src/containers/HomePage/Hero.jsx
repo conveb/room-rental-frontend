@@ -41,10 +41,11 @@ export default function HeroSection() {
           <div className="relative z-20 h-full max-w-6xl mx-auto px-5 md:px-0 flex flex-col justify-start pt-28 md:pt-48">
             {/* LEFT TEXT */}
             <div className="max-w-6xl">
-              <h1 className="special-font text-[3rem] md:text-[5.2rem] leading-tight text-white font-extrabold drop-shadow-lg">
-                Live Better in Spaces
+              <h1 className="special-font text-[2.8rem] md:text-[5.2rem] leading-tight text-white font-extrabold drop-shadow-lg">
+                {/* Live Better in Spaces
                 <br />
-                Made for You
+                Made for You */}
+                Find Affordable Monthly Rooms Across France
               </h1>
 
               <p className="mt-6 md:mt-12 text-sm md:text-lg text-white/90 max-w-xl">

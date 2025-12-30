@@ -4,10 +4,11 @@ export default function MonthlyRentals() {
      <section className="mb-20">
               <div className="relative grid md:grid-cols-7 gap-5 items-start">
                 <div className=" md:col-span-2 flex flex-col justify-end h-full">
-                  <h2 className="absolute top-0 md:top-20 left-0 z-10 max-w-6xl special-font text-4xl md:text-6xl font-extrabold leading-tight">Monthly Rentals<br />Available Across<br />France</h2>
+                  <h2 className="absolute top-0 md:top-20 left-0 z-10 max-w-6xl special-font text-4xl md:text-6xl font-extrabold leading-tight" style={{ WebkitTextStroke: "15px white" }}>Monthly Rentals<br />Available Across<br />France</h2>
+                  <h2 className="absolute top-0 md:top-20 left-0 z-10 max-w-6xl special-font text-4xl md:text-6xl font-extrabold leading-tight" >Monthly Rentals<br />Available Across<br />France</h2>
 
                   <div className="mt-32 md:mt-0">
-                    <p className=" mt-6 text-sm text-gray-600 max-w-md">Monthly rentals are available across France, offering flexible stays, furnished options, and convenient locations for anyone needing a comfortable home for a month or more.</p>
+                    <p className=" mt-6 text-sm text-gray-600 max-w-md" >Monthly rentals are available across France, offering flexible stays, furnished options, and convenient locations for anyone needing a comfortable home for a month or more.</p>
 
                     <button className="mt-6 px-4 py-2 bg-black text-white rounded"><a href="/accommodation">View all cities</a></button>
 
@@ -22,9 +23,10 @@ export default function MonthlyRentals() {
                     <div className="absolute inset-0 bg-gradient-to-b from-white/60 via-black/30 to-black/80" />
 
 
-                    <div className="absolute bottom-5 left-0 right-0 flex justify-between items-center text-white px-5 w-full ">
-                      <div className="text-4xl md:text-5xl font-bold  special-font  text-center">
+                    <div className="absolute bottom-5 left-0 right-0 flex justify-between items-start text-white px-5 w-full ">
+                      <div className="text-4xl md:text-5xl font-bold  special-font  text-start">
                         <p >
+                          <span className="text-lg">View rooms in</span> <br/>
                           Bordeaux
                         </p>
                       </div>

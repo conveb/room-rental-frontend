@@ -1,318 +1,368 @@
-import React, { useState } from "react";
-import colors from "../../theme/colors";
-import { Link } from "react-router-dom";
-
-/* MOCK DATA (UNCHANGED) */
-const mockData = {
-  stats: {
-    totalUsers: 12456,
-    totalStudents: 8567,
-    totalLandlords: 3899,
-    totalListings: 2345,
-    activeListings: 1890,
-    bookingsToday: 45,
-    bookingsMonth: 1567,
-    totalRevenue: 2456789,
-    commissionEarned: 489357,
-    pendingApprovals: 23,
-    disputes: 12,
-  },
-  bookingsMonthly: [320, 450, 380, 620, 780, 950, 1120],
-  topCities: [
-    { name: "Mumbai", demand: 45 },
-    { name: "Delhi", demand: 38 },
-    { name: "Bangalore", demand: 32 },
-    { name: "Pune", demand: 28 },
-    { name: "Hyderabad", demand: 25 },
-  ],
-};
-const mockDataUsers = [
-  { id: 1, name: "Rahul Sharma", email: "rahul@example.com", bookings: 5, status: "Active" },
-  { id: 2, name: "Priya Singh", email: "priya@example.com", bookings: 12, status: "Active" },
-  { id: 3, name: "Amit Patel", email: "amit@example.com", bookings: 3, status: "Blocked" },
-];
-
-const mockDataProperties = [
-  { name: "Sunshine Apartments", location: "Bandra, Mumbai", rent: "₹25,000", status: "Pending" },
-  { name: "Green Valley PG", location: "Koramangala", rent: "₹18,000", status: "Active" },
-  { name: "City Heights", location: "South Delhi", rent: "₹22,000", status: "Rejected" },
-];
-
-
+import React, { useState, useEffect } from "react";
+import { useAuth } from "../../context/AuthContext";
+import {
+  getUsersAPI,
+  getPropertiesAPI,
+  approveLandownerAPI,
+  addLocationAPI,
+  deleteLocationAPI,
+  getBookingsAPI,
+  toggleBlockUserAPI,
+  approvePropertyAPI,
+} from "../../services/allAPI";
+import { PiStudentFill } from "react-icons/pi";
+import { FaHouseFlag } from "react-icons/fa6";
 export default function AdminDashboard() {
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("overview");
 
-  /* ---------- OVERVIEW ---------- */
+  // ---------------- Demo Data ----------------
+  const bookingsList = [
+    { id: 1, user_name: "Alice Johnson", property_name: "Seaside Villa", status: "Confirmed", amount: 12500 },
+    { id: 2, user_name: "Bob Smith", property_name: "Mountain Cabin", status: "Pending", amount: 8900 },
+    { id: 3, user_name: "Carol Lee", property_name: "City Apartment", status: "Cancelled", amount: 5400 },
+    { id: 4, user_name: "David Kim", property_name: "Beach House", status: "Confirmed", amount: 15750 },
+    { id: 5, user_name: "Eva Green", property_name: "Country Cottage", status: "Confirmed", amount: 9800 },
+    { id: 6, user_name: "Frank Wright", property_name: "Lakefront Cabin", status: "Pending", amount: 11200 },
+  ];
+
+  const usersList = [
+    { id: 1, name: "Alice Johnson", email: "alice.johnson@example.com", role: "LANDOWNER", approved: false, blocked: false },
+    { id: 2, name: "Bob Smith", email: "bob.smith@example.com", role: "TENANT", approved: true, blocked: true },
+    { id: 3, name: "Carol Lee", email: "carol.lee@example.com", role: "LANDOWNER", approved: true, blocked: false },
+    { id: 4, name: "David Kim", email: "david.kim@example.com", role: "TENANT", approved: true, blocked: false },
+    { id: 5, name: "Eva Green", email: "eva.green@example.com", role: "LANDOWNER", approved: false, blocked: true },
+  ];
+
+  const [properties, setProperties] = useState([
+    {
+      id: 1,
+      name: "Paris City Apartment",
+      location: "Paris, France",
+      status: "Pending",
+    },
+    {
+      id: 2,
+      name: "Nice Beach House",
+      location: "Nice, France",
+      status: "Approved",
+    },
+    {
+      id: 3,
+      name: "Lyon Studio",
+      location: "Lyon, France",
+      status: "Pending",
+    },
+  ]);
+  
+  
+  // --------------------------------------------
+
+  // ---------------- State ----------------
+  const [users, setUsers] = useState([]);
+  // const [properties, setProperties] = useState([]);
+  const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [newLocation, setNewLocation] = useState("");
+
+  // ---------------- Filter ----------------
+  const [search, setSearch] = useState("");
+  const [roleFilter, setRoleFilter] = useState("ALL"); // ALL, TENANT, LANDOWNER
+
+  const filteredUsers = usersList
+    .filter(u =>
+      u.name.toLowerCase().includes(search.toLowerCase()) ||
+      u.email.toLowerCase().includes(search.toLowerCase())
+    )
+    .filter(u => roleFilter === "ALL" || u.role === roleFilter);
+
+  // ---------------- Fetch Data ----------------
+  useEffect(() => {
+    if (activeTab === "users") fetchUsers();
+    if (activeTab === "properties") fetchProperties();
+    if (activeTab === "overview") fetchBookings();
+  }, [activeTab]);
+
+  const fetchUsers = async () => {
+    setLoading(true);
+    try {
+      const res = await getUsersAPI();
+      setUsers(res.data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchProperties = async () => {
+    setLoading(true);
+    try {
+      const res = await getPropertiesAPI();
+      setProperties(res.data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchBookings = async () => {
+    try {
+      const res = await getBookingsAPI();
+      setBookings(res.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // ---------------- Admin Actions ----------------
+  const approveLandowner = async (userId) => {
+    try {
+      await approveLandownerAPI(userId);
+      fetchUsers();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const toggleBlockUser = async (userId) => {
+    try {
+      await toggleBlockUserAPI(userId);
+      fetchUsers();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const addLocation = async () => {
+    if (!newLocation) return;
+    try {
+      await addLocationAPI({ location: newLocation });
+      setNewLocation("");
+      fetchProperties();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const deleteLocation = async (locationId) => {
+    try {
+      await deleteLocationAPI(locationId);
+      fetchProperties();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const approveProperty = async (propertyId) => {
+    try {
+      await approvePropertyAPI(propertyId);
+      fetchProperties();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+    const filteredProperties = properties.filter(p =>
+    p.name.toLowerCase().includes(search.toLowerCase()) ||
+    p.location.toLowerCase().includes(search.toLowerCase())
+  );
+
+  // ---------------- Render Tabs ----------------
   const renderOverview = () => (
-    <div className="space-y-8 md:space-y-10">
-      {/* STATS */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-        {[
-          { label: "Total Users", value: mockData.stats.totalUsers },
-          { label: "Students", value: mockData.stats.totalStudents },
-          { label: "Landlords", value: mockData.stats.totalLandlords },
-          { label: "Listings", value: mockData.stats.totalListings },
-          { label: "Active Listings", value: mockData.stats.activeListings },
-          { label: "Bookings Today", value: mockData.stats.bookingsToday },
-          {
-            label: "Total Revenue",
-            value: `₹${mockData.stats.totalRevenue.toLocaleString()}`,
-          },
-          {
-            label: "Commission Earned",
-            value: `₹${mockData.stats.commissionEarned.toLocaleString()}`,
-          },
-        ].map((item, i) => (
-          <div
-            key={i}
-            className="rounded-2xl border border-white/40 bg-white/70 backdrop-blur-xl shadow-lg p-4 sm:p-6"
-          >
-            <p className="text-xs sm:text-sm text-gray-500">{item.label}</p>
-            <p className="mt-2 text-xl sm:text-2xl md:text-3xl font-semibold text-gray-900">
-              {item.value}
-            </p>
-          </div>
-        ))}
+    <div className="space-y-3 md:space-y-6">
+      <h2 className="text-xl font-semibold">Overview</h2>
+
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-4">
+        <div className="bg-white p-4 rounded-xl shadow flex flex-col justify-between">
+          <p className="text-xs md:text-sm text-gray-500">Students</p>
+          <p className="text-2xl font-semibold">
+            {users.filter(u => u.role === "LANDOWNER" && !u.approved).length}
+          </p>
+        </div>
+        <div className="bg-white p-4 rounded-xl shadow flex flex-col justify-between">
+          <p className="text-xs md:text-sm text-gray-500">Total Bookings</p>
+          <p className="text-2xl font-semibold">{bookings.length}</p>
+        </div>
+        <div className="bg-white p-4 rounded-xl shadow flex flex-col justify-between">
+          <p className="text-xs md:text-sm text-gray-500">Total Revenue</p>
+          <p className="text-2xl font-semibold">
+            ₹{bookings.reduce((sum, b) => sum + b.amount, 0).toLocaleString()}
+          </p>
+        </div>
+        <div className="bg-white p-4 rounded-xl shadow flex flex-col justify-between">
+          <p className="text-xs md:text-sm text-gray-500">Landowners</p>
+          <p className="text-2xl font-semibold">
+            {users.filter(u => u.role === "LANDOWNER" && !u.approved).length}
+          </p>
+        </div>
+        <div className="bg-white p-4 rounded-xl shadow flex flex-col justify-between">
+          <p className="text-xs md:text-sm text-gray-500">Total Properties</p>
+          <p className="text-2xl font-semibold">{bookings.length}</p>
+        </div>
+        <div className="bg-white p-4 rounded-xl shadow flex flex-col justify-between">
+          <p className="text-xs md:text-sm text-gray-500">Total Commission</p>
+          <p className="text-2xl font-semibold">
+            ₹{bookings.reduce((sum, b) => sum + b.amount, 0).toLocaleString()}
+          </p>
+        </div>
       </div>
 
-      {/* CHARTS */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
-        <div className="rounded-2xl bg-white/70 backdrop-blur-xl shadow-xl p-4 sm:p-6">
-          <h3 className="text-base sm:text-lg font-semibold mb-4">
-            Monthly Bookings Overview
-          </h3>
-          <div className="h-48 sm:h-56 md:h-64 rounded-xl bg-gradient-to-br from-indigo-50 to-slate-100 flex items-center justify-center text-gray-500 text-sm">
-            {mockData.bookingsMonthly.join(" • ")}
-          </div>
-        </div>
-
-        <div className="rounded-2xl bg-white/70 backdrop-blur-xl shadow-xl p-4 sm:p-6">
-          <h3 className="text-base sm:text-lg font-semibold mb-4">
-            Top Cities by Demand
-          </h3>
-          <div className="space-y-3">
-            {mockData.topCities.map((city, i) => (
-              <div
-                key={i}
-                className="flex justify-between items-center rounded-xl border border-gray-100 px-4 py-3"
-              >
-                <span className="font-medium text-sm sm:text-base">
-                  {city.name}
-                </span>
-                <span className="text-xs sm:text-sm font-semibold text-indigo-600">
-                  {city.demand}%
-                </span>
-              </div>
-            ))}
-          </div>
+      <div className="bg-white rounded-xl shadow p-4">
+        <h3 className="font-semibold mb-2">Recent Bookings</h3>
+        <div className="space-y-2">
+          {bookingsList.slice(0, 5).map(b => (
+            <div key={b.id} className="grid grid-cols-4 gap-5 p-1 md:p-2 border-b last:border-b-0 text-xs md:text-sm">
+              <span>{b.user_name}</span>
+              <span>{b.property_name}</span>
+              <span>{b.status}</span>
+              <span>₹{b.amount.toLocaleString()}</span>
+            </div>
+          ))}
         </div>
       </div>
     </div>
   );
 
-  /* ---------- USERS ---------- */
   const renderUsers = () => (
-    <div className="rounded-2xl bg-white/70 backdrop-blur-xl shadow-xl overflow-hidden">
-      <div className="px-4 sm:px-6 py-3 md:py-4 border-b">
-        <h2 className="text-lg sm:text-xl font-semibold">Student Accounts</h2>
+    <div className="space-y-4">
+      <h2 className="text-xl font-semibold">Users</h2>
+
+      {/* Search + Filter */}
+      <div className="flex flex-row  gap-2 w-full items-center">
+        <input
+          type="text"
+          placeholder="Search by name or email..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="flex-grow border p-2 rounded-md min-w-0"
+        />
+        <select
+          value={roleFilter}
+          onChange={(e) => setRoleFilter(e.target.value)}
+          className="border p-2 rounded-md"
+        >
+          <option value="ALL">All</option>
+          <option value="TENANT"><PiStudentFill/>Tenant</option>
+          <option value="LANDOWNER"><FaHouseFlag/>Landowner</option>
+        </select>
       </div>
 
-      <div className="block sm:hidden space-y-3 p-2 md:p-4">
-        {/* MOBILE: stacked cards */}
-        {mockDataUsers.map((u, i) => (
-          <div className="relative bg-white/80 rounded-xl shadow p-2 md:p-4 space-y-2 mb-2" key={i}>
-          <Link to={`/admin/student/${u.id}`} key={i} >
-              <div>
-                <p className="font-semibold">{u.name}</p>
-                <p className="text-gray-600 text-xs md:text-sm">{u.email}</p>
-              </div>
-              <p className="text-xs md:text-sm">Bookings: {u.bookings}</p>
-              <p className="absolute top-1 right-2 text-sm ">
 
-                <span
-                  className={`px-2 py-1 rounded-xl text-xs font-medium ${u.status === "Active"
-                      ? "bg-emerald-100 text-emerald-700"
-                      : "bg-rose-100 text-rose-700"
-                    }`}
-                >
-                  {u.status}
-                </span>
-              </p>
-          </Link>
-              <div className="flex gap-2 text-xs font-medium w-full">
-                <button className="border w-full py-2 rounded-md text-gray-600 hover:underline">Bookings</button>
-                <button className="border w-full py-2 rounded-md text-rose-600 hover:underline">Block</button>
-              </div>
-            </div>
-        ))}
-      </div>
 
-      <div className="hidden sm:block overflow-x-auto">
-        <table className="w-full table-auto border-collapse">
-          <thead className="bg-gray-50 text-xs sm:text-sm uppercase text-gray-500">
-            <tr>
-              <th className="px-2 sm:px-4 py-2 text-left">Name</th>
-              <th className="px-2 sm:px-4 py-2 text-left">Email</th>
-              <th className="px-2 sm:px-4 py-2 text-left">Bookings</th>
-              <th className="px-2 sm:px-4 py-2 text-left">Status</th>
-              <th className="px-2 sm:px-4 py-2 text-left">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y text-xs sm:text-sm">
-            {mockDataUsers.map((u, i) => (
-              <tr key={i} className="hover:bg-gray-50 ">
-                <td className="px-2 sm:px-4 py-1 sm:py-2 font-medium">{u.name}</td>
-                <td className="px-2 sm:px-4 py-1 sm:py-2 text-gray-600">{u.email}</td>
-                <td className="px-2 sm:px-4 py-1 sm:py-2">{u.bookings}</td>
-                <td className=" px-2 sm:px-4 py-1 sm:py-2">
-                  <span
-                    className={` px-2 py-1 rounded-full text-xs font-medium ${u.status === "Active"
-                        ? "bg-emerald-100 text-emerald-700"
-                        : "bg-rose-100 text-rose-700"
-                      }`}
-                  >
-                    {u.status}
-                  </span>
-                </td>
-                <td className="px-2 sm:px-4 py-1 sm:py-2 space-x-1 sm:space-x-2 text-xs sm:text-sm font-medium">
-                  <button className="text-indigo-600 hover:underline">View</button>
-                  <button className="text-gray-600 hover:underline">Bookings</button>
-                  <button className="text-rose-600 hover:underline">Block</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-
-  /* ---------- PROPERTIES ---------- */
-  const renderProperties = () => (
-    <div className="rounded-2xl bg-white/70 backdrop-blur-xl shadow-xl overflow-hidden">
-      <div className="px-4 sm:px-6 py-4 border-b">
-        <h2 className="text-lg sm:text-xl font-semibold">Property Listings</h2>
-      </div>
-
-      <div className="block sm:hidden space-y-3 p-2 md:p-4">
-        {/* MOBILE: stacked cards */}
-        {mockDataProperties.map((p, i) => (
-          <div key={i} className="relative bg-white/80 rounded-xl shadow p-2 md:p-4 space-y-2">
+      {loading ? (
+        <p>Loading...</p>
+      ) : filteredUsers.length === 0 ? (
+        <p>No users found</p>
+      ) : (
+        filteredUsers.map(u => (
+          <div key={u.id} className="flex justify-between items-center border p-2 rounded-xl">
             <div>
-            <p className=" font-semibold">{p.name}</p>
-            <p className="text-gray-600 text-xs md:text-sm">{p.location}</p>
+              <p className="font-medium">{u.name}</p>
+              <p className="text-gray-500 text-sm">{u.email}</p>
+              <p className="text-xs text-gray-400">{u.role}</p>
             </div>
-            <p className="text-sm font-semibold">{p.rent}</p>
-            <p className="absolute top-1 right-1 text-sm">
-              
-              <span
-                className={`px-2 py-1 rounded-xl text-xs font-medium ${p.status === "Active"
-                    ? "bg-emerald-100 text-emerald-700"
-                    : p.status === "Pending"
-                      ? "bg-amber-100 text-amber-700"
-                      : "bg-rose-100 text-rose-700"
-                  }`}
+            <div className="flex flex-col gap-2 text-xs md:text-sm">
+              {u.role === "LANDOWNER" && !u.approved && (
+                <button
+                  onClick={() => approveLandowner(u.id)}
+                  className="bg-green-500 text-white px-4 py-3 rounded-lg"
+                >
+                  Approve
+                </button>
+              )}
+              <button
+                onClick={() => toggleBlockUser(u.id)}
+                className={`px-4 py-3 rounded-lg ${u.blocked ? "bg-red-500 text-white" : "bg-gray-200"}`}
               >
-                {p.status}
-              </span>
-            </p>
-            <div className="flex gap-2 text-xs font-medium w-full">
-              <button className="w-full border  py-2 rounded-md text-emerald-600 hover:underline">Approve</button>
-              <button className="w-full border  py-2 rounded-md text-indigo-600 hover:underline">Edit</button>
-              <button className="w-full border  py-2 rounded-md text-rose-600 hover:underline">Reject</button>
+                {u.blocked ? "Unblock" : "Block"}
+              </button>
             </div>
           </div>
-        ))}
-      </div>
-
-      <div className="hidden sm:block overflow-x-auto">
-        <table className="w-full table-auto border-collapse">
-          <thead className="bg-gray-50 text-xs sm:text-sm uppercase text-gray-500">
-            <tr>
-              <th className="px-4 sm:px-6 py-2 text-left">Property</th>
-              <th className="px-4 sm:px-6 py-2 text-left">Location</th>
-              <th className="px-4 sm:px-6 py-2 text-left">Rent</th>
-              <th className="px-4 sm:px-6 py-2 text-left">Status</th>
-              <th className="px-4 sm:px-6 py-2 text-left">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y text-xs sm:text-sm">
-            {mockDataProperties.map((p, i) => (
-              <tr key={i} className="hover:bg-gray-50">
-                <td className="px-4 sm:px-6 py-2 font-medium">{p.name}</td>
-                <td className="px-4 sm:px-6 py-2 text-gray-600">{p.location}</td>
-                <td className="px-4 sm:px-6 py-2 font-semibold">{p.rent}</td>
-                <td className="px-4 sm:px-6 py-2">
-                  <span
-                    className={`px-2 py-1 rounded-full text-xs font-medium ${p.status === "Active"
-                        ? "bg-emerald-100 text-emerald-700"
-                        : p.status === "Pending"
-                          ? "bg-amber-100 text-amber-700"
-                          : "bg-rose-100 text-rose-700"
-                      }`}
-                  >
-                    {p.status}
-                  </span>
-                </td>
-                <td className="px-4 sm:px-6 py-2 space-x-2 sm:space-x-4 text-xs sm:text-sm font-medium">
-                  <button className="text-emerald-600 hover:underline">Approve</button>
-                  <button className="text-indigo-600 hover:underline">Edit</button>
-                  <button className="text-rose-600 hover:underline">Reject</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+        ))
+      )}
     </div>
   );
 
+  const renderProperties = () => (
+  <div className="space-y-4">
+    <h2 className="text-xl font-semibold">Locations / Properties</h2>
+
+    {/* Search */}
+    <div className="flex flex-row gap-2 w-full items-center">
+      <input
+        type="text"
+        placeholder="Search by property name or location..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        className="flex-grow border p-2 rounded-md min-w-0"
+      />
+    </div>
+
+    {loading ? (
+      <p>Loading...</p>
+    ) : filteredProperties.length === 0 ? (
+      <p>No properties found</p>
+    ) : (
+      filteredProperties.map(p => (
+        <div
+          key={p.id}
+          className="flex justify-between items-center border p-2 rounded-xl"
+        >
+          <div>
+            <p className="font-medium">{p.name}</p>
+            <p className="text-gray-500 text-sm">{p.location}</p>
+            <p className="text-xs text-gray-400">{p.status}</p>
+          </div>
+
+          <div className="flex flex-col gap-2 text-xs md:text-sm">
+            {p.status === "Pending" && (
+              <button
+                onClick={() => approveProperty(p.id)}
+                className="bg-green-500 text-white px-4 py-3 rounded-lg"
+              >
+                Approve
+              </button>
+            )}
+            <button
+              onClick={() => deleteLocation(p.id)}
+              className="bg-red-500 text-white px-4 py-3 rounded-lg"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      ))
+    )}
+  </div>
+);
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 to-indigo-100 p-2 sm:px-6 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-4 md:space-y-10">
-        {/* HEADER */}
+    <div className="min-h-screen p-1 sm:p-4">
+      <div className="max-w-7xl mx-auto space-y-3 md:space-y-6">
         <div>
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-gray-900">
-            Admin Control Center
-          </h1>
-          <p className="text-gray-600 mt-1 text-xs sm:text-base">
-            Student Housing Management System
-          </p>
+          <h1 className="text-2xl md:text-3xl font-bold">Admin Control Center</h1>
+          <p className="text-xs md:text-sm text-gray-500 mt-1">Student Housing Management System</p>
         </div>
 
-        {/* TABS */}
-        <div className="flex flex-wrap sm:flex-nowrap gap-2 bg-white/60 backdrop-blur-xl p-2 rounded-2xl shadow-lg">
-          {[
-            { id: "overview", label: "Overview" },
-            { id: "users", label: "Users" },
-            { id: "properties", label: "Properties" },
-          ].map((tab) => (
+        {/* Tabs */}
+        <div className="flex bg-white rounded-3xl overflow-hidden w-full p-2 gap-2">
+          {["overview", "users", "properties"].map(tab => (
             <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex-1 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm font-medium transition `}
-              style={
-                activeTab === tab.id
-                  ? {
-                    backgroundColor: colors.primaryColor,
-                    color: 'white',
-                    fontWeight: 600,
-                    boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05)', // shadow-lg equivalent
-                  }
-                  : {
-                    color: 'gray',
-                  }
-              }
-
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`flex-1 py-3 md:py-4 text-sm font-medium transition rounded-2xl shadow ${activeTab === tab
+                  ? "bg-black text-white"
+                  : "bg-white text-gray-500 hover:bg-gray-200"
+                }`}
             >
-              {tab.label}
+              {tab.charAt(0).toUpperCase() + tab.slice(1)}
             </button>
           ))}
         </div>
 
-        {/* CONTENT */}
+        {/* Tab content */}
         {activeTab === "overview" && renderOverview()}
         {activeTab === "users" && renderUsers()}
         {activeTab === "properties" && renderProperties()}

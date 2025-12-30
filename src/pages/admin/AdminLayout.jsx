@@ -9,19 +9,22 @@ import colors from "../../theme/colors";
 import { HiMenu } from "react-icons/hi";
 import Logo from '../../Assets/pngs/logo.png';
 import { IoIosNotifications } from "react-icons/io";
+import { LuHousePlus } from "react-icons/lu";
+import { TbReport } from "react-icons/tb";
+import { FaRegCommentDots } from "react-icons/fa";
 
 const navItems = [
-  { to: "/admin", label: "Dashboard", icon: <HiMiniHome /> },
-  { to: "/admin/students", label: "Students", icon: <PiStudentFill /> },
-  { to: "/admin/landlords", label: "Landlords", icon: <FaHouseFlag /> },
-  { to: "/admin/rooms", label: "Rooms", icon: <BsFillHousesFill /> },
+  { to: "/auth/admin", label: "Dashboard", icon: <HiMiniHome /> },
+  { to: "/auth/admin/requests", label: "Requests", icon: <FaRegCommentDots /> },
+  { to: "/auth/admin/add-property", label: "Add Property", icon: <LuHousePlus /> },
+  { to: "/auth/admin/reports", label: "Reports", icon: <TbReport /> },
 ];
 
 const AdminLayout = () => {
   const location = useLocation();
   const [open, setOpen] = useState(false);
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-gradient-to-br from-slate-100 to-indigo-100">
+    <div className="min-h-screen flex flex-col md:flex-row bg-stone-100">
       {/* SIDEBAR (DESKTOP ONLY) */}
       <aside className="hidden md:flex w-64 bg-gradient-to-b from-zinc-950 to-zinc-900 text-gray-200 flex-col shadow-2xl flex-shrink-0">
         {/* LOGO */}
@@ -114,7 +117,7 @@ const AdminLayout = () => {
       </div>
 
       {/* BOTTOM NAV (MOBILE ONLY) */}
-      <nav className="md:hidden fixed bottom-0 inset-x-0 m-3 rounded-[1.4rem] bg-white/90 backdrop-blur-xl border border-gray-200 shadow-2xl z-50">
+      <nav className="md:hidden fixed bottom-0 inset-x-0 m-2 rounded-[1.4rem] bg-white/90 backdrop-blur-xl border border-gray-200 shadow-2xl z-50">
         <div className="flex justify-around items-center gap-1 h-16 px-1">
           {navItems.map(item => {
             const isActive =

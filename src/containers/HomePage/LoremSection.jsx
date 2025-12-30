@@ -4,6 +4,11 @@ export default function LoremSection() {
       <section className="mb-20">
         <div className="relative grid md:grid-cols-7 gap-5 items-start">
           <div className="md:col-span-2 flex flex-col justify-end h-full">
+            <h2 className="absolute top-0 md:top-20 left-0 z-20 max-w-6xl special-font text-4xl md:text-6xl font-extrabold leading-tight" style={{ WebkitTextStroke: "15px white" }}>
+              Move In.<br />
+              Settle Fast.<br />
+              Focus on Studies.
+            </h2>
             <h2 className="absolute top-0 md:top-20 left-0 z-20 max-w-6xl special-font text-4xl md:text-6xl font-extrabold leading-tight">
               Move In.<br />
               Settle Fast.<br />

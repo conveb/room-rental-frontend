@@ -13,12 +13,16 @@ export default function Header() {
   const getAccountRoute = (role) => {
     switch (role) {
       case "STUDENT":
+        console.log('its student');
         return "/user";
       case "LANDOWNER":
+         console.log('its landowner');
         return "/landowner";
       case "ADMIN":
+         console.log('its admin');
         return "/admin";
       default:
+         console.log('its user');
         return "/signin";
     }
   };
@@ -36,7 +40,7 @@ export default function Header() {
   // Scroll listener
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 0); // change scroll distance here
+      setScrolled(window.scrollY > 0); 
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -56,7 +60,7 @@ export default function Header() {
       <div className="max-w-6xl mx-auto flex items-center justify-between">
 
         {/* Logo */}
-        <a href="/" className="flex items-end gap-2">
+        <Link to="/" className="flex items-end gap-2">
           <img
             src={Logo}
             alt="aliveparis-logo"
@@ -64,15 +68,15 @@ export default function Header() {
               } h-auto`}
           />
           <p className="special-font text-end">Alive Paris</p>
-        </a>
+        </Link>
 
         {/* Desktop Menu */}
         <ul className="hidden md:flex gap-8 text-sm items-center opacity-90">
-          <li><a href="/">Home</a></li>
-          <li><a href="/workingonit">About</a></li>
-          <li><a href="/accommodation">Find a Room</a></li>
-          <li><a href="/workingonit">Rent a Room</a></li>
-          <li><a href="/workingonit">Contact</a></li>
+          <li><Link to="/">Home</Link></li>
+          <li><Link to="/workingonit">About</Link></li>
+          <li><Link to="/accommodation">Find a Room</Link></li>
+          <li><Link to="/workingonit">Rent a Room</Link></li>
+          <li><Link to="/workingonit">Contact</Link></li>
 
           {
             !loading && (
@@ -123,19 +127,19 @@ export default function Header() {
           {/* Drawer Menu Items */}
           <ul className="flex flex-col gap-6 text-lg px-6 text-center items-center">
             <li onClick={() => setOpen(false)}>
-              <a href="/">Home</a>
+              <Link to="/">Home</Link>
             </li>
             <li onClick={() => setOpen(false)}>
-              <a href="/workingonit">About</a>
+              <Link to="/workingonit">About</Link>
             </li>
             <li onClick={() => setOpen(false)}>
-              <a href="/accommodation">Find a Room</a>
+              <Link to="/accommodation">Find a Room</Link>
             </li>
             <li onClick={() => setOpen(false)}>
-              <a href="/workingonit">Rent a Room</a>
+              <Link to="/workingonit">Rent a Room</Link>
             </li>
             <li onClick={() => setOpen(false)}>
-              <a href="/workingonit">Contact</a>
+              <Link to="/workingonit">Contact</Link>
             </li>
              {
             !loading && (

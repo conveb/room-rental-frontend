@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { AuthAPI } from "../services/allAPI";
+import { AuthAPI, LogoutAPI } from "../services/allAPI";
 import { commonAPI } from "../services/commonAPI";
 
 const AuthContext = createContext(null);
@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await commonAPI("POST", "/api/v1/auth/logout/");
+      await LogoutAPI();
     } catch {}
     setUser(null);
   };

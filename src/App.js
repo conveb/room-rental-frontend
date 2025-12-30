@@ -31,6 +31,14 @@ import UserSupport from "./pages/users/account/UserSupport";
 import UserSaved from "./pages/users/account/UserSaved";
 import WorkingOnIt from "./pages/public/WorkingOnIt";
 import NotificationPage from "./pages/public/NotificationPage";
+import CreateProperty from "./pages/landlord/account/CreateProperty";
+// import { AdminRoute } from "./components/routes/AdminRoute";
+import PageNotFound from "./pages/public/PageNotFound";
+import { LandOwnerRoute } from "./components/routes/LandOwnerRoute";
+import PrivateRoute from "./components/routes/PrivateRoute";
+import AdminAddProperty from "./pages/admin/AdminAddProperty";
+import AdminReports from "./pages/admin/AdminReports";
+import AdminRequests from "./pages/admin/requests/AdminRequests";
 
 function App() {
   const showSplash = useSplash(1800);
@@ -40,40 +48,51 @@ function App() {
       {showSplash && <SplashScreen />}
 
       <Routes>
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/signin" element={<SignIn />} />
+        <Route path="/signup" element={<SignUp />} />
+
         <Route element={<Layouts />}>
           <Route path="/" element={<Home />} />
+          <Route path="/page-not-found" element={<PageNotFound />} />
           <Route path="/workingonit" element={<WorkingOnIt />} />
           <Route path="/student/1" element={<UserProfilePage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/accommodation" element={<Accommodation />} />
           <Route path="/accommodation/:id" element={<AccommodationDetails />} />
-          <Route path="/payment" element={<PaymentPage />} />
-          <Route path="/confirmation" element={<ConfirmationPage />} />
-          <Route path="/notifications" element={<NotificationPage />} />
         </Route>
 
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/signin" element={<SignIn />} />
-        <Route path="/signup" element={<SignUp />} />
+        {/* <Route element={<AdminRoute />}> */}
+        {/* </Route> */}
+          <Route path="/auth/admin" element={<AdminLayout />}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="rooms" element={<AdminStudents />} />
+            <Route path="requests" element={<AdminRequests />} />
+            <Route path="add-property" element={<AdminAddProperty />} />
+            <Route path="reports" element={<AdminReports />} />
+          </Route>
 
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route index element={<AdminDashboard />} />
-          <Route path="rooms" element={<AdminStudents />} />
+        <Route element={<LandOwnerRoute />}>
+          <Route path="/auth/landowner" element={<Layout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="properties" element={<PropertiesList />} />
+            <Route path="stats" element={<Stats />} />
+            <Route path="account" element={<Account />} />
+            <Route path="create" element={<CreateProperty />} />
+          </Route>
         </Route>
 
-        <Route path="/landowner" element={<Layout />}>
-          <Route index element={<Dashboard />} />
-          <Route path="properties" element={<PropertiesList />} />
-          <Route path="stats" element={<Stats />} />
-          <Route path="account" element={<Account />} />
-        </Route>
-
-        <Route path="/user" element={<UserLayout />}>
-          <Route index element={<UserDashboard />} />
-          <Route path="account" element={<UserAccount />} />
-          <Route path="bookings" element={<UserBookings />} />
-          <Route path="saved" element={<UserSaved />} />
-          <Route path="support" element={<UserSupport />} />
+        <Route element={<PrivateRoute />}>
+          <Route path="/auth/user" element={<UserLayout />}>
+            <Route index element={<UserDashboard />} />
+            <Route path="account" element={<UserAccount />} />
+            <Route path="bookings" element={<UserBookings />} />
+            <Route path="saved" element={<UserSaved />} />
+            <Route path="support" element={<UserSupport />} />
+            <Route path="payment" element={<PaymentPage />} />
+            <Route path="confirmation" element={<ConfirmationPage />} />
+            <Route path="notifications" element={<NotificationPage />} />
+          </Route>
         </Route>
 
       </Routes>

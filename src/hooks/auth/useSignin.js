@@ -5,7 +5,7 @@ import { useAuth } from "../../context/AuthContext";
 
 export const useSignin = () => {
   const navigate = useNavigate();
-  const { login } = useAuth(); // 🔥 IMPORTANT
+  const { login } = useAuth(); 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -32,22 +32,22 @@ export const useSignin = () => {
       login(res.data);
 
       // ✅ ROLE-BASED NAVIGATION
-     if (res.data.role === "STUDENT") {
-  console.log("User : Student");
-  navigate("/user");
+      if (res.data.role === "STUDENT") {
+        console.log("User : Student");
+        navigate("/user");
 
-} else if (res.data.role === "LAND_OWNER") {
-  console.log("User : Landowner");
-  navigate("/landowner");
+      } else if (res.data.role === "LAND_OWNER") {
+        console.log("User : Landowner");
+        navigate("/landowner");
 
-} else if (res.data.role === "ADMIN") {
-  console.log("User : Admin");
-  navigate("/admin");
+      } else if (res.data.role === "ADMIN") {
+        console.log("User : Admin");
+        navigate("/admin");
 
-} else {
-  console.log("User : Viewer");
-  navigate("/");
-}
+      } else {
+        console.log("User : Viewer");
+        navigate("/");
+      }
 
 
     } catch (err) {
