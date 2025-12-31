@@ -4,7 +4,7 @@ import { commonAPI } from "./commonAPI";
 
 // 2. Login
 export const signinAPI = async (data) => {
-  return await commonAPI("post", "/api/v1/token/", data);
+  return await commonAPI("post", "/api/v1/login/", data);
 };
 
 // 3. Get all properties

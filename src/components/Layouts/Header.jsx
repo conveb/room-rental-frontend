@@ -8,19 +8,19 @@ export default function Header() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
-  const { user, loading } = useAuth();
+  const { user, role, loading } = useAuth();
 
   const getAccountRoute = (role) => {
     switch (role) {
       case "STUDENT":
         console.log('its student');
-        return "/user";
+        return "/auth/user";
       case "LANDOWNER":
          console.log('its landowner');
         return "/landowner";
       case "ADMIN":
          console.log('its admin');
-        return "/admin";
+        return "/auth/admin";
       default:
          console.log('its user');
         return "/signin";
@@ -82,7 +82,7 @@ export default function Header() {
             !loading && (
               user ? (
                 <li className="bg-black text-white px-3 py-3 border border-white border-2 rounded-full border border-stone-700">
-                  <Link to={getAccountRoute(user.role)}>
+                  <Link to={getAccountRoute(role)}>
                    <FaRegUser/>
                   </Link>
                 </li>
@@ -145,7 +145,7 @@ export default function Header() {
             !loading && (
               user ? (
                 <li className="bg-black text-white px-3 py-3 border border-white border-2 rounded-full border border-stone-700">
-                  <Link to={getAccountRoute(user.role)}>
+                  <Link to={getAccountRoute(role)}>
                    <FaRegUser/>
                   </Link>
                 </li>

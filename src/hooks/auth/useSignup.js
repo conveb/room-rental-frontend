@@ -44,19 +44,16 @@ export const useSignup = () => {
 
   // STEP 3 — REGISTER USER
   const register = async (payload) => {
-    setError("");
     try {
       setLoading(true);
-      const res = await signupAPI(payload);
-      console.log(res.data);
-      return res;
+      setError("");
+      return await signupAPI(payload);
     } catch (err) {
-      const data = err?.response?.data;
-      let message = "Registration failed";
-      if (Array.isArray(data?.email)) message = data.email[0];
-      else if (data?.detail) message = data.detail;
-
-      setError(message);
+      setError(
+        err?.response?.data?.email ||
+        err?.response?.data?.detail ||
+        "Registration failed"
+      );
       throw err;
     } finally {
       setLoading(false);

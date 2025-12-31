@@ -31,21 +31,16 @@ export const useSignin = () => {
       // ✅ UPDATE GLOBAL AUTH STATE
       login(res.data);
 
-      // ✅ ROLE-BASED NAVIGATION
       if (res.data.role === "STUDENT") {
-        console.log("User : Student");
         navigate("/user");
 
       } else if (res.data.role === "LAND_OWNER") {
-        console.log("User : Landowner");
         navigate("/landowner");
 
       } else if (res.data.role === "ADMIN") {
-        console.log("User : Admin");
         navigate("/admin");
 
       } else {
-        console.log("User : Viewer");
         navigate("/");
       }
 
@@ -62,6 +57,10 @@ export const useSignin = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const forgotPassword = () => {
+
   };
 
   return { signin, loading, error };

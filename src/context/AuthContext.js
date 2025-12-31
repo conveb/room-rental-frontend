@@ -1,6 +1,11 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+} from "react";
 import { AuthAPI, LogoutAPI } from "../services/allAPI";
-import { commonAPI } from "../services/commonAPI";
 
 const AuthContext = createContext(null);
 
@@ -8,36 +13,49 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-
-  const fetchCurrentUser = async () => {
+  /**
+   * Fetch logged-in user from server (cookie/session based)
+   */
+  const fetchCurrentUser = useCallback(async () => {
     try {
       const res = await AuthAPI();
-      setUser(res.data);
-    } catch (err) {
+
+      // 🔒 Normalize user object here (important)
+      setUser(res?.data?.user ?? null);
+    } catch {
       setUser(null);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchCurrentUser();
-  }, []);
+  }, [fetchCurrentUser]);
 
-  const login = (userData) => {
-    setUser(userData); 
+  const login = (response) => {
+    setUser(response?.user ?? null);
   };
+
 
   const logout = async () => {
     try {
       await LogoutAPI();
-    } catch {}
-    setUser(null);
+    } finally {
+      setUser(null);
+    }
   };
 
   return (
     <AuthContext.Provider
-      value={{ user, login, logout, loading }}
+      value={{
+        user,
+        loading,
+        login,
+        logout,
+        isAuthenticated: Boolean(user),
+        role: user?.role ?? null,
+      }}
     >
       {children}
     </AuthContext.Provider>
