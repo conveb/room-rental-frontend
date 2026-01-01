@@ -3,6 +3,7 @@ import BacktoHome from "../../../components/btns/BacktoHome";
 import { FcGoogle } from "react-icons/fc";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { useSignin } from "../../../hooks/auth/useSignin";
+import { Link } from "react-router-dom";
 
 const SignIn = () => {
   const { signin, loading, error } = useSignin();
@@ -123,6 +124,8 @@ const SignIn = () => {
                 />
                 Agree to privacy policy
               </label>
+              
+              <Link to='/forgot-password'>Forgot Password?</Link>
 
               {error && (
                 <p className="text-red-600 text-sm">{error}</p>

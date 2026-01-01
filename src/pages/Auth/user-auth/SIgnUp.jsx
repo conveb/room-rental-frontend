@@ -1,12 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Stepper } from "primereact/stepper";
 import { StepperPanel } from "primereact/stepperpanel";
-import { Button } from "primereact/button";
-import { FcGoogle } from "react-icons/fc";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
-import BacktoHome from "../../../components/btns/BacktoHome";
 import { useSignup } from "../../../hooks/auth/useSignup";
+import { useEmailVerification } from "../../../hooks/auth/useEmailVerification";
+import BacktoHome from "../../../components/btns/BacktoHome";
 
 const OTP_LENGTH = 6;
 
@@ -15,8 +14,14 @@ const SignUp = () => {
   const inputsRef = useRef([]);
   const navigate = useNavigate();
 
-  const { sendOtp, verifyOtp, register, resendOtp, loading, error } =
-    useSignup();
+  const { sendOtp, verifyOtp, resendOtp, loading, error } =
+    useEmailVerification();
+
+  const {
+    register,
+    loading: registerLoading,
+    error: registerError,
+  } = useSignup();
 
   const [otp, setOtp] = useState(Array(OTP_LENGTH).fill(""));
   const [counter, setCounter] = useState(60);
@@ -44,7 +49,6 @@ const SignUp = () => {
   /* ---------------- SEND OTP ---------------- */
   const handleCreateAccount = async (e) => {
     e.preventDefault();
-
     try {
       await sendOtp({
         email: form.email,
@@ -102,17 +106,14 @@ const SignUp = () => {
         role: form.account_type,
       };
 
-      console.log("REGISTER PAYLOAD", payload);
-
       await register(payload);
-
       navigate("/signin");
     } catch (err) {
       console.error(err?.message);
     }
   };
 
-  /* ---------------- RESEND OTP ---------------- */
+  /* ---------------- RESEND OTP TIMER ---------------- */
   useEffect(() => {
     if (counter === 0) {
       setDisableResend(false);
@@ -129,22 +130,36 @@ const SignUp = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white">
-      <BacktoHome />
+    <div className="min-h-screen bg-white flex flex-col items-center px-4 sm:px-6 py-10">
+       <div className="absolute top-4 right-5">
+              <BacktoHome />
+            </div>
+      {/* Header */}
+      <div className="w-full max-w-md text-center mb-8">
+        <h1 className="text-2xl font-semibold text-gray-800">
+          Create Account
+        </h1>
+        <p className="text-sm text-gray-600 mt-1">
+          Use your information to get started
+        </p>
+      </div>
 
-      <div className="w-full max-w-4xl p-6">
+      {/* Card */}
+      <div className="w-full max-w-md p-2 sm:p-8">
         <Stepper ref={stepperRef}>
           {/* STEP 1 */}
-          <StepperPanel header="Create Account">
-            <div className="space-y-3">
-              <div className="flex gap-2">
+          <StepperPanel header="Details">
+            <div className="space-y-4 mt-4">
+              {/* Account Type */}
+              <div className="flex border-b border-gray-200">
                 {["STUDENT", "LANDOWNER"].map((type) => (
                   <button
                     key={type}
-                    className={`w-full py-2 rounded-xl ${
+                    type="button"
+                    className={`flex-1 py-2 text-sm font-medium border-b-2 ${
                       form.account_type === type
-                        ? "bg-black text-white"
-                        : "border"
+                        ? "border-blue-600 text-blue-600"
+                        : "border-transparent text-gray-500"
                     }`}
                     onClick={() =>
                       setForm({ ...form, account_type: type })
@@ -155,9 +170,31 @@ const SignUp = () => {
                 ))}
               </div>
 
-              <input name="full_name" placeholder="Full Name" value={form.full_name} onChange={handleFormChange} className="input" />
-              <input name="email" placeholder="Email" value={form.email} onChange={handleFormChange} className="input" />
-              <input name="phone" placeholder="Phone" value={form.phone} onChange={handleFormChange} className="input" />
+              <input
+                name="full_name"
+                placeholder="Full name"
+                value={form.full_name}
+                onChange={handleFormChange}
+                className="input"
+              />
+
+              <input
+                name="email"
+                type="email"
+                placeholder="Email address"
+                value={form.email}
+                onChange={handleFormChange}
+                className="input"
+              />
+
+              <input
+                name="phone"
+                type="tel"
+                placeholder="Phone number"
+                value={form.phone}
+                onChange={handleFormChange}
+                className="input"
+              />
 
               <div className="relative">
                 <input
@@ -166,9 +203,12 @@ const SignUp = () => {
                   placeholder="Password"
                   value={form.password}
                   onChange={handleFormChange}
-                  className="input"
+                  className="input pr-10"
                 />
-                <span onClick={() => setShowPassword(!showPassword)} className="eye">
+                <span
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500"
+                >
                   {showPassword ? <FiEye /> : <FiEyeOff />}
                 </span>
               </div>
@@ -177,55 +217,89 @@ const SignUp = () => {
                 <input
                   type={showConfirmPassword ? "text" : "password"}
                   name="confirm_password"
-                  placeholder="Confirm Password"
+                  placeholder="Confirm password"
                   value={form.confirm_password}
                   onChange={handleFormChange}
-                  className="input"
+                  className="input pr-10"
                 />
-                <span onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="eye">
+                <span
+                  onClick={() =>
+                    setShowConfirmPassword(!showConfirmPassword)
+                  }
+                  className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500"
+                >
                   {showConfirmPassword ? <FiEye /> : <FiEyeOff />}
                 </span>
               </div>
 
-              <label className="flex gap-2 text-sm">
-                <input type="checkbox" name="privacy_policy" checked={form.privacy_policy} onChange={handleFormChange} />
-                Accept Privacy Policy
+              <label className="flex items-start gap-2 text-xs text-gray-600">
+                <input
+                  type="checkbox"
+                  name="privacy_policy"
+                  checked={form.privacy_policy}
+                  onChange={handleFormChange}
+                  className="mt-1"
+                />
+                <span>
+                  I agree to the Terms of Service and Privacy Policy
+                </span>
               </label>
 
-              {error && <p className="text-red-500 text-sm">{error}</p>}
+              {(error || registerError) && (
+                <p className="text-xs text-red-600">
+                  {error || registerError}
+                </p>
+              )}
 
-              <button onClick={handleCreateAccount} disabled={loading} className="btn">
-                {loading ? "Sending OTP..." : "Continue"}
+              <button
+                onClick={handleCreateAccount}
+                disabled={loading}
+                className="w-full bg-blue-600 text-white py-2.5 rounded-lg text-sm font-medium disabled:bg-gray-300"
+              >
+                {loading ? "Sending OTP..." : "Next"}
               </button>
             </div>
           </StepperPanel>
 
           {/* STEP 2 */}
-          <StepperPanel header="Verify OTP">
-            <div className="flex gap-2 justify-center mt-4">
-              {otp.map((v, i) => (
-                <input
-                  key={i}
-                  ref={(el) => (inputsRef.current[i] = el)}
-                  value={v}
-                  maxLength={1}
-                  onChange={(e) => handleOtpChange(e, i)}
-                  onKeyDown={(e) => handleOtpKeyDown(e, i)}
-                  className="w-12 h-12 border text-center"
-                />
-              ))}
+          <StepperPanel header="Verify">
+            <div className="mt-6">
+              <p className="text-sm text-gray-700 mb-6">
+                Enter the 6-digit code sent to your email
+              </p>
+
+              <div className="flex justify-between gap-2 mb-8">
+                {otp.map((v, i) => (
+                  <input
+                    key={i}
+                    ref={(el) => (inputsRef.current[i] = el)}
+                    value={v}
+                    maxLength={1}
+                    onChange={(e) => handleOtpChange(e, i)}
+                    onKeyDown={(e) => handleOtpKeyDown(e, i)}
+                    className="w-12 h-12 text-center border rounded-md text-lg focus:ring-1 focus:ring-blue-600"
+                  />
+                ))}
+              </div>
+
+              <div className="flex justify-between items-center">
+                <button
+                  disabled={disableResend}
+                  onClick={handleResend}
+                  className="text-sm text-blue-600 disabled:text-gray-400"
+                >
+                  Resend {disableResend && `(${counter}s)`}
+                </button>
+
+                <button
+                  onClick={handleVerifyOtp}
+                  disabled={otp.join("").length !== 6 || registerLoading}
+                  className="bg-blue-600 text-white px-6 py-2 rounded-lg text-sm disabled:bg-gray-300"
+                >
+                  Verify
+                </button>
+              </div>
             </div>
-
-            <Button
-              label="Verify & Register"
-              className="mt-4 w-full"
-              disabled={otp.join("").length !== OTP_LENGTH}
-              onClick={handleVerifyOtp}
-            />
-
-            <button disabled={disableResend} onClick={handleResend} className="text-sm mt-2">
-              Resend OTP {disableResend && `(${counter}s)`}
-            </button>
           </StepperPanel>
         </Stepper>
       </div>

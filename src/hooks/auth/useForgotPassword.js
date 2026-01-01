@@ -1,35 +1,33 @@
 import { useState } from "react";
 import {
-  signupAPI,
+    forgotPasswordApi,
 } from "../../services/allAPI";
 
-export const useSignup = () => {
+export const useForgotPassword = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  
 
-  const register = async (payload) => {
-    try {
-      setLoading(true);
-      setError("");
-      return await signupAPI(payload);
-    } catch (err) {
-      setError(
+  const forgotPassword = async(payload)=>{
+    try{
+        setLoading(true);
+        setError("");
+        return await forgotPasswordApi(payload);
+    }catch(err){
+        setError(
         err?.response?.data?.email ||
         err?.response?.data?.detail ||
-        "Registration failed"
+        "Password Updating Failed"
       );
       throw err;
-    } finally {
+    }finally {
       setLoading(false);
     }
   };
-
   
 
   return {
-    register,
+    forgotPassword,
     loading,
     error,
   };

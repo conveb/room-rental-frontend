@@ -16,6 +16,8 @@ export const getPropertyByIdAPI = (propertyId) => {
   return commonAPI("get",`/api/v1/properties/${propertyId}/`);
 };
 
+export const forgotPasswordApi = (payload) =>
+  commonAPI("post", "/api/v1/auth/forgot-password/", payload);
 
 // SEND OTP
 export const sendOtpAPI = (payload) =>
