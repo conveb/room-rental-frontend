@@ -6,6 +6,7 @@ import React, {
   useCallback,
 } from "react";
 import { AuthAPI, LogoutAPI } from "../services/allAPI";
+import { Navigate } from "react-router-dom";
 
 const AuthContext = createContext(null);
 
@@ -41,6 +42,7 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       await LogoutAPI();
+      Navigate('/')
     } finally {
       setUser(null);
     }

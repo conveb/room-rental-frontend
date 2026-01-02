@@ -5,6 +5,7 @@ import defaultAvatar from "../../../Assets/characters/default.jpg";
 import { CiEdit } from "react-icons/ci";
 import { FaCheck } from "react-icons/fa6";
 import UserFeedback from "./UserFeedback";
+import { useAuth } from "../../../context/AuthContext";
 
 
 // Main UserAccount component
@@ -24,7 +25,8 @@ export default function UserAccount() {
   const [selectedAvatar, setSelectedAvatar] = useState(user.avatarUrl);
   const [isEditing, setIsEditing] = useState(false);
   const [editValues, setEditValues] = useState(user);
-
+  const [showModal, setShowModal] = useState(false);
+  const {logout} = useAuth();
   useEffect(() => setSelectedAvatar(user.avatarUrl), [user.avatarUrl]);
   useEffect(() => setEditValues(user), [user]);
 
@@ -33,7 +35,10 @@ export default function UserAccount() {
     setIsEditing(false);
   };
 
-  const handleLogoutAll = () => alert("Logged out from all devices");
+  const handleConfirmLogout = async () => {
+    await logout();
+    setShowModal(false);
+  };
 
   const handleDeleteAccount = () => {
     if (window.confirm("Delete account permanently?")) navigate("/");
@@ -45,8 +50,8 @@ export default function UserAccount() {
       <div className="flex bg-white rounded-3xl overflow-hidden w-full p-2 gap-2">
         <button
           className={`flex-1 py-3 md:py-4 text-sm font-medium transition rounded-2xl shadow ${activeTab === "profile"
-              ? "bg-black font-medium text-white"
-              : "bg-white text-gray-500 hover:bg-gray-200"
+            ? "bg-black font-medium text-white"
+            : "bg-white text-gray-500 hover:bg-gray-200"
             }`}
           onClick={() => setActiveTab("profile")}
         >
@@ -54,8 +59,8 @@ export default function UserAccount() {
         </button>
         <button
           className={`flex-1 py-3 md:py-4 text-sm font-medium transition rounded-2xl shadow ${activeTab === "feedback"
-              ? "bg-black font-medium text-white"
-              : "bg-white text-gray-500 hover:bg-gray-200"
+            ? "bg-black font-medium text-white"
+            : "bg-white text-gray-500 hover:bg-gray-200"
             }`}
           onClick={() => setActiveTab("feedback")}
         >
@@ -194,12 +199,43 @@ export default function UserAccount() {
               <button className="w-full text-left p-4 rounded-xl border hover:bg-neutral-50">
                 🔐 Reset password
               </button>
+
               <button
-                onClick={handleLogoutAll}
+                onClick={() => setShowModal(true)}
                 className="w-full text-left p-4 rounded-xl border hover:bg-neutral-50"
               >
                 🚪 Logout from all devices
               </button>
+              {showModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+                  <div className="bg-white rounded-2xl w-full max-w-md p-6 space-y-4">
+                    <h2 className="text-lg font-semibold text-gray-900">
+                      Confirm Logout
+                    </h2>
+
+                    <p className="text-sm text-gray-600">
+                      Are you sure you want to logout from all devices?
+                      This will end all active sessions.
+                    </p>
+
+                    <div className="flex justify-end gap-3 pt-3">
+                      <button
+                        onClick={() => setShowModal(false)}
+                        className="px-4 py-2 rounded-xl border text-sm hover:bg-gray-100 transition"
+                      >
+                        Cancel
+                      </button>
+
+                      <button
+                        onClick={handleConfirmLogout}
+                        className="px-4 py-2 rounded-xl bg-red-600 text-white text-sm hover:bg-red-700 transition"
+                      >
+                        Logout
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
               <button
                 onClick={handleDeleteAccount}
                 className="w-full text-left p-4 rounded-xl border hover:bg-red-50 text-red-600"
