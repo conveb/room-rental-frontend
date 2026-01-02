@@ -35,7 +35,7 @@ export const signupAPI = (payload) =>
 export const resendOtpAPI = (payload) => commonAPI("post", "/api/v1/auth/resend-otp/", payload);
 
 // current user
-export const AuthAPI = () => commonAPI("get", "/api/v1/me/profile");
+export const AuthAPI = () => commonAPI("get", "/api/v1/auth/me");
 
 export const LogoutAPI = () => commonAPI("post", "/api/v1/logout/");
 

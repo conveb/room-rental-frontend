@@ -25,7 +25,6 @@ import Account from "./pages/landlord/account/Account";
 
 import UserAccount from "./pages/users/account/UserAccount";
 import UserLayout from "./pages/users/account/UserLayout";
-import UserDashboard from "./pages/users/account/UserDashboard";
 import UserBookings from "./pages/users/account/UserBookings";
 import UserSupport from "./pages/users/account/UserSupport";
 import UserSaved from "./pages/users/account/UserSaved";
@@ -39,6 +38,11 @@ import PrivateRoute from "./components/routes/PrivateRoute";
 import AdminAddProperty from "./pages/admin/AdminAddProperty";
 import AdminReports from "./pages/admin/AdminReports";
 import AdminRequests from "./pages/admin/requests/AdminRequests";
+import UserPayments from "./pages/users/account/UserPayments";
+import UserFeedback from "./pages/users/account/UserFeedback";
+import UserComplaints from "./pages/users/account/UserComplaints";
+import UserReportLandowner from "./pages/users/account/UserReportLandowner";
+import UserReportProperty from "./pages/users/account/UserReportProperty";
 
 function App() {
   const showSplash = useSplash(1800);
@@ -64,13 +68,13 @@ function App() {
 
         {/* <Route element={<AdminRoute />}> */}
         {/* </Route> */}
-          <Route path="/auth/admin" element={<AdminLayout />}>
-            <Route index element={<AdminDashboard />} />
-            <Route path="rooms" element={<AdminStudents />} />
-            <Route path="requests" element={<AdminRequests />} />
-            <Route path="add-property" element={<AdminAddProperty />} />
-            <Route path="reports" element={<AdminReports />} />
-          </Route>
+        <Route path="/auth/admin" element={<AdminLayout />}>
+          <Route index element={<AdminDashboard />} />
+          <Route path="rooms" element={<AdminStudents />} />
+          <Route path="requests" element={<AdminRequests />} />
+          <Route path="add-property" element={<AdminAddProperty />} />
+          <Route path="reports" element={<AdminReports />} />
+        </Route>
 
         <Route element={<LandOwnerRoute />}>
           <Route path="/auth/landowner" element={<Layout />}>
@@ -82,18 +86,23 @@ function App() {
           </Route>
         </Route>
 
-        <Route element={<PrivateRoute />}>
-          <Route path="/auth/user" element={<UserLayout />}>
-            <Route index element={<UserDashboard />} />
-            <Route path="account" element={<UserAccount />} />
-            <Route path="bookings" element={<UserBookings />} />
-            <Route path="saved" element={<UserSaved />} />
-            <Route path="support" element={<UserSupport />} />
-            <Route path="payment" element={<PaymentPage />} />
-            <Route path="confirmation" element={<ConfirmationPage />} />
-            <Route path="notifications" element={<NotificationPage />} />
-          </Route>
+        {/* <Route element={<PrivateRoute />}> */}
+        <Route path="/auth/user" element={<UserLayout />}>
+          <Route index path="accommodation" element={<Accommodation />} />
+          <Route path="account" element={<UserAccount />} />
+          <Route path="feedbacks" element={<UserFeedback />} />
+          <Route path="bookings" element={<UserBookings />} />
+          <Route path="payments" element={<UserPayments />} />
+          <Route path="saved" element={<UserSaved />} />
+          <Route path="support" element={<UserSupport />} />
+          <Route path="payment" element={<PaymentPage />} />
+          <Route path="complaints" element={<UserComplaints />} />
+          <Route path="report_landowner" element={<UserReportLandowner />} />
+          <Route path="report_property" element={<UserReportProperty />} />
+          <Route path="confirmation" element={<ConfirmationPage />} />
+          <Route path="notifications" element={<NotificationPage />} />
         </Route>
+        {/* </Route> */}
 
       </Routes>
     </BrowserRouter>

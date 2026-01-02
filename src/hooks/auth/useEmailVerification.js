@@ -31,7 +31,6 @@ export const useEmailVerification = () => {
     try {
       setLoading(true);
       const res = await verifyOtpAPI(payload);
-      console.log("OTP VERIFIED:", res.data);
       return res;
     } catch (err) {
       setError("Invalid OTP");

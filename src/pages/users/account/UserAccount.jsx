@@ -4,7 +4,10 @@ import { Characters } from "./characterCollection";
 import defaultAvatar from "../../../Assets/characters/default.jpg";
 import { CiEdit } from "react-icons/ci";
 import { FaCheck } from "react-icons/fa6";
+import UserFeedback from "./UserFeedback";
 
+
+// Main UserAccount component
 const mockUser = {
   id: "u_123",
   name: "Alex Carter",
@@ -15,15 +18,12 @@ const mockUser = {
 
 export default function UserAccount() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("dashboard"); // profile or dashboard
-
+  const [activeTab, setActiveTab] = useState("profile");
   const [user, setUser] = useState(mockUser);
   const [avatarEditMode, setAvatarEditMode] = useState(false);
   const [selectedAvatar, setSelectedAvatar] = useState(user.avatarUrl);
-
   const [isEditing, setIsEditing] = useState(false);
   const [editValues, setEditValues] = useState(user);
-  const [showPasswordModal, setShowPasswordModal] = useState(false);
 
   useEffect(() => setSelectedAvatar(user.avatarUrl), [user.avatarUrl]);
   useEffect(() => setEditValues(user), [user]);
@@ -40,42 +40,42 @@ export default function UserAccount() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-50 px-2 md:p-6 py-5">
+    <div className="min-h-screen bg-neutral-50 px-5 md:p-6  mt-20 ">
       {/* ====== TABS ====== */}
-      <div className="flex gap-4 mb-6">
+      <div className="flex bg-white rounded-3xl overflow-hidden w-full p-2 gap-2">
         <button
-          className={`flex-1 py-2 rounded-xl font-semibold transition ${
-            activeTab === "dashboard"
-              ? "bg-black text-white shadow"
-              : "bg-white text-gray-700 hover:bg-gray-100"
-          }`}
-          onClick={() => setActiveTab("dashboard")}
-        >
-          Dashboard
-        </button>
-        <button
-          className={`flex-1 py-2 rounded-xl font-semibold transition ${
-            activeTab === "profile"
-              ? "bg-black text-white shadow"
-              : "bg-white text-gray-700 hover:bg-gray-100"
-          }`}
+          className={`flex-1 py-3 md:py-4 text-sm font-medium transition rounded-2xl shadow ${activeTab === "profile"
+              ? "bg-black font-medium text-white"
+              : "bg-white text-gray-500 hover:bg-gray-200"
+            }`}
           onClick={() => setActiveTab("profile")}
         >
           Profile
         </button>
+        <button
+          className={`flex-1 py-3 md:py-4 text-sm font-medium transition rounded-2xl shadow ${activeTab === "feedback"
+              ? "bg-black font-medium text-white"
+              : "bg-white text-gray-500 hover:bg-gray-200"
+            }`}
+          onClick={() => setActiveTab("feedback")}
+        >
+          Feedbacks
+        </button>
       </div>
+
+      {/* ====== FEEDBACK TAB ====== */}
+      {activeTab === "feedback" && <UserFeedback />}
 
       {/* ====== PROFILE TAB ====== */}
       {activeTab === "profile" && (
-        <div className="space-y-5">
+        <div className="space-y-5 mt-3">
           <div className="bg-white rounded-3xl p-6 shadow text-center">
             <div className="flex flex-col justify-center items-center gap-4">
               {/* Avatar Section */}
               <div className="relative flex flex-col items-center gap-4">
                 <div
-                  className={`relative transition-transform duration-300 ${
-                    avatarEditMode ? "scale-110" : "scale-100"
-                  }`}
+                  className={`relative transition-transform duration-300 ${avatarEditMode ? "scale-110" : "scale-100"
+                    }`}
                 >
                   <img
                     src={selectedAvatar}
@@ -89,7 +89,7 @@ export default function UserAccount() {
                   </button>
                 </div>
 
-                {/* Horizontal Avatar Scroller */}
+                {/* Avatar Selection */}
                 {avatarEditMode && (
                   <div className="w-full h-28 overflow-x-auto pt-4 avatar-scroll">
                     <div className="flex gap-4 px-1 md:px-6 snap-x snap-mandatory">
@@ -99,15 +99,13 @@ export default function UserAccount() {
                           <button
                             key={char.id}
                             onClick={() => setSelectedAvatar(char.img)}
-                            className={`snap-center flex-shrink-0 transition-all duration-300 ${
-                              isActive ? "scale-105" : "scale-95 opacity-70"
-                            }`}
+                            className={`snap-center flex-shrink-0 transition-all duration-300 ${isActive ? "scale-105" : "scale-95 opacity-70"
+                              }`}
                           >
                             <img
                               src={char.img}
-                              className={`h-20 w-20 rounded-full object-cover border-2 ${
-                                isActive ? "border-black" : "border-transparent"
-                              }`}
+                              className={`h-20 w-20 rounded-full object-cover border-2 ${isActive ? "border-black" : "border-transparent"
+                                }`}
                             />
                           </button>
                         );
@@ -208,83 +206,6 @@ export default function UserAccount() {
               >
                 🗑 Delete account
               </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ====== DASHBOARD TAB ====== */}
-      {activeTab === "dashboard" && (
-        <div className="space-y-6 px-2 md:px-0">
-          {/* Summary Cards */}
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-white rounded-2xl shadow-sm p-5">
-              <p className="text-xs text-gray-500">Upcoming Bookings</p>
-              <p className="mt-2 text-2xl font-semibold text-gray-900">1</p>
-            </div>
-            <div className="bg-white rounded-2xl shadow-sm p-5">
-              <p className="text-xs text-gray-500">Total Bookings</p>
-              <p className="mt-2 text-2xl font-semibold text-gray-900">6</p>
-            </div>
-            <div className="bg-white rounded-2xl shadow-sm p-5">
-              <p className="text-xs text-gray-500">Saved Rooms</p>
-              <p className="mt-2 text-2xl font-semibold text-gray-900">3</p>
-            </div>
-            <div className="bg-white rounded-2xl shadow-sm p-5">
-              <p className="text-xs text-gray-500">Pending Refunds</p>
-              <p className="mt-2 text-2xl font-semibold text-gray-900">€120</p>
-            </div>
-          </div>
-
-          {/* Upcoming Stay & Notifications */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm p-6 space-y-4">
-              <h2 className="text-lg font-semibold text-gray-900">
-                Upcoming Stay
-              </h2>
-              <div className="border rounded-xl p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <div>
-                  <p className="font-medium text-gray-900">
-                    Modern Studio Apartment
-                  </p>
-                  <p className="text-sm text-gray-500">Paris · 12 Aug – 18 Aug</p>
-                </div>
-                <Link
-                  to="/bookings"
-                  className="text-sm font-medium text-indigo-600 hover:underline"
-                >
-                  View Booking
-                </Link>
-              </div>
-              <div className="text-sm text-gray-500">
-                Check‑in details will be available 24 hours before arrival.
-              </div>
-            </div>
-
-            <div className="bg-white rounded-2xl shadow-sm p-6 space-y-4">
-              <h2 className="text-lg font-semibold text-gray-900">
-                Notifications
-              </h2>
-              <ul className="space-y-3 text-sm">
-                <li className="flex justify-between items-start">
-                  <span className="text-gray-700">Booking confirmed</span>
-                  <span className="text-xs text-gray-400">2d ago</span>
-                </li>
-                <li className="flex justify-between items-start">
-                  <span className="text-gray-700">Invoice ready to download</span>
-                  <span className="text-xs text-gray-400">4d ago</span>
-                </li>
-                <li className="flex justify-between items-start">
-                  <span className="text-gray-700">Price dropped on saved room</span>
-                  <span className="text-xs text-gray-400">1w ago</span>
-                </li>
-              </ul>
-              <Link
-                to="/profile"
-                className="inline-block text-sm text-indigo-600 hover:underline"
-              >
-                Manage notifications
-              </Link>
             </div>
           </div>
         </div>

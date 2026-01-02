@@ -13,11 +13,11 @@ import { IoBookmark } from "react-icons/io5";
 import { MdOutlineSupportAgent } from "react-icons/md";
 import { IoIosNotifications } from "react-icons/io";
 const navItems = [
-  { to: "/user", label: "Home", icon: <HiMiniHome /> },
-  { to: "/user/bookings", label: "Bookings", icon: <FaDoorOpen /> },
-  { to: "/user/account", label: "Account", icon: <FaUserGear /> },
-  { to: "/user/saved", label: "Saved", icon: <IoBookmark /> },
-  { to: "/user/support", label: "Support", icon: <MdOutlineSupportAgent /> },
+  { to: "/auth/user/accommodation", label: "Home", icon: <HiMiniHome /> },
+  { to: "/auth/user/bookings", label: "Bookings", icon: <FaDoorOpen /> },
+  { to: "/auth/user/account", label: "Profile", icon: <FaUserGear /> },
+  // { to: "/auth/user/saved", label: "Saved", icon: <IoBookmark /> },
+  { to: "/auth/user/support", label: "Support", icon: <MdOutlineSupportAgent /> },
 ];
 
 const UserLayout = () => {
@@ -41,7 +41,7 @@ const UserLayout = () => {
           {navItems.map(item => (
             <NavLink
               key={item.to}
-              end={item.to === "/landowner"}
+              end={item.to === "/auth/user/accommodation"}
               to={item.to}
               className={({ isActive }) =>
                 `flex items-center px-4 py-2.5 rounded-xl transition-all ${isActive
@@ -69,10 +69,10 @@ const UserLayout = () => {
       {/* MAIN CONTENT */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* HEADER */}
-        <header className="py-3 md:py-4 bg-white/70 backdrop-blur-xl border-b border-white/30 flex items-center justify-between px-6 shadow-sm">
+        <header className="fixed top-0 left-0 md:left-64 right-0 py-3 md:py-4 bg-white  border-b border-white/30 flex items-center justify-between px-6 shadow-sm">
           <div>
             <h1 className="text-md md:text-lg font-semibold text-gray-900">
-              Hi, Walkingtoy <span className="text-xs md:text-sm text-white px-2 py-1 rounded-full" style={{ backgroundColor: `${colors.studentColor}` }}>User</span>
+              Hi, User <span className="text-xs md:text-sm text-white px-2 py-1 rounded-full" style={{ backgroundColor: `${colors.studentColor}` }}>User</span>
             </h1>
             <span className="text-xs md:text-sm text-gray-500">admin@campusrooms.com</span>
           </div>
@@ -83,7 +83,12 @@ const UserLayout = () => {
           </p>
           <IoIosNotifications/>
           </a>
-            <button
+          <Link to={"/auth/user/saved"}>
+          <p className="text-xl">
+          <IoBookmark />
+          </p>
+          </Link>
+            {/* <button
               onClick={() => setOpen(!open)}
               className="rounded-full text-3xl text-gray-700 hover:bg-gray-50 transition p-1"
             >
@@ -103,30 +108,29 @@ const UserLayout = () => {
                   className="w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600"
                   onClick={() => {
                     setOpen(false);
-                    // logout logic here
                   }}
                 >
                   Logout
                 </button>
               </div>
-            )}
+            )} */}
           </div>
         </header>
 
         {/* OUTLET */}
-        <main className="flex-1 p-3 md:p-0 pb-20 md:pb-6 overflow-auto min-w-0">
+        <main className="flex-1  md:p-0 pb-20 md:pb-6 overflow-auto min-w-0 bg-white" >
           {/* min-w-0 ensures flex child can shrink */}
           <Outlet />
         </main>
       </div>
 
       {/* BOTTOM NAV (MOBILE ONLY) */}
-      <nav className="md:hidden fixed bottom-0 inset-x-0 m-3 rounded-[1.4rem] bg-white/90 backdrop-blur-xl border border-gray-200 shadow-2xl z-50">
+      <nav className="md:hidden fixed bottom-0 inset-x-0 m-3 rounded-[1.4rem] bg-white/90 backdrop-blur-xl border border-gray-200 shadow-2xl z-30">
         <div className="flex justify-around items-center gap-1 h-16 px-1">
           {navItems.map(item => {
             const isActive =
               location.pathname === item.to ||
-              (item.to === "/landowner" && location.pathname === "/landowner");
+              (item.to === "/auth/user" && location.pathname === "/auth/user");
 
             return (
               <NavLink

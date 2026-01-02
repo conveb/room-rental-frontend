@@ -135,7 +135,7 @@ const SignUp = () => {
               <BacktoHome />
             </div>
       {/* Header */}
-      <div className="w-full max-w-md text-center mb-8">
+      <div className="w-full max-w-md text-center ">
         <h1 className="text-2xl font-semibold text-gray-800">
           Create Account
         </h1>
@@ -175,7 +175,7 @@ const SignUp = () => {
                 placeholder="Full name"
                 value={form.full_name}
                 onChange={handleFormChange}
-                className="input"
+                className="w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
               />
 
               <input
@@ -184,7 +184,7 @@ const SignUp = () => {
                 placeholder="Email address"
                 value={form.email}
                 onChange={handleFormChange}
-                className="input"
+                className="w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
               />
 
               <input
@@ -193,7 +193,7 @@ const SignUp = () => {
                 placeholder="Phone number"
                 value={form.phone}
                 onChange={handleFormChange}
-                className="input"
+                className="w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
               />
 
               <div className="relative">
@@ -203,7 +203,7 @@ const SignUp = () => {
                   placeholder="Password"
                   value={form.password}
                   onChange={handleFormChange}
-                  className="input pr-10"
+                  className="w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 pr-10"
                 />
                 <span
                   onClick={() => setShowPassword(!showPassword)}
@@ -220,7 +220,7 @@ const SignUp = () => {
                   placeholder="Confirm password"
                   value={form.confirm_password}
                   onChange={handleFormChange}
-                  className="input pr-10"
+                  className="w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 pr-10"
                 />
                 <span
                   onClick={() =>
@@ -254,7 +254,7 @@ const SignUp = () => {
               <button
                 onClick={handleCreateAccount}
                 disabled={loading}
-                className="w-full bg-blue-600 text-white py-2.5 rounded-lg text-sm font-medium disabled:bg-gray-300"
+                className="w-full bg-black text-white py-2.5 rounded-lg text-sm font-medium disabled:bg-gray-300"
               >
                 {loading ? "Sending OTP..." : "Next"}
               </button>
