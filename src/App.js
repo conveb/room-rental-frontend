@@ -88,7 +88,7 @@ function App() {
 
         {/* <Route element={<PrivateRoute />}> */}
         <Route path="/auth/user" element={<UserLayout />}>
-          <Route index path="accommodation" element={<Accommodation />} />
+          <Route index path="home" element={<Accommodation />} />
           <Route path="account" element={<UserAccount />} />
           <Route path="feedbacks" element={<UserFeedback />} />
           <Route path="bookings" element={<UserBookings />} />
