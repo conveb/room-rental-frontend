@@ -2,7 +2,7 @@ import axios from "axios";
 
 const api = axios.create({
   baseURL: "https://rental-homes-france.onrender.com",
-  withCredentials: true, 
+  withCredentials: true,
 });
 
 /* AUTO REFRESH LOGIC */
@@ -12,7 +12,7 @@ api.interceptors.response.use(
     const originalRequest = error.config;
 
     // ⛔ Don't retry refresh endpoint itself
-    if (originalRequest.url.includes("/api/v1/token/refresh")) {
+    if (originalRequest.url.includes("/api/v1/login/refresh")) {
       return Promise.reject(error);
     }
 
@@ -23,7 +23,7 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        await api.post("/api/v1/token/refresh/");
+        await api.post("/api/v1/login/refresh/");
         return api(originalRequest);
       } catch (refreshError) {
         return Promise.reject(refreshError);

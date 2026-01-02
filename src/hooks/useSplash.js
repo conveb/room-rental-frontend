@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 const SPLASH_KEY = "splashShown";
 
 export const useSplash = (duration = 1800) => {
-  const [showSplash, setShowSplash] = useState(true); // start true
+  const [showSplash, setShowSplash] = useState(true); 
 
   useEffect(() => {
     const hasShown = sessionStorage.getItem(SPLASH_KEY);
@@ -16,7 +16,6 @@ export const useSplash = (duration = 1800) => {
 
       return () => clearTimeout(timer);
     } else {
-      // Splash already shown this session → hide immediately
       setShowSplash(false);
     }
   }, [duration]);

@@ -48,7 +48,7 @@ function App() {
   const showSplash = useSplash(1800);
 
   return (
-    <BrowserRouter>
+    <>
       {showSplash && <SplashScreen />}
 
       <Routes>
@@ -105,7 +105,7 @@ function App() {
         {/* </Route> */}
 
       </Routes>
-    </BrowserRouter>
+    </>
   );
 }
 

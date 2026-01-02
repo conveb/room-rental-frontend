@@ -26,7 +26,6 @@ export const useSignin = () => {
         throw new Error("Login failed");
       }
 
-      console.log("LOGIN SUCCESS:", res.data);
 
       // ✅ UPDATE GLOBAL AUTH STATE
       login(res.data);

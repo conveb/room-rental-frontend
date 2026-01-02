@@ -6,23 +6,20 @@ import React, {
   useCallback,
 } from "react";
 import { AuthAPI, LogoutAPI } from "../services/allAPI";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
-  /**
-   * Fetch logged-in user from server (cookie/session based)
-   */
   const fetchCurrentUser = useCallback(async () => {
     try {
       const res = await AuthAPI();
-
-      // 🔒 Normalize user object here (important)
-      setUser(res?.data?.user ?? null);
+      setUser(res?.data ?? null);
+      console.log("user:", res.data);
     } catch {
       setUser(null);
     } finally {
@@ -38,13 +35,12 @@ export const AuthProvider = ({ children }) => {
     setUser(response?.user ?? null);
   };
 
-
   const logout = async () => {
     try {
       await LogoutAPI();
-      Navigate('/')
     } finally {
       setUser(null);
+      navigate("/");
     }
   };
 
@@ -56,7 +52,7 @@ export const AuthProvider = ({ children }) => {
         login,
         logout,
         isAuthenticated: Boolean(user),
-        role: user?.role ?? null,
+        role: user?.role_name ?? null,
       }}
     >
       {children}

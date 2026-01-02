@@ -5,7 +5,7 @@ const SplashScreen = () => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black">
       <div className="text-center flex flex-col items-center justify-center space-y-3">
-        <img src={Logo} alt="logo" className="w-26 "/>
+        <img src={Logo} alt="logo" className="w-24  "/>
        <h1 className="text-3xl font-semibold text-white">Alive Paris</h1>
     <p className="mt-2 text-gray-300">Student rooms across France</p>
 
