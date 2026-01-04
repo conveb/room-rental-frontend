@@ -13,11 +13,13 @@ import { LuHousePlus } from "react-icons/lu";
 import { TbReport } from "react-icons/tb";
 import { FaRegCommentDots } from "react-icons/fa";
 import { useAuth } from "../../context/AuthContext";
+import { HiOutlineDocumentSearch } from "react-icons/hi";
 
 const navItems = [
   { to: "/auth/admin", label: "Dashboard", icon: <HiMiniHome /> },
+  { to: "/auth/admin/audits", label: "Audits", icon: <HiOutlineDocumentSearch /> },
+  { to: "/auth/admin/property/add_property", label: "Add", icon: <LuHousePlus /> },
   { to: "/auth/admin/requests", label: "Requests", icon: <FaRegCommentDots /> },
-  { to: "/auth/admin/add-property", label: "Add Property", icon: <LuHousePlus /> },
   { to: "/auth/admin/reports", label: "Reports", icon: <TbReport /> },
 ];
 

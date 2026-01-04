@@ -1,6 +1,6 @@
 export default function PropertyApprovals() {
   return (
-    <div className="bg-gray-50 rounded-xl p-6">
+    <div className="bg-gray-50 rounded-xl p-2 md:p-6">
       <h2 className="text-xl font-semibold tracking-wide mb-6 text-gray-800">
         Property Approval Requests
       </h2>
@@ -19,13 +19,13 @@ export default function PropertyApprovals() {
             </div>
 
             {/* Content */}
-            <div className="p-5 space-y-3">
+            <div className="p-5 space-y-3 text-xs md:text-sm">
               <div className="flex justify-between items-start">
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900">
                     Luxury Apartment #{i}
                   </h3>
-                  <p className="text-sm text-gray-500">
+                  <p className=" text-gray-500">
                     Owner: Alex Johnson
                   </p>
                 </div>

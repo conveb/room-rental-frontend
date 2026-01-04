@@ -11,7 +11,6 @@ const SignIn = () => {
   const [form, setForm] = useState({
     email: "",
     password: "",
-    privacy_policy: false,
   });
 
   const [showPassword, setShowPassword] = useState(false);
@@ -113,7 +112,7 @@ const SignIn = () => {
               </div>
 
               {/* PRIVACY */}
-              <label className="flex items-center gap-2 text-sm text-gray-600">
+              {/* <label className="flex items-center gap-2 text-sm text-gray-600">
                 <input
                   type="checkbox"
                   name="privacy_policy"
@@ -123,7 +122,7 @@ const SignIn = () => {
                   required
                 />
                 Agree to privacy policy
-              </label>
+              </label> */}
               
               <Link to='/forgot-password'>Forgot Password?</Link>
 

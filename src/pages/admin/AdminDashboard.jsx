@@ -12,6 +12,7 @@ import {
 } from "../../services/allAPI";
 import { PiStudentFill } from "react-icons/pi";
 import { FaHouseFlag } from "react-icons/fa6";
+import skeletonAdmin from '../skeleton/skeletonAdmin'
 export default function AdminDashboard() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("overview");
@@ -26,13 +27,13 @@ export default function AdminDashboard() {
     { id: 6, user_name: "Frank Wright", property_name: "Lakefront Cabin", status: "Pending", amount: 11200 },
   ];
 
-  const usersList = [
-    { id: 1, name: "Alice Johnson", email: "alice.johnson@example.com", role: "LANDOWNER", approved: false, blocked: false },
-    { id: 2, name: "Bob Smith", email: "bob.smith@example.com", role: "TENANT", approved: true, blocked: true },
-    { id: 3, name: "Carol Lee", email: "carol.lee@example.com", role: "LANDOWNER", approved: true, blocked: false },
-    { id: 4, name: "David Kim", email: "david.kim@example.com", role: "TENANT", approved: true, blocked: false },
-    { id: 5, name: "Eva Green", email: "eva.green@example.com", role: "LANDOWNER", approved: false, blocked: true },
-  ];
+  // const usersList = [
+  //   { id: 1, name: "Alice Johnson", email: "alice.johnson@example.com", role: "LANDOWNER", approved: false, blocked: false },
+  //   { id: 2, name: "Bob Smith", email: "bob.smith@example.com", role: "TENANT", approved: true, blocked: true },
+  //   { id: 3, name: "Carol Lee", email: "carol.lee@example.com", role: "LANDOWNER", approved: true, blocked: false },
+  //   { id: 4, name: "David Kim", email: "david.kim@example.com", role: "TENANT", approved: true, blocked: false },
+  //   { id: 5, name: "Eva Green", email: "eva.green@example.com", role: "LANDOWNER", approved: false, blocked: true },
+  // ];
 
   const [properties, setProperties] = useState([
     {
@@ -54,8 +55,8 @@ export default function AdminDashboard() {
       status: "Pending",
     },
   ]);
-  
-  
+
+
   // --------------------------------------------
 
   // ---------------- State ----------------
@@ -69,7 +70,7 @@ export default function AdminDashboard() {
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("ALL"); // ALL, TENANT, LANDOWNER
 
-  const filteredUsers = usersList
+  const filteredUsers = users
     .filter(u =>
       u.name.toLowerCase().includes(search.toLowerCase()) ||
       u.email.toLowerCase().includes(search.toLowerCase())
@@ -163,7 +164,7 @@ export default function AdminDashboard() {
       console.error(err);
     }
   };
-    const filteredProperties = properties.filter(p =>
+  const filteredProperties = properties.filter(p =>
     p.name.toLowerCase().includes(search.toLowerCase()) ||
     p.location.toLowerCase().includes(search.toLowerCase())
   );
@@ -243,15 +244,15 @@ export default function AdminDashboard() {
           className="border p-2 rounded-md"
         >
           <option value="ALL">All</option>
-          <option value="TENANT"><PiStudentFill/>Tenant</option>
-          <option value="LANDOWNER"><FaHouseFlag/>Landowner</option>
+          <option value="TENANT"><PiStudentFill />Tenant</option>
+          <option value="LANDOWNER"><FaHouseFlag />Landowner</option>
         </select>
       </div>
 
 
 
       {loading ? (
-        <p>Loading...</p>
+        <skeletonAdmin/>
       ) : filteredUsers.length === 0 ? (
         <p>No users found</p>
       ) : (
@@ -285,57 +286,57 @@ export default function AdminDashboard() {
   );
 
   const renderProperties = () => (
-  <div className="space-y-4">
-    <h2 className="text-xl font-semibold">Locations / Properties</h2>
+    <div className="space-y-4">
+      <h2 className="text-xl font-semibold">Locations / Properties</h2>
 
-    {/* Search */}
-    <div className="flex flex-row gap-2 w-full items-center">
-      <input
-        type="text"
-        placeholder="Search by property name or location..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="flex-grow border p-2 rounded-md min-w-0"
-      />
-    </div>
+      {/* Search */}
+      <div className="flex flex-row gap-2 w-full items-center">
+        <input
+          type="text"
+          placeholder="Search by property name or location..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="flex-grow border p-2 rounded-md min-w-0"
+        />
+      </div>
 
-    {loading ? (
-      <p>Loading...</p>
-    ) : filteredProperties.length === 0 ? (
-      <p>No properties found</p>
-    ) : (
-      filteredProperties.map(p => (
-        <div
-          key={p.id}
-          className="flex justify-between items-center border p-2 rounded-xl"
-        >
-          <div>
-            <p className="font-medium">{p.name}</p>
-            <p className="text-gray-500 text-sm">{p.location}</p>
-            <p className="text-xs text-gray-400">{p.status}</p>
-          </div>
+      {loading ? (
+        <skeletonAdmin />
+      ) : filteredProperties.length === 0 ? (
+        <p>No properties found</p>
+      ) : (
+        filteredProperties.map(p => (
+          <div
+            key={p.id}
+            className="flex justify-between items-center border p-2 rounded-xl"
+          >
+            <div>
+              <p className="font-medium">{p.name}</p>
+              <p className="text-gray-500 text-sm">{p.location}</p>
+              <p className="text-xs text-gray-400">{p.status}</p>
+            </div>
 
-          <div className="flex flex-col gap-2 text-xs md:text-sm">
-            {p.status === "Pending" && (
+            <div className="flex flex-col gap-2 text-xs md:text-sm">
+              {p.status === "Pending" && (
+                <button
+                  onClick={() => approveProperty(p.id)}
+                  className="bg-green-500 text-white px-4 py-3 rounded-lg"
+                >
+                  Approve
+                </button>
+              )}
               <button
-                onClick={() => approveProperty(p.id)}
-                className="bg-green-500 text-white px-4 py-3 rounded-lg"
+                onClick={() => deleteLocation(p.id)}
+                className="bg-red-500 text-white px-4 py-3 rounded-lg"
               >
-                Approve
+                Delete
               </button>
-            )}
-            <button
-              onClick={() => deleteLocation(p.id)}
-              className="bg-red-500 text-white px-4 py-3 rounded-lg"
-            >
-              Delete
-            </button>
+            </div>
           </div>
-        </div>
-      ))
-    )}
-  </div>
-);
+        ))
+      )}
+    </div>
+  );
 
 
   return (
@@ -353,8 +354,8 @@ export default function AdminDashboard() {
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`flex-1 py-3 md:py-4 text-sm font-medium transition rounded-2xl shadow ${activeTab === tab
-                  ? "bg-black text-white"
-                  : "bg-white text-gray-500 hover:bg-gray-200"
+                ? "bg-black text-white"
+                : "bg-white text-gray-500 hover:bg-gray-200"
                 }`}
             >
               {tab.charAt(0).toUpperCase() + tab.slice(1)}

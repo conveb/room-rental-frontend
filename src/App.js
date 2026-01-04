@@ -43,6 +43,11 @@ import UserFeedback from "./pages/users/account/UserFeedback";
 import UserComplaints from "./pages/users/account/UserComplaints";
 import UserReportLandowner from "./pages/users/account/UserReportLandowner";
 import UserReportProperty from "./pages/users/account/UserReportProperty";
+import { AddCountries } from "./pages/admin/containers/AddCountry";
+import { AddLocations } from "./pages/admin/containers/AddLocations";
+import { AddAmenities } from "./pages/admin/containers/AddAmenities";
+import AddProperty from "./pages/admin/AdminAddProperty";
+import AdminAudits from "./pages/admin/AdminAudits";
 
 function App() {
   const showSplash = useSplash(1800);
@@ -71,9 +76,13 @@ function App() {
         <Route path="/auth/admin" element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />
           <Route path="rooms" element={<AdminStudents />} />
+          <Route path="audits" element={<AdminAudits />} />
           <Route path="requests" element={<AdminRequests />} />
-          <Route path="add-property" element={<AdminAddProperty />} />
-          <Route path="reports" element={<AdminReports />} />
+          <Route path="property/add_property" element={<AdminAddProperty />} />
+          <Route path="property/add_country" element={<AddCountries />} />
+          <Route path="property/add_location" element={<AddLocations />} />
+          <Route path="property/add_amenities" element={<AddAmenities />} />
+          <Route path="property/reports" element={<AdminReports />} />
         </Route>
 
         <Route element={<LandOwnerRoute />}>
@@ -86,7 +95,7 @@ function App() {
           </Route>
         </Route>
 
-        {/* <Route element={<PrivateRoute />}> */}
+        <Route element={<PrivateRoute />}>
         <Route path="/auth/user" element={<UserLayout />}>
           <Route index path="home" element={<Accommodation />} />
           <Route path="account" element={<UserAccount />} />
@@ -102,7 +111,7 @@ function App() {
           <Route path="confirmation" element={<ConfirmationPage />} />
           <Route path="notifications" element={<NotificationPage />} />
         </Route>
-        {/* </Route> */}
+        </Route>
 
       </Routes>
     </>

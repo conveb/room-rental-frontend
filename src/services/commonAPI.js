@@ -11,7 +11,6 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    // ⛔ Don't retry refresh endpoint itself
     if (originalRequest.url.includes("/api/v1/login/refresh")) {
       return Promise.reject(error);
     }

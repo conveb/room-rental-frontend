@@ -1,11 +1,11 @@
 import { useState } from "react";
-
+import { IoDocumentAttachOutline } from "react-icons/io5";
 export default function VerificationRequests() {
   const [open, setOpen] = useState(false);
 
   return (
     <>
-      <div className="bg-gray-50 rounded-xl p-2 md:p-6">
+      <div className="bg-gray-50 rounded-xl p-2 md:p-6 text-xs md:text-sm">
         <h2 className="text-lg md:text-xl font-semibold tracking-wide text-gray-800 mb-4 md:mb-6">
           Landowner Verification Requests
         </h2>
@@ -54,7 +54,10 @@ export default function VerificationRequests() {
         {/* MOBILE CARDS */}
         <div className="md:hidden space-y-4">
           <div className="bg-white rounded-2xl shadow p-2 space-y-3">
-            <div>
+            <div className="flex justify-between items-center">
+
+            <div className="space-y-1">
+              <p>12/05/2025</p>
               <h3 className="font-semibold text-gray-900">
                 Edvin Johnson
               </h3>
@@ -65,12 +68,14 @@ export default function VerificationRequests() {
 
             <button
               onClick={() => setOpen(true)}
-              className="text-blue-600 text-sm font-medium"
+              className="flex flex-col  items-center bg-stone-100 rounded-xl p-2 text-blue-600 text-xs font-medium"
             >
-              View Document
+              <IoDocumentAttachOutline size={30}/>
+              View
             </button>
+            </div>
 
-            <div className="flex gap-2 pt-2">
+            <div className="flex gap-2 ">
               <button className="flex-1 border border-black py-2 rounded-lg hover:bg-emerald-700 hover:text-white transition">
                 Approve
               </button>

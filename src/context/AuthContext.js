@@ -38,11 +38,14 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       await LogoutAPI();
+    } catch (e) {
+      console.error("Logout failed", e);
     } finally {
       setUser(null);
       navigate("/");
     }
   };
+
 
   return (
     <AuthContext.Provider

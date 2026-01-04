@@ -57,11 +57,15 @@ export const approvePropertyAPI= ()=>commonAPI('post','/api/v1/')
 // /verification/:id/update/
 // /locations/ <- post , add location
 // /admin/users-list/
+export const getUsersAuditApi= ()=>commonAPI('get','/api/v1/admin/users/audit-logs/') 
+export const getPropertiesAuditApi= ()=>commonAPI('get','/api/v1/admin/properties/audit-logs/') 
+export const getLogsAuditApi= ()=>commonAPI('get','/api/v1/audit-logs/')
+// /admin/users/audit-logs/
 
 // /properties/{{propertyId}}/delete/ <- delete property
 // /properties/my/ <- view my property
 // /verification/submit/ <- send request for verifying landowner account
-// /amenities/ <- view amenities
+export const listAmenitiesApi= ()=>commonAPI('get','/api/v1/amenities') 
 // /properties/ <- list props | get
 // /properties/create/ <- create property | post
 // /amenities/0e2d93b9-8444-40e3-bfa9-eb426256f25c/delete/ <- delete selected amenities

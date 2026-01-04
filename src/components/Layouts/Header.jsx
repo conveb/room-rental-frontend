@@ -13,16 +13,13 @@ export default function Header() {
   const getAccountRoute = (role) => {
     switch (role) {
       case "STUDENT":
-        console.log('its student');
         return "/auth/user/home";
       case "LANDOWNER":
          console.log('its landowner');
         return "/landowner";
       case "ADMIN":
-         console.log('its admin');
         return "/auth/admin";
       default:
-         console.log('its user');
         return "/signin";
     }
   };
