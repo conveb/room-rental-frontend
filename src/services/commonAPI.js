@@ -40,12 +40,13 @@ export const commonAPI = async (
   reqBody = null,
   reqHeaders = {}
 ) => {
+  const isFormData = reqBody instanceof FormData;
   const reqConfig = {
     method: httpRequest,
     url,
     data: reqBody,
     headers: {
-      "Content-Type": "application/json",
+      ...(isFormData ? {} : { "Content-Type": "application/json" }),
       ...reqHeaders,
     },
   };

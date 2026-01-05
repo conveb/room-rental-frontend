@@ -4,6 +4,7 @@ import { AddLocations } from "./containers/AddLocations";
 import { AddAmenities } from "./containers/AddAmenities";
 import { useState } from "react";
 import AddProperties from "./containers/AddProperties";
+import AdminMyProperty from "./containers/AdminMyProperty";
 
 
 export default function AddProperty() {
@@ -35,7 +36,7 @@ export default function AddProperty() {
 
             {/* ===== CONTENT ===== */}
             <div className="mt-4">
-                {activeTab === "properties" && <AddProperties />}
+                {activeTab === "properties" && <AdminMyProperty />}
                 {activeTab === "countries" && <AddCountries />}
                 {activeTab === "locations" && <AddLocations />}
                 {activeTab === "amenities" && <AddAmenities />}

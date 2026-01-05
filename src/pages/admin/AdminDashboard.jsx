@@ -5,7 +5,7 @@ import {
   getPropertiesAPI,
   approveLandownerAPI,
   addLocationAPI,
-  deleteLocationAPI,
+  deleteLocationsApi,
   getBookingsAPI,
   toggleBlockUserAPI,
   approvePropertyAPI,
@@ -149,7 +149,7 @@ export default function AdminDashboard() {
 
   const deleteLocation = async (locationId) => {
     try {
-      await deleteLocationAPI(locationId);
+      await deleteLocationsApi(locationId);
       fetchProperties();
     } catch (err) {
       console.error(err);

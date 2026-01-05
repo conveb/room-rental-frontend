@@ -1,9 +1,7 @@
 // src/hooks/useProperties.js
 import { useState, useEffect } from "react";
 
-// Assuming you have 'commonAPI' and 'baseUrl' imported or defined elsewhere
-// For example:
-// import { commonAPI, baseUrl } from "../services/allAPIs";
+
 
 export const useProperties = (apiCall) => {
   const [data, setData] = useState([]);

@@ -48,6 +48,7 @@ import { AddLocations } from "./pages/admin/containers/AddLocations";
 import { AddAmenities } from "./pages/admin/containers/AddAmenities";
 import AddProperty from "./pages/admin/AdminAddProperty";
 import AdminAudits from "./pages/admin/AdminAudits";
+import AdminMyProperty from "./pages/admin/containers/AdminMyProperty";
 
 function App() {
   const showSplash = useSplash(1800);
@@ -78,6 +79,7 @@ function App() {
           <Route path="rooms" element={<AdminStudents />} />
           <Route path="audits" element={<AdminAudits />} />
           <Route path="requests" element={<AdminRequests />} />
+          <Route path="admin_properties" element={<AdminMyProperty />} />
           <Route path="property/add_property" element={<AdminAddProperty />} />
           <Route path="property/add_country" element={<AddCountries />} />
           <Route path="property/add_location" element={<AddLocations />} />

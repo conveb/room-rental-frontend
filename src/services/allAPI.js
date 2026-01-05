@@ -43,7 +43,6 @@ export const getUsersAPI = ()=>commonAPI('post','/api/v1/')
 export const getPropertiesAPI = ()=>commonAPI('post','/api/v1/') 
 export const approveLandownerAPI = ()=>commonAPI('post','/api/v1/') 
 export const addLocationAPI = ()=>commonAPI('post','/api/v1/') 
-export const deleteLocationAPI = ()=>commonAPI('post','/api/v1/') 
 export const getBookingsAPI= ()=>commonAPI('post','/api/v1/') 
 export const toggleBlockUserAPI= ()=>commonAPI('post','/api/v1/') 
 export const approvePropertyAPI= ()=>commonAPI('post','/api/v1/') 
@@ -51,29 +50,33 @@ export const approvePropertyAPI= ()=>commonAPI('post','/api/v1/')
 
 // /auth/reset-password/
 
-// /locations <- get , get location
+// /locations/ <- post , add location
+export const addLocationsApi= (data)=>commonAPI('post','/api/v1/locations/',data) 
+export const listAllLocationsApi= ()=>commonAPI('get','/api/v1/locations') 
+export const deleteLocationsApi = (locationId) => commonAPI("delete", `/api/v1/locations/${locationId}`);
+
 // /locations/:id/
 // /admin/bookings
 // /verification/:id/update/
-// /locations/ <- post , add location
 // /admin/users-list/
 export const getUsersAuditApi= ()=>commonAPI('get','/api/v1/admin/users/audit-logs/') 
 export const getPropertiesAuditApi= ()=>commonAPI('get','/api/v1/admin/properties/audit-logs/') 
 export const getLogsAuditApi= ()=>commonAPI('get','/api/v1/audit-logs/')
 // /admin/users/audit-logs/
 
-// /properties/{{propertyId}}/delete/ <- delete property
-// /properties/my/ <- view my property
-// /verification/submit/ <- send request for verifying landowner account
+export const viewMyPropertyApi= ()=>commonAPI('get','/api/v1/properties/my/') 
+export const deletePropertyApi = (propertyId) => commonAPI("delete", `/api/v1/properties/${propertyId}/delete/`);
+export const updatePropertyApi = (propertyId, data) => commonAPI("patch", `/api/v1/properties/${propertyId}/update/`, data);
+
 export const listAmenitiesApi= ()=>commonAPI('get','/api/v1/amenities') 
-// /properties/ <- list props | get
-// /properties/create/ <- create property | post
-// /amenities/0e2d93b9-8444-40e3-bfa9-eb426256f25c/delete/ <- delete selected amenities
+export const createAmenities= (data)=>commonAPI('post','/api/v1/amenities/',data) 
+export const deleteAmenityApi = (amenityId) => commonAPI("delete", `/api/v1/amenities/${amenityId}`);
+
+export const createPropertyApi= ()=>commonAPI('post','/api/v1/properties/create/') 
 // /bookings/90edd763-eb24-47a7-ab80-02289c6c9c3b/status/ <- check status of selected bookings
 // /bookings/90edd763-eb24-47a7-ab80-02289c6c9c3b/complete/ <-complete selected booking
 // /properties/{{propertyId}}/ <- view selected property
 // /properties/7cead067-50bc-4527-bbc3-3984dd627b4b/update/ <- update selected property
-// /amenities/ <- add amenities | post
 // /token/ <- list bookings (view if the property is booked or not)
 
 // /payments/history
