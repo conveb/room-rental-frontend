@@ -31,9 +31,13 @@ export const AuthProvider = ({ children }) => {
     fetchCurrentUser();
   }, [fetchCurrentUser]);
 
-  const login = (response) => {
-    setUser(response?.user ?? null);
-  };
+  // const login = (response) => {
+  //   setUser(response?.user ?? null);
+  // };
+const login = async () => {
+  setLoading(true);
+  await fetchCurrentUser();
+};
 
   const logout = async () => {
     try {

@@ -39,7 +39,7 @@ export const AuthAPI = () => commonAPI("get", "/api/v1/auth/me");
 
 export const LogoutAPI = () => commonAPI("post", "/api/v1/logout/");
 
-export const getUsersAPI = ()=>commonAPI('post','/api/v1/') 
+export const getAllUsersAPI = ()=>commonAPI('get','/api/v1/admin/users') 
 export const getPropertiesAPI = ()=>commonAPI('post','/api/v1/') 
 export const approveLandownerAPI = ()=>commonAPI('post','/api/v1/') 
 export const addLocationAPI = ()=>commonAPI('post','/api/v1/') 

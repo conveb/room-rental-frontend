@@ -28,7 +28,8 @@ export const useSignin = () => {
 
 
       // ✅ UPDATE GLOBAL AUTH STATE
-      login(res.data);
+    await login();
+
 
       if (res.data.role === "STUDENT") {
         navigate("/auth/user");
