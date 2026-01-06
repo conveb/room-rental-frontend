@@ -154,7 +154,7 @@ export default function AddProperties() {
               />
             </div>
           )}
-
+        <div className="space-y-4">
           <label className="flex items-center justify-center border-2 border-dashed rounded-xl p-6 cursor-pointer hover:bg-gray-50">
             <input
               type="file"
@@ -165,9 +165,23 @@ export default function AddProperties() {
             />
             <span className="flex items-center gap-3 text-gray-500">
               <MdAddCircle className="text-xl text-black" />
-              Upload Images
+              Upload Cover Image
             </span>
           </label>
+           <label className="flex items-center justify-center border-2 border-dashed rounded-xl p-6 cursor-pointer hover:bg-gray-50">
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={handleImageSelect}
+              className="hidden"
+            />
+            <span className="flex items-center gap-3 text-gray-500">
+              <MdAddCircle className="text-xl text-black" />
+              Upload Related Images (Max.5)
+            </span>
+          </label>
+        </div>
 
           <div className="grid grid-cols-4 sm:grid-cols-5 gap-3">
             {images.map((img, i) => (

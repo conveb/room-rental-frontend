@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Dialog } from "primereact/dialog";
 import { Dropdown } from "primereact/dropdown";
 import { Button } from "primereact/button";
+import { Helmet } from "react-helmet";
 
 /* ---------------- DEMO DATA ---------------- */
 const REPORTS = [
@@ -42,6 +43,12 @@ export default function AdminReports() {
     );
 
     return (
+        <>
+        <Helmet>
+        <title>Admin Console | Reports</title>
+        <meta name="description" content="This is the home page" />
+        <meta name="keywords" content="react, seo, helmet" />
+      </Helmet>
         <div className="p-2 md:p-6 space-y-6">
             {/* HEADER */}
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -210,5 +217,6 @@ export default function AdminReports() {
                 )}
             </Dialog>
         </div>
+        </>
     );
 }

@@ -7,10 +7,14 @@ import {
   getBookingsAPI,
   approvePropertyAPI,
 } from "../../services/allAPI";
-import { PiStudentFill } from "react-icons/pi";
-import { FaHouseFlag } from "react-icons/fa6";
+import { PiStudent } from "react-icons/pi";
+import { FaPersonShelter } from "react-icons/fa6";
+import { IoIosPeople } from "react-icons/io";
+import { MdOutlineLibraryBooks } from "react-icons/md";
+
 import SkeletonAdmin from "../skeleton/skeletonAdmin";
 import { useAdminUsers } from "../../hooks/admin/useAdminUsers";
+import { Helmet } from "react-helmet";
 
 export default function AdminDashboard() {
   const { user } = useAuth();
@@ -103,33 +107,91 @@ export default function AdminDashboard() {
 
   // ---------------- Render ----------------
   const renderOverview = () => (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <h2 className="text-xl font-semibold">Overview</h2>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-        <Card title="Students" value={studentsCount} />
-        <Card title="Landowners" value={landOwnersCount} />
-        <Card title="Total Users" value={totalUsers} />
-        <Card title="Total Bookings" value={bookings.length} />
+      {/* Stats Cards */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <Card title="Students" value={studentsCount} icon={PiStudent} color={'bg-sky-100'}/>
+        <Card title="Landowners" value={landOwnersCount} icon={FaPersonShelter} color={'bg-emerald-100'}/>
+        <Card title="Total Users" value={totalUsers} icon={IoIosPeople} color={'bg-purple-100'}/>
+        <Card
+          title="Total Bookings"
+          value={bookings.length}
+          icon={MdOutlineLibraryBooks}
+          color={'bg-orange-100'}
+        />
+      </div>
+
+      {/* Recent Bookings */}
+      <div className="bg-white rounded-xl shadow">
+        <div className="p-4 border-b">
+          <h3 className="text-lg font-semibold">Recent Bookings</h3>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead className="bg-gray-50 text-gray-600">
+              <tr>
+                <th className="text-left p-3">User</th>
+                <th className="text-left p-3">Property</th>
+                <th className="text-left p-3">Date</th>
+                <th className="text-left p-3">Status</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {bookings.slice(0, 5).map((booking) => (
+                <tr key={booking.id} className="border-t">
+                  <td className="p-3">{booking.user_name}</td>
+                  <td className="p-3">{booking.property_title}</td>
+                  <td className="p-3">
+                    {new Date(booking.created_at).toLocaleDateString()}
+                  </td>
+                  <td className="p-3">
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-medium ${booking.status === "CONFIRMED"
+                          ? "bg-green-100 text-green-700"
+                          : "bg-yellow-100 text-yellow-700"
+                        }`}
+                    >
+                      {booking.status}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+
+              {bookings.length === 0 && (
+                <tr>
+                  <td colSpan="4" className="p-4 text-center text-gray-500">
+                    No recent bookings
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
+
 
   const renderUsers = () => (
     <div className="space-y-4">
       <h2 className="text-xl font-semibold">Users</h2>
 
-      <div className="flex gap-2">
+      <div className="flex items-center gap-2 w-full text-sm">
         <input
           value={search}
           onChange={e => setSearch(e.target.value)}
           placeholder="Search by name or email..."
-          className="border p-2 rounded-md flex-1"
+          className="border p-2 rounded-md flex-1 min-w-0"
         />
+
         <select
           value={roleFilter}
           onChange={e => setRoleFilter(e.target.value)}
-          className="border p-2 rounded-md"
+          className="border p-2 rounded-md w-[100px] sm:w-auto"
         >
           <option value="ALL">All</option>
           <option value="STUDENT">Student</option>
@@ -137,22 +199,22 @@ export default function AdminDashboard() {
         </select>
       </div>
 
+
       {loading ? (
         <SkeletonAdmin />
       ) : filteredUsers.length === 0 ? (
         <p>No users found</p>
       ) : (
         filteredUsers.map(u => (
-          <div key={u.id} className="border p-3 rounded-xl flex justify-between">
+          <div key={u.id} className="relative border p-3 rounded-xl flex justify-between">
             <div>
               <p className="font-medium">{u.full_name}</p>
               <p className="text-sm text-gray-500">{u.email}</p>
               <p className="text-xs text-gray-400">{u.role}</p>
             </div>
             <span
-              className={`px-3 py-1 text-xs rounded-full ${
-                u.is_active ? "bg-green-100" : "bg-red-100"
-              }`}
+              className={`absolute top-2 right-2 px-3 py-1 text-xs rounded-2xl ${u.is_active ? "bg-green-500" : "bg-red-200"
+                }`}
             >
               {u.is_active ? "Active" : "Blocked"}
             </span>
@@ -201,35 +263,52 @@ export default function AdminDashboard() {
   );
 
   return (
-    <div className="min-h-screen p-4">
-      <div className="max-w-7xl mx-auto space-y-6">
-        <h1 className="text-3xl font-bold">Admin Control Center</h1>
+    <>
+      <Helmet>
+        <title>Admin Console | Dashboard</title>
+        <meta name="description" content="This is the home page" />
+        <meta name="keywords" content="react, seo, helmet" />
+      </Helmet>
+      <div className="min-h-screen  md:p-6">
+        <div className="max-w-7xl mx-auto space-y-2 md:space-y-6">
+          <h1 className="text-2xl md:text-3xl font-bold">Admin Control Center</h1>
+          <p className="text-xs md:text-sm text-stone-500 ">This dashboard gives a quick overview of total students, landowners, users, and bookings, along with recent booking activity for easy monitoring.
+          </p>
 
-        <div className="flex bg-white rounded-3xl p-2 gap-2">
-          {["overview", "users", "properties"].map(tab => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`flex-1 py-3 rounded-2xl ${
-                activeTab === tab ? "bg-black text-white" : "bg-gray-100"
-              }`}
-            >
-              {tab}
-            </button>
-          ))}
+          <div className="flex bg-white rounded-3xl p-2 gap-2">
+            {["overview", "users", "properties"].map(tab => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`flex-1 py-3 rounded-2xl text-sm md:text-md ${activeTab === tab ? "bg-black text-white" : "bg-gray-100"
+                  }`}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
+
+          {activeTab === "overview" && renderOverview()}
+          {activeTab === "users" && renderUsers()}
+          {activeTab === "properties" && renderProperties()}
         </div>
-
-        {activeTab === "overview" && renderOverview()}
-        {activeTab === "users" && renderUsers()}
-        {activeTab === "properties" && renderProperties()}
       </div>
-    </div>
+    </>
   );
 }
 
-const Card = ({ title, value }) => (
-  <div className="bg-white p-4 rounded-xl shadow">
-    <p className="text-sm text-gray-500">{title}</p>
-    <p className="text-2xl font-semibold">{value}</p>
+const Card = ({ title, value, icon: Icon , color }) => (
+  <div className="bg-white p-2 md:p-3 rounded-xl shadow flex items-center gap-5">
+    {Icon && (
+      <div className={`p-3 rounded-xl ${color}  text-gray-700`}>
+        <Icon size={22} />
+      </div>
+    )}
+    <div>
+      <p className=" text-xs md:text-sm text-gray-500">{title}</p>
+      <p className="text-2xl font-semibold">{value}</p>
+    </div>
+
   </div>
 );
+

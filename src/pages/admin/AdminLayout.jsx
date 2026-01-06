@@ -14,7 +14,13 @@ import { TbReport } from "react-icons/tb";
 import { FaRegCommentDots } from "react-icons/fa";
 import { useAuth } from "../../context/AuthContext";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
-
+import { Helmet } from "react-helmet";
+const titleMap = {
+  "/auth/admin": "Dashboard",
+  "/auth/admin/audits": "Audits",
+  "/auth/admin/property/add_property": "Add Property",
+  "/auth/admin/reports": "Reports",
+};
 const navItems = [
   { to: "/auth/admin", label: "Dashboard", icon: <HiMiniHome /> },
   { to: "/auth/admin/audits", label: "Audits", icon: <HiOutlineDocumentSearch /> },
@@ -25,10 +31,16 @@ const navItems = [
 
 const AdminLayout = () => {
   const location = useLocation();
+  const title = titleMap[location.pathname] ?? "Admin";
   const { user, loading } = useAuth();
   const [open, setOpen] = useState(false);
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-stone-100">
+    <>
+    <Helmet>
+  <title>{title} | Alive Paris</title>
+</Helmet>
+
+    <div className=" min-h-screen flex flex-col md:flex-row bg-stone-100">
       {/* SIDEBAR (DESKTOP ONLY) */}
       <aside className="hidden md:flex w-64 bg-gradient-to-b from-zinc-950 to-zinc-900 text-gray-200 flex-col shadow-2xl flex-shrink-0">
         {/* LOGO */}
@@ -45,7 +57,7 @@ const AdminLayout = () => {
           {navItems.map(item => (
             <NavLink
               key={item.to}
-              end={item.to === "/admin"}
+              end={item.to === "/auth/admin"}
               to={item.to}
               className={({ isActive }) =>
                 `flex items-center px-4 py-2.5 rounded-xl transition-all ${isActive
@@ -61,7 +73,7 @@ const AdminLayout = () => {
         </nav>
 
         {/* FOOTER */}
-        <div className="px-6 py-4 border-t border-white/10 text-xs text-gray-400">
+        <div className="fixed bottom-0 left-0  px-6 py-4 border-t border-white/10 text-xs text-gray-400">
           Logged in as <span className="text-gray-300">Super Admin</span>
         </div>
       </aside>
@@ -146,6 +158,7 @@ const AdminLayout = () => {
         </div>
       </nav>
     </div>
+    </>
   );
 };
 

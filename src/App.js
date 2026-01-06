@@ -78,13 +78,13 @@ function App() {
           <Route index element={<AdminDashboard />} />
           <Route path="rooms" element={<AdminStudents />} />
           <Route path="audits" element={<AdminAudits />} />
-          <Route path="requests" element={<AdminRequests />} />
+          {/* <Route path="requests" element={<AdminRequests />} /> */}
           <Route path="admin_properties" element={<AdminMyProperty />} />
           <Route path="property/add_property" element={<AdminAddProperty />} />
           <Route path="property/add_country" element={<AddCountries />} />
           <Route path="property/add_location" element={<AddLocations />} />
           <Route path="property/add_amenities" element={<AddAmenities />} />
-          <Route path="property/reports" element={<AdminReports />} />
+          <Route path="reports" element={<AdminReports />} />
         </Route>
 
         <Route element={<LandOwnerRoute />}>
@@ -98,21 +98,21 @@ function App() {
         </Route>
 
         <Route element={<PrivateRoute />}>
-        <Route path="/auth/user" element={<UserLayout />}>
-          <Route index path="home" element={<Accommodation />} />
-          <Route path="account" element={<UserAccount />} />
-          <Route path="feedbacks" element={<UserFeedback />} />
-          <Route path="bookings" element={<UserBookings />} />
-          <Route path="payments" element={<UserPayments />} />
-          <Route path="saved" element={<UserSaved />} />
-          <Route path="support" element={<UserSupport />} />
-          <Route path="payment" element={<PaymentPage />} />
-          <Route path="complaints" element={<UserComplaints />} />
-          <Route path="report_landowner" element={<UserReportLandowner />} />
-          <Route path="report_property" element={<UserReportProperty />} />
-          <Route path="confirmation" element={<ConfirmationPage />} />
-          <Route path="notifications" element={<NotificationPage />} />
-        </Route>
+          <Route path="/auth/user" element={<UserLayout />}>
+            <Route index path="home" element={<Accommodation />} />
+            <Route path="account" element={<UserAccount />} />
+            <Route path="feedbacks" element={<UserFeedback />} />
+            <Route path="bookings" element={<UserBookings />} />
+            <Route path="payments" element={<UserPayments />} />
+            <Route path="saved" element={<UserSaved />} />
+            <Route path="support" element={<UserSupport />} />
+            <Route path="payment" element={<PaymentPage />} />
+            <Route path="complaints" element={<UserComplaints />} />
+            <Route path="report_landowner" element={<UserReportLandowner />} />
+            <Route path="report_property" element={<UserReportProperty />} />
+            <Route path="confirmation" element={<ConfirmationPage />} />
+            <Route path="notifications" element={<NotificationPage />} />
+          </Route>
         </Route>
 
       </Routes>

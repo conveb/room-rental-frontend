@@ -15,7 +15,7 @@ export default function Header() {
       case "STUDENT":
         return "/auth/user/home";
       case "LANDOWNER":
-         console.log('its landowner');
+        console.log('its landowner');
         return "/landowner";
       case "ADMIN":
         return "/auth/admin";
@@ -37,7 +37,7 @@ export default function Header() {
   // Scroll listener
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 0); 
+      setScrolled(window.scrollY > 0);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -78,11 +78,11 @@ export default function Header() {
           {
             !loading && (
               user ? (
-                <li className="bg-black text-white px-3 py-3 border border-white border-2 rounded-full border border-stone-700">
-                  <Link to={getAccountRoute(role)}>
-                   <FaRegUser/>
-                  </Link>
-                </li>
+                <Link to={getAccountRoute(role)}>
+                  <li className="bg-black text-white px-3 py-3 border border-white border-2 rounded-full border border-stone-700">
+                    <FaRegUser />
+                  </li>
+                </Link>
               ) : (
                 <li className="bg-black text-white px-6 py-2 rounded-full border border-stone-700">
                   <Link to="/signin">
@@ -138,23 +138,23 @@ export default function Header() {
             <li onClick={() => setOpen(false)}>
               <Link to="/workingonit">Contact</Link>
             </li>
-             {
-            !loading && (
-              user ? (
-                <li className="bg-black text-white px-3 py-3 border border-white border-2 rounded-full border border-stone-700">
-                  <Link to={getAccountRoute(role)}>
-                   <FaRegUser/>
-                  </Link>
-                </li>
-              ) : (
-                <li className="bg-black text-white px-6 py-2 rounded-full border border-stone-700">
-                  <Link to="/signin">
-                    Sign In
-                  </Link>
-                </li>
+            {
+              !loading && (
+                user ? (
+                  <li className="bg-black text-white px-3 py-3 border border-white border-2 rounded-full border border-stone-700">
+                    <Link to={getAccountRoute(role)}>
+                      <FaRegUser />
+                    </Link>
+                  </li>
+                ) : (
+                  <li className="bg-black text-white px-6 py-2 rounded-full border border-stone-700">
+                    <Link to="/signin">
+                      Sign In
+                    </Link>
+                  </li>
+                )
               )
-            )
-          }
+            }
 
 
 
