@@ -2,44 +2,18 @@ import { commonAPI } from "./commonAPI";
 
 
 
-// 2. Login
-export const signinAPI = async (data) => {
-  return await commonAPI("post", "/api/v1/login/", data);
-};
-
-// 3. Get all properties
-export const getAllPropertiesAPI = async () => {
-  return await commonAPI("get", "/api/v1/properties");
-};
-
-export const getPropertyByIdAPI = (propertyId) => {
-  return commonAPI("get",`/api/v1/properties/${propertyId}/`);
-};
-
-export const forgotPasswordApi = (payload) =>
-  commonAPI("post", "/api/v1/auth/forgot-password/", payload);
-
-// SEND OTP
-export const sendOtpAPI = (payload) =>
-  commonAPI("post", "/api/v1/auth/email/", payload);
-
-//  VERIFY OTP
-export const verifyOtpAPI = (payload) =>
-  commonAPI("post", "/api/v1/auth/verify/", payload);
-
-// REGISTER USER
-export const signupAPI = (payload) =>
-  commonAPI("post", "/api/v1/auth/register/", payload);
-
-// RESEND OTP
+export const signinAPI = async (data) => { return await commonAPI("post", "/api/v1/login/", data);};
+export const getAllPropertiesAPI = async () => { return await commonAPI("get", "/api/v1/properties");};
+export const getPropertyByIdAPI = (propertyId) => { return commonAPI("get",`/api/v1/properties/${propertyId}/`);};
+export const forgotPasswordApi = (payload) =>commonAPI("post", "/api/v1/auth/forgot-password/", payload);
+export const sendOtpAPI = (payload) => commonAPI("post", "/api/v1/auth/email/", payload);
+export const verifyOtpAPI = (payload) => commonAPI("post", "/api/v1/auth/verify/", payload);
+export const signupAPI = (payload) => commonAPI("post", "/api/v1/auth/register/", payload);
 export const resendOtpAPI = (payload) => commonAPI("post", "/api/v1/auth/resend-otp/", payload);
-
-// current user
+export const getAllUsersAPI = ()=>commonAPI('get','/api/v1/admin/users') 
 export const AuthAPI = () => commonAPI("get", "/api/v1/auth/me");
-
 export const LogoutAPI = () => commonAPI("post", "/api/v1/logout/");
 
-export const getAllUsersAPI = ()=>commonAPI('get','/api/v1/admin/users') 
 export const getPropertiesAPI = ()=>commonAPI('post','/api/v1/') 
 export const approveLandownerAPI = ()=>commonAPI('post','/api/v1/') 
 export const addLocationAPI = ()=>commonAPI('post','/api/v1/') 
@@ -47,10 +21,6 @@ export const getBookingsAPI= ()=>commonAPI('post','/api/v1/')
 export const toggleBlockUserAPI= ()=>commonAPI('post','/api/v1/') 
 export const approvePropertyAPI= ()=>commonAPI('post','/api/v1/') 
 
-
-// /auth/reset-password/
-
-// /locations/ <- post , add location
 export const addLocationsApi= (data)=>commonAPI('post','/api/v1/locations/',data) 
 export const listAllLocationsApi= ()=>commonAPI('get','/api/v1/locations') 
 export const deleteLocationsApi = (locationId) => commonAPI("delete", `/api/v1/locations/${locationId}`);
@@ -73,6 +43,11 @@ export const createAmenities= (data)=>commonAPI('post','/api/v1/amenities/',data
 export const deleteAmenityApi = (amenityId) => commonAPI("delete", `/api/v1/amenities/${amenityId}`);
 
 export const createPropertyApi= ()=>commonAPI('post','/api/v1/properties/create/') 
+
+export const getAllSupportApi= ()=>commonAPI('get','/api/v1/admin/support/') 
+export const updateStatusApi = (id, data) => commonAPI("patch", `/api/v1/admin/support/${id}/update/`, data);
+
+export const getAllFeedbackApi= ()=>commonAPI('get','/api/v1/feedback') 
 // /bookings/90edd763-eb24-47a7-ab80-02289c6c9c3b/status/ <- check status of selected bookings
 // /bookings/90edd763-eb24-47a7-ab80-02289c6c9c3b/complete/ <-complete selected booking
 // /properties/{{propertyId}}/ <- view selected property
