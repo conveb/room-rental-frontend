@@ -72,7 +72,7 @@ const NotificationPage = () => {
   /* ---------------- UI ---------------- */
 
   return (
-    <div className="min-h-screen bg-neutral-50 px-2 md:px-6 py-4 pt-28">
+    <div className="min-h-screen bg-neutral-50 px-2 md:px-6 py-4 ">
       <div className="max-w-3xl mx-auto space-y-4">
 
         {/* HEADER */}

@@ -11,9 +11,9 @@ import Logo from '../../Assets/pngs/logo.png';
 import { IoIosNotifications } from "react-icons/io";
 import { LuHousePlus } from "react-icons/lu";
 import { TbReport } from "react-icons/tb";
-import { FaRegCommentDots } from "react-icons/fa";
 import { useAuth } from "../../context/AuthContext";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
+import { LuHandshake } from "react-icons/lu";
 import { Helmet } from "react-helmet";
 const titleMap = {
   "/auth/admin": "Dashboard",
@@ -26,7 +26,8 @@ const navItems = [
   { to: "/auth/admin/audits", label: "Audits", icon: <HiOutlineDocumentSearch /> },
   { to: "/auth/admin/property/add_property", label: "Add", icon: <LuHousePlus /> },
   // { to: "/auth/admin/requests", label: "Requests", icon: <FaRegCommentDots /> },
-  { to: "/auth/admin/reports", label: "Reports", icon: <TbReport /> },
+  { to: "/auth/admin/reports&complaints", label: "Issues", icon: <TbReport /> },
+  { to: "/auth/admin/support&feedback", label: "Support", icon: <LuHandshake /> },
 ];
 
 const AdminLayout = () => {
@@ -36,128 +37,129 @@ const AdminLayout = () => {
   const [open, setOpen] = useState(false);
   return (
     <>
-    <Helmet>
-  <title>{title} | Alive Paris</title>
-</Helmet>
+      <Helmet>
+        <title>{title} | Alive Paris</title>
+      </Helmet>
 
-    <div className=" min-h-screen flex flex-col md:flex-row bg-stone-100">
-      {/* SIDEBAR (DESKTOP ONLY) */}
-      <aside className="hidden md:flex w-64 bg-gradient-to-b from-zinc-950 to-zinc-900 text-gray-200 flex-col shadow-2xl flex-shrink-0">
-        {/* LOGO */}
-        <div className="flex flex-col items-center justify-center px-6 my-10 gap-2">
-          <img src={Logo} alt="alive_paris_logo" className="w-20 h-20" />
-          <div className="text-center leading-tight">
-            <p className="text-sm font-semibold tracking-wide special-font">Alive Paris</p>
-            <p className="text-xs text-gray-400">Admin Console</p>
+      <div className=" min-h-screen flex flex-col md:flex-row bg-stone-100">
+        {/* SIDEBAR (DESKTOP ONLY) */}
+        <aside className="hidden md:flex w-64 bg-gradient-to-b from-zinc-950 to-zinc-900 text-gray-200 flex-col shadow-2xl flex-shrink-0">
+          {/* LOGO */}
+          <div className="flex flex-col items-center justify-center px-6 my-10 gap-2">
+            <img src={Logo} alt="alive_paris_logo" className="w-20 h-20" />
+            <div className="text-center leading-tight">
+              <p className="text-sm font-semibold tracking-wide special-font">Alive Paris</p>
+              <p className="text-xs text-gray-400">Admin Console</p>
+            </div>
           </div>
-        </div>
 
-        {/* NAV */}
-        <nav className="flex-1 px-3 py-5 space-y-1 text-sm">
-          {navItems.map(item => (
-            <NavLink
-              key={item.to}
-              end={item.to === "/auth/admin"}
-              to={item.to}
-              className={({ isActive }) =>
-                `flex items-center px-4 py-2.5 rounded-xl transition-all ${isActive
-                  ? "bg-white/90 text-black shadow-md"
-                  : "text-gray-300 hover:bg-white/10 hover:text-white"
-                }`
-              }
-            >
-              <span className="mr-3 text-lg">{item.icon}</span>
-              {item.label}
-            </NavLink>
-          ))}
-        </nav>
-
-        {/* FOOTER */}
-        <div className="fixed bottom-0 left-0  px-6 py-4 border-t border-white/10 text-xs text-gray-400">
-          Logged in as <span className="text-gray-300">Super Admin</span>
-        </div>
-      </aside>
-
-      {/* MAIN CONTENT */}
-      <div className="flex-1 flex flex-col min-w-0">
-        {/* HEADER */}
-        <header className="py-3 md:py-4 bg-white/70 backdrop-blur-xl border-b border-white/30 flex items-center justify-between px-6 shadow-sm">
-          <div>
-            <h1 className="text-md md:text-lg font-semibold text-gray-900">
-              Hi, user <span className="bg-black text-xs md:text-sm text-white px-2 py-1 rounded-full">Admin</span>
-            </h1>
-            <span className="text-xs md:text-sm text-gray-500">admin@campusrooms.com</span>
-          </div>
-          <div className="relative gap-3 md:gap-5 flex items-center text-sm">
-            <a href='/notifications' className="relative text-2xl">
-              <p className="absolute -top-2 -right-1 text-xs bg-red-500 text-white rounded-full h-5 w-5 flex items-center justify-center">
-                6
-              </p>
-              <IoIosNotifications />
-            </a>
-            <button
-              onClick={() => setOpen(!open)}
-              className="rounded-full text-3xl text-gray-700 hover:bg-gray-50 transition p-1"
-            >
-              <HiMenu />
-            </button>
-
-            {open && (
-              <div className="absolute right-0 top-12 w-32 bg-white border rounded-lg shadow-md">
-                <Link
-                  to="/"
-                  className="block px-4 py-2 hover:bg-gray-100"
-                  onClick={() => setOpen(false)}
-                >
-                  Home
-                </Link>
-                <button
-                  className="w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600"
-                  onClick={() => {
-                    setOpen(false);
-                    // logout logic here
-                  }}
-                >
-                  Logout
-                </button>
-              </div>
-            )}
-          </div>
-        </header>
-
-        {/* OUTLET */}
-        <main className="flex-1 p-4 md:p-6 pb-20 md:pb-6 overflow-auto min-w-0">
-          {/* min-w-0 ensures flex child can shrink */}
-          <Outlet />
-        </main>
-      </div>
-
-      {/* BOTTOM NAV (MOBILE ONLY) */}
-      <nav className="md:hidden fixed bottom-0 inset-x-0 m-2 rounded-[1.4rem] bg-white/90 backdrop-blur-xl border border-gray-200 shadow-2xl z-50">
-        <div className="flex justify-around items-center gap-1 h-16 px-1">
-          {navItems.map(item => {
-            const isActive =
-              location.pathname === item.to ||
-              (item.to === "/admin" && location.pathname === "/admin");
-
-            return (
+          {/* NAV */}
+          <nav className="flex-1 px-3 py-5 space-y-1 text-sm">
+            {navItems.map(item => (
               <NavLink
                 key={item.to}
+                end={item.to === "/auth/admin"}
                 to={item.to}
-                className={`flex-1 flex flex-col items-center justify-center text-[9px] p-2 rounded-[1.1rem] transition`}
-                style={isActive
-                  ? { backgroundColor: colors.primaryColor, fontWeight: '600', color: 'white' }
-                  : { color: colors.primaryColor }
+                className={({ isActive }) =>
+                  `flex items-center px-4 py-2.5 rounded-xl transition-all ${isActive
+                    ? "bg-white/90 text-black shadow-md"
+                    : "text-gray-300 hover:bg-white/10 hover:text-white"
+                  }`
                 }
               >
-                <span className="text-xl leading-none">{item.icon}</span>
-                <span className="mt-1">{item.label}</span>
+                <span className="mr-3 text-lg">{item.icon}</span>
+                {item.label}
               </NavLink>
-            );
-          })}
+            ))}
+          </nav>
+
+          {/* FOOTER */}
+          <div className="fixed bottom-0 left-0  px-6 py-4 border-t border-white/10 text-xs text-gray-400">
+            Logged in as <span className="text-gray-300">Super Admin</span>
+          </div>
+        </aside>
+
+        {/* MAIN CONTENT */}
+        <div className="flex-1 flex flex-col min-w-0">
+          {/* HEADER */}
+          <header className="py-3 md:py-4 bg-white/70 backdrop-blur-xl border-b border-white/30 flex items-center justify-between px-6 shadow-sm">
+            <div>
+              <h1 className="text-md md:text-lg font-semibold text-gray-900">
+                Hi, {user?.name || "😁"}
+                <span className="bg-black text-xs md:text-sm text-white px-2 py-1 rounded-full ml-2">Admin</span>
+              </h1>
+              <span className="text-xs md:text-sm text-gray-500">{user?.email}</span>
+            </div>
+            <div className="relative gap-3 md:gap-5 flex items-center text-sm">
+              <Link to='/auth/admin/notifications?role=admin' className="relative text-2xl">
+                <p className="absolute -top-2 -right-1 text-xs bg-red-500 text-white rounded-full h-5 w-5 flex items-center justify-center">
+                  6
+                </p>
+                <IoIosNotifications />
+              </Link>
+              <button
+                onClick={() => setOpen(!open)}
+                className="rounded-full text-3xl text-gray-700 hover:bg-gray-50 transition p-1"
+              >
+                <HiMenu />
+              </button>
+
+              {open && (
+                <div className="absolute right-0 top-12 w-32 bg-white border rounded-lg shadow-md">
+                  <Link
+                    to="/"
+                    className="block px-4 py-2 hover:bg-gray-100"
+                    onClick={() => setOpen(false)}
+                  >
+                    Home
+                  </Link>
+                  <button
+                    className="w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600"
+                    onClick={() => {
+                      setOpen(false);
+                      // logout logic here
+                    }}
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
+          </header>
+
+          {/* OUTLET */}
+          <main className="flex-1 p-4 md:p-6 pb-20 md:pb-6 overflow-auto min-w-0">
+            {/* min-w-0 ensures flex child can shrink */}
+            <Outlet />
+          </main>
         </div>
-      </nav>
-    </div>
+
+        {/* BOTTOM NAV (MOBILE ONLY) */}
+        <nav className="md:hidden fixed bottom-0 inset-x-0 m-2 rounded-[1.4rem] bg-white/90 backdrop-blur-xl border border-gray-200 shadow-2xl z-50">
+          <div className="flex justify-around items-center gap-1 h-16 px-1">
+            {navItems.map(item => {
+              const isActive =
+                location.pathname === item.to ||
+                (item.to === "/admin" && location.pathname === "/admin");
+
+              return (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  className={`flex-1 flex flex-col items-center justify-center text-[9px] p-2 rounded-[1.1rem] transition`}
+                  style={isActive
+                    ? { backgroundColor: colors.primaryColor, fontWeight: '600', color: 'white' }
+                    : { color: colors.primaryColor }
+                  }
+                >
+                  <span className="text-xl leading-none">{item.icon}</span>
+                  <span className="mt-1">{item.label}</span>
+                </NavLink>
+              );
+            })}
+          </div>
+        </nav>
+      </div>
     </>
   );
 };

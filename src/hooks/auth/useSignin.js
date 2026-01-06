@@ -38,7 +38,7 @@ export const useSignin = () => {
         navigate("/landowner");
 
       } else if (res.data.role === "ADMIN") {
-        navigate("/admin");
+        navigate("/auth/admin");
 
       } else {
         navigate("/");
@@ -59,9 +59,7 @@ export const useSignin = () => {
     }
   };
 
-  const forgotPassword = () => {
 
-  };
 
   return { signin, loading, error };
 };

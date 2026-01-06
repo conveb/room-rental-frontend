@@ -49,6 +49,8 @@ import { AddAmenities } from "./pages/admin/containers/AddAmenities";
 import AddProperty from "./pages/admin/AdminAddProperty";
 import AdminAudits from "./pages/admin/AdminAudits";
 import AdminMyProperty from "./pages/admin/containers/AdminMyProperty";
+import AdminReportsAndComplaints from "./pages/admin/AdminReports";
+import AdminSupportAndFeedback from "./pages/admin/AdminSupportAndFeedback";
 
 function App() {
   const showSplash = useSplash(1800);
@@ -78,18 +80,21 @@ function App() {
           <Route index element={<AdminDashboard />} />
           <Route path="rooms" element={<AdminStudents />} />
           <Route path="audits" element={<AdminAudits />} />
+          <Route path="notifications?role=admin" element={<NotificationPage />} />
           {/* <Route path="requests" element={<AdminRequests />} /> */}
           <Route path="admin_properties" element={<AdminMyProperty />} />
           <Route path="property/add_property" element={<AdminAddProperty />} />
           <Route path="property/add_country" element={<AddCountries />} />
           <Route path="property/add_location" element={<AddLocations />} />
           <Route path="property/add_amenities" element={<AddAmenities />} />
-          <Route path="reports" element={<AdminReports />} />
+          <Route path="reports&complaints" element={<AdminReportsAndComplaints />} />
+          <Route path="support&feedback" element={<AdminSupportAndFeedback />} />
         </Route>
 
         <Route element={<LandOwnerRoute />}>
           <Route path="/auth/landowner" element={<Layout />}>
             <Route index element={<Dashboard />} />
+            <Route path="notifications?role=landowner" element={<NotificationPage />} />
             <Route path="properties" element={<PropertiesList />} />
             <Route path="stats" element={<Stats />} />
             <Route path="account" element={<Account />} />
@@ -111,7 +116,7 @@ function App() {
             <Route path="report_landowner" element={<UserReportLandowner />} />
             <Route path="report_property" element={<UserReportProperty />} />
             <Route path="confirmation" element={<ConfirmationPage />} />
-            <Route path="notifications" element={<NotificationPage />} />
+            <Route path="notifications?role=user" element={<NotificationPage />} />
           </Route>
         </Route>
 
