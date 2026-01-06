@@ -26,7 +26,7 @@ export default function UserAccount() {
   const [isEditing, setIsEditing] = useState(false);
   const [editValues, setEditValues] = useState(user);
   const [showModal, setShowModal] = useState(false);
-  const {logout} = useAuth();
+  const { logout } = useAuth();
   useEffect(() => setSelectedAvatar(user.avatarUrl), [user.avatarUrl]);
   useEffect(() => setEditValues(user), [user]);
 
@@ -43,6 +43,23 @@ export default function UserAccount() {
   const handleDeleteAccount = () => {
     if (window.confirm("Delete account permanently?")) navigate("/");
   };
+
+  useEffect(() => {
+  const savedAvatarId = localStorage.getItem("selectedAvatarId");
+  if (savedAvatarId) {
+    const savedAvatar = Characters.find(
+      (char) => char.id === savedAvatarId
+    );
+    if (savedAvatar) {
+      setSelectedAvatar(savedAvatar.img);
+      setUser((prev) => ({
+        ...prev,
+        avatarUrl: savedAvatar.img,
+      }));
+    }
+  }
+}, []);
+
 
   return (
     <div className="min-h-screen bg-neutral-50 px-5 md:p-6  mt-20 ">
@@ -103,7 +120,12 @@ export default function UserAccount() {
                         return (
                           <button
                             key={char.id}
-                            onClick={() => setSelectedAvatar(char.img)}
+                            onClick={() => {
+                              setSelectedAvatar(char.img);
+                              localStorage.setItem("selectedAvatarId", char.id);
+                            }}
+
+
                             className={`snap-center flex-shrink-0 transition-all duration-300 ${isActive ? "scale-105" : "scale-95 opacity-70"
                               }`}
                           >

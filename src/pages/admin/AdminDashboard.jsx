@@ -11,10 +11,11 @@ import { PiStudent } from "react-icons/pi";
 import { FaPersonShelter } from "react-icons/fa6";
 import { IoIosPeople } from "react-icons/io";
 import { MdOutlineLibraryBooks } from "react-icons/md";
-
+import { MdImportantDevices } from "react-icons/md";
 import SkeletonAdmin from "../skeleton/skeletonAdmin";
 import { useAdminUsers } from "../../hooks/admin/useAdminUsers";
 import { Helmet } from "react-helmet";
+import { Link } from "react-router-dom";
 
 export default function AdminDashboard() {
   const { user } = useAuth();
@@ -122,6 +123,17 @@ export default function AdminDashboard() {
           color={'bg-orange-100'}
         />
       </div>
+<Link to={'/auth/admin/manage_constants'} >
+      <div className="flex gap-3 md:gap-5 items-center bg-white rounded-2xl p-2 md:p-4 my-3">
+        <div  className="bg-teal-200 p-3 md:p-5 rounded-xl">
+        <MdImportantDevices size={25}/>
+        </div>
+        <div className="">
+        <p>Manage Constants</p>
+        <p className="text-xs text-stone-400">Add Country , Add Locations , Add Amenities</p>
+        </div>
+      </div>
+</Link>
 
       {/* Recent Bookings */}
       <div className="bg-white rounded-xl shadow">

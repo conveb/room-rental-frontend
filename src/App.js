@@ -51,6 +51,7 @@ import AdminAudits from "./pages/admin/AdminAudits";
 import AdminMyProperty from "./pages/admin/containers/AdminMyProperty";
 import AdminReportsAndComplaints from "./pages/admin/AdminReports";
 import AdminSupportAndFeedback from "./pages/admin/AdminSupportAndFeedback";
+import AdminManageConstants from "./pages/admin/AdminManageConstants";
 
 function App() {
   const showSplash = useSplash(1800);
@@ -80,6 +81,7 @@ function App() {
           <Route index element={<AdminDashboard />} />
           <Route path="rooms" element={<AdminStudents />} />
           <Route path="audits" element={<AdminAudits />} />
+          <Route path="manage_constants" element={<AdminManageConstants />} />
           <Route path="notifications?role=admin" element={<NotificationPage />} />
           {/* <Route path="requests" element={<AdminRequests />} /> */}
           <Route path="admin_properties" element={<AdminMyProperty />} />
@@ -102,7 +104,7 @@ function App() {
           </Route>
         </Route>
 
-        <Route element={<PrivateRoute />}>
+        {/* <Route element={<PrivateRoute />}> */}
           <Route path="/auth/user" element={<UserLayout />}>
             <Route index path="home" element={<Accommodation />} />
             <Route path="account" element={<UserAccount />} />
@@ -118,7 +120,7 @@ function App() {
             <Route path="confirmation" element={<ConfirmationPage />} />
             <Route path="notifications?role=user" element={<NotificationPage />} />
           </Route>
-        </Route>
+        {/* </Route> */}
 
       </Routes>
     </>
