@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { MdAddCircle } from "react-icons/md";
 import { Dropdown } from "primereact/dropdown";
-import { useAmenities } from "../../../hooks/useAmenities";
+import { useAmenities } from "../../../hooks/admin/constants/useAmenities";
 import useMyProperties from "../../../hooks/property/useMyProperties";
 
 export default function MyProperties() {

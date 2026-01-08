@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { FiFilter } from "react-icons/fi";
 import { useProperties } from "../../../hooks/property/useProperties";
 import { FaSearch } from "react-icons/fa";
+import ImgSkeleton from '../../../Assets/pngs/img_skeleton.png'
 const Accommodation = () => {
   const {
     loading,
@@ -150,7 +151,7 @@ const Accommodation = () => {
       )}
 
       {/* PROPERTY LIST */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 px-4 md:px-20 mt-6">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 px-4 md:px-20 mt-6">
         {filteredProperties.map((property) => (
           <div
             key={property.id}
@@ -159,6 +160,7 @@ const Accommodation = () => {
             <img
               src={property.cover_image}
               alt={property.title}
+              onError={(e) => { e.target.onerror = null; e.target.src = ImgSkeleton; }}
               className="w-full h-52 object-cover"
             />
 

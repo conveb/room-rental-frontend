@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { FaPlusCircle } from "react-icons/fa";
+import { FaArrowLeft, FaPlusCircle } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 export default function UserComplaints() {
   const [complaints, setComplaints] = useState([
     {
@@ -15,6 +16,7 @@ export default function UserComplaints() {
       status: "Resolved",
     },
   ]);
+  const navigate = useNavigate();
 
   const [showModal, setShowModal] = useState(false);
   const [newComplaint, setNewComplaint] = useState({ title: "", description: "" });
@@ -35,20 +37,30 @@ export default function UserComplaints() {
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-10 space-y-6 mt-20">
-        <div>
-        <h1 className="text-3xl font-semibold text-gray-900 mb-2">Complaints</h1>
-        <p className="text-xs md:text-sm">You can view your registered complaints here also can register new complaints using the provided "New Complaint" button.</p>
-        </div>
+      <div>
+        <div className="flex gap-2 md:gap-5">
 
-        <div className="text-end">
+          <button
+            onClick={() => navigate(-1)}
+            className="h-9 w-9 rounded-full flex items-center justify-center
+        hover:bg-neutral-200 transition text-2xl"
+          >
+            <FaArrowLeft />
+          </button>
+          <h1 className="text-2xl md:text-3xl font-semibold text-gray-900 mb-2">Complaints</h1>
+        </div>
+        <p className="text-xs md:text-sm">You can view your registered complaints here also can register new complaints using the provided "New Complaint" button.</p>
+      </div>
+
+      <div className="text-end">
         <button
           onClick={() => setShowModal(true)}
           className="flex items-center gap-2 bg-black text-xs md:text-sm text-white px-5 py-3 rounded-xl hover:bg-gray-800 transition"
-          >
-              <FaPlusCircle/>
+        >
+          <FaPlusCircle />
           New Complaint
         </button>
-            </div>
+      </div>
 
       {/* Complaint List */}
       <div className="space-y-4">
@@ -67,11 +79,10 @@ export default function UserComplaints() {
             </div>
             <div className="flex items-center gap-4">
               <span
-                className={`px-3 py-1 text-xs rounded-full ${
-                  c.status === "Pending"
-                    ? "bg-yellow-100 text-yellow-700"
-                    : "bg-green-100 text-green-700"
-                }`}
+                className={`px-3 py-1 text-xs rounded-full ${c.status === "Pending"
+                  ? "bg-yellow-100 text-yellow-700"
+                  : "bg-green-100 text-green-700"
+                  }`}
               >
                 {c.status}
               </span>

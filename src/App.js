@@ -115,6 +115,7 @@ function App() {
             <Route path="support" element={<UserSupport />} />
             <Route path="payment" element={<PaymentPage />} />
             <Route path="complaints" element={<UserComplaints />} />
+            <Route path="send_feedback" element={<UserFeedback />} />
             <Route path="report_landowner" element={<UserReportLandowner />} />
             <Route path="report_property" element={<UserReportProperty />} />
             <Route path="confirmation" element={<ConfirmationPage />} />

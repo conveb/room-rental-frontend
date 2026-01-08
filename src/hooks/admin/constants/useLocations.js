@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { addLocationsApi, deleteLocationsApi, listAllLocationsApi } from "../services/allAPI";
+import { addLocationsApi, deleteLocationsApi, listAllLocationsApi } from "../../../services/allAPI";
 
 export const useLocations = () => {
   const [locations, setLocations] = useState([]);
@@ -19,7 +19,7 @@ export const useLocations = () => {
     }
   };
 
-    const addLocation = async (location_name) => {
+  const addLocation = async (location_name) => {
     if (!location_name?.trim()) throw new Error("Location name is required");
 
     try {
@@ -34,7 +34,7 @@ export const useLocations = () => {
   };
 
   const deleteLocation = async (id) => {
-    await deleteLocationsApi(id); 
+    await deleteLocationsApi(id);
     setLocations((prev) => prev.filter((l) => l.id !== id));
   };
 

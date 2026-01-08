@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { listAmenitiesApi, createAmenities, deleteAmenityApi } from "../services/allAPI";
+import { listAmenitiesApi, createAmenities, deleteAmenityApi } from "../../../services/allAPI";
 
 export const useAmenities = () => {
   const [amenities, setAmenities] = useState([]);
@@ -34,7 +34,7 @@ export const useAmenities = () => {
       setAdding(false);
     }
   };
-  
+
   const deleteAmenity = async (id) => {
     await deleteAmenityApi(id);
     setAmenities((prev) => prev.filter((a) => a.id !== id));

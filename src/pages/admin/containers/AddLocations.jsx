@@ -1,6 +1,6 @@
 import { useState } from "react";
 import ReactCountryFlag from "react-country-flag";
-import { useLocations } from "../../../hooks/useLocations";
+import { useLocations } from "../../../hooks/admin/constants/useLocations";
 
 export function AddLocations() {
   const { locations, loading, deleteLocation, addLocation,adding, refetch } = useLocations();

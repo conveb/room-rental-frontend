@@ -63,30 +63,7 @@ export default function UserAccount() {
 
   return (
     <div className="min-h-screen bg-neutral-50 px-5 md:p-6  mt-20 ">
-      {/* ====== TABS ====== */}
-      <div className="flex bg-white rounded-3xl overflow-hidden w-full p-2 gap-2">
-        <button
-          className={`flex-1 py-3 md:py-4 text-sm font-medium transition rounded-2xl shadow ${activeTab === "profile"
-            ? "bg-black font-medium text-white"
-            : "bg-white text-gray-500 hover:bg-gray-200"
-            }`}
-          onClick={() => setActiveTab("profile")}
-        >
-          Profile
-        </button>
-        <button
-          className={`flex-1 py-3 md:py-4 text-sm font-medium transition rounded-2xl shadow ${activeTab === "feedback"
-            ? "bg-black font-medium text-white"
-            : "bg-white text-gray-500 hover:bg-gray-200"
-            }`}
-          onClick={() => setActiveTab("feedback")}
-        >
-          Feedbacks
-        </button>
-      </div>
 
-      {/* ====== FEEDBACK TAB ====== */}
-      {activeTab === "feedback" && <UserFeedback />}
 
       {/* ====== PROFILE TAB ====== */}
       {activeTab === "profile" && (
@@ -218,6 +195,11 @@ export default function UserAccount() {
 
             {/* Security Actions */}
             <div className="space-y-2 text-sm p-0 md:px-5 mt-10 md:mt-0">
+            <Link to={'/auth/user/send_feedback'}>
+             <button className="w-full text-left p-4 rounded-xl border hover:bg-neutral-50">
+                Send Feedback
+              </button>
+            </Link>
               <button className="w-full text-left p-4 rounded-xl border hover:bg-neutral-50">
                 🔐 Reset password
               </button>

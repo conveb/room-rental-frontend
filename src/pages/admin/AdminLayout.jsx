@@ -35,6 +35,12 @@ const AdminLayout = () => {
   const title = titleMap[location.pathname] ?? "Admin";
   const { user, loading } = useAuth();
   const [open, setOpen] = useState(false);
+  const {logout} = useAuth();
+  const [showModal, setShowModal] = useState(false);
+    const handleConfirmLogout = async () => {
+    await logout();
+    setShowModal(false);
+  };
   return (
     <>
       <Helmet>
@@ -114,14 +120,41 @@ const AdminLayout = () => {
                     Home
                   </Link>
                   <button
-                    className="w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600"
-                    onClick={() => {
-                      setOpen(false);
-                      // logout logic here
-                    }}
-                  >
-                    Logout
-                  </button>
+                onClick={() => setShowModal(true)}
+                className="w-full text-left p-4 rounded-xl  hover:bg-neutral-50"
+              >
+                Logout
+              </button>
+              {showModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+                  <div className="bg-white rounded-2xl w-full max-w-md p-6 space-y-4">
+                    <h2 className="text-lg font-semibold text-gray-900">
+                      Confirm Logout
+                    </h2>
+
+                    <p className="text-sm text-gray-600">
+                      Are you sure you want to logout from all devices?
+                      This will end all active sessions.
+                    </p>
+
+                    <div className="flex justify-end gap-3 pt-3">
+                      <button
+                        onClick={() => setShowModal(false)}
+                        className="px-4 py-2 rounded-xl border text-sm hover:bg-gray-100 transition"
+                      >
+                        Cancel
+                      </button>
+
+                      <button
+                        onClick={handleConfirmLogout}
+                        className="px-4 py-2 rounded-xl bg-red-600 text-white text-sm hover:bg-red-700 transition"
+                      >
+                        Logout
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
                 </div>
               )}
             </div>

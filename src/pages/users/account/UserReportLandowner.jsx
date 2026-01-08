@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { FaPlusCircle } from "react-icons/fa";
+import { FaArrowLeft, FaPlusCircle } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 export default function UserReportLandowner() {
   const [reports, setReports] = useState([
@@ -16,7 +17,7 @@ export default function UserReportLandowner() {
       status: "Reviewed",
     },
   ]);
-
+const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [newReport, setNewReport] = useState({ title: "", description: "" });
 
@@ -38,7 +39,17 @@ export default function UserReportLandowner() {
     <div className="min-h-screen bg-gray-50 p-4 md:p-10 space-y-6 mt-20">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-semibold text-gray-900 mb-2">Report Landowner</h1>
+       <div className="flex gap-2 md:gap-5">
+              
+                        <button
+                          onClick={() => navigate(-1)}
+                          className="h-9 w-9 rounded-full flex items-center justify-center
+                      hover:bg-neutral-200 transition text-2xl"
+                        >
+                          <FaArrowLeft />
+                        </button>
+                        <h1 className="text-2xl md:text-3xl font-semibold text-gray-900 mb-2">Report Landowner</h1>
+                      </div>
         <p className="text-xs md:text-sm">
           You can view your previous reports here or submit a new report using the "New Report" button.
         </p>

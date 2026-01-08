@@ -1,49 +1,53 @@
 import { useState } from "react";
+import { useFeedback } from "../../../hooks/users/useFeedback";
 
 export default function UserFeedback() {
-  const [feedbacks, setFeedbacks] = useState([
-    { id: 1, text: "Great experience, very clean rooms!" },
-    { id: 2, text: "Easy booking process, loved it!" },
-  ]);
-  const [newFeedback, setNewFeedback] = useState("");
+  const { feedbacks, loading, addFeedback } = useFeedback();
+  const [comment, setComment] = useState("");
+  const [rating, setRating] = useState(5);
 
-  const handleAddFeedback = () => {
-    if (newFeedback.trim() === "") return;
+  const handleSubmit = async () => {
+    if (!comment.trim()) return;
 
-    const newEntry = {
-      id: Date.now(),
-      text: newFeedback.trim(),
-    };
-    setFeedbacks([newEntry, ...feedbacks]);
-    setNewFeedback("");
-  };
+    await addFeedback({
+      comment,
+      rating,
+    });
 
-  const handleDelete = (id) => {
-    setFeedbacks(feedbacks.filter((f) => f.id !== id));
+    setComment("");
+    setRating(5);
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-2 md:p-10 space-y-6 ">
+    <div className="min-h-screen bg-gray-50 p-2 md:p-10 space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl md:text-3xl font-semibold text-gray-900">Feedback</h1>
-        <p className="text-xs md:text-sm text-gray-500 mt-1">
-          Share your experience or view previous feedback.
-        </p>
-      </div>
+      <h1 className="text-2xl font-semibold">Feedback</h1>
 
       {/* Add Feedback */}
-      <div className="bg-white rounded-2xl shadow p-4 flex flex-col md:flex-row gap-3">
+      <div className="bg-white rounded-2xl shadow p-4 space-y-3">
         <input
           type="text"
           placeholder="Write your feedback..."
-          value={newFeedback}
-          onChange={(e) => setNewFeedback(e.target.value)}
-          className="flex-1 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-black"
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+          className="w-full px-4 py-3 rounded-xl border"
         />
+
+        <select
+          value={rating}
+          onChange={(e) => setRating(Number(e.target.value))}
+          className="w-full px-4 py-3 rounded-xl border"
+        >
+          {[1, 2, 3, 4, 5].map((r) => (
+            <option key={r} value={r}>
+              {r} Star{r > 1 && "s"}
+            </option>
+          ))}
+        </select>
+
         <button
-          onClick={handleAddFeedback}
-          className="bg-black text-white px-5 py-3 rounded-xl hover:bg-gray-800 transition"
+          onClick={handleSubmit}
+          className="bg-black text-white px-5 py-3 rounded-xl"
         >
           Submit
         </button>
@@ -51,24 +55,17 @@ export default function UserFeedback() {
 
       {/* Feedback List */}
       <div className="space-y-4">
-        {feedbacks.length === 0 && (
-          <p className="text-gray-500 text-center mt-4">
-            No feedback yet.
-          </p>
-        )}
+        {loading && <p>Loading...</p>}
 
         {feedbacks.map((fb) => (
           <div
             key={fb.id}
-            className="bg-white rounded-2xl shadow p-4 flex justify-between items-start gap-4"
+            className="bg-white rounded-2xl shadow p-4"
           >
-            <p className="text-gray-900">{fb.text}</p>
-            <button
-              onClick={() => handleDelete(fb.id)}
-              className="text-red-600 hover:bg-red-50 px-3 py-1 rounded-lg transition text-sm"
-            >
-              Delete
-            </button>
+            <p className="font-medium">{fb.comment}</p>
+            <p className="text-sm text-gray-500">
+              Rating: {fb.rating} ⭐
+            </p>
           </div>
         ))}
       </div>

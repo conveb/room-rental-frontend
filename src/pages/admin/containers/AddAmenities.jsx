@@ -1,6 +1,6 @@
 import { useState } from "react";
+import { useAmenities } from "../../../hooks/admin/constants/useAmenities";
 
-import { useAmenities } from "../../../hooks/useAmenities";
 
 export function AddAmenities() {
   const [name, setName] = useState("");

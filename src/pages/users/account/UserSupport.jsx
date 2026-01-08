@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaArrowRight } from "react-icons/fa";
+import { TfiWrite } from "react-icons/tfi";
+import { MdSupportAgent } from "react-icons/md";
 export default function UserSupport() {
   const [category, setCategory] = useState("general");
 
@@ -17,34 +19,50 @@ export default function UserSupport() {
       {/* Quick Help Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Link to={'/auth/user/complaints'}>
-          <div className="flex justify-between items-center gap-3 bg-white rounded-2xl shadow-sm p-3 md:p-5">
-            <div>
-              <p className="font-medium text-gray-900">Complaints</p>
-              <p className="text-xs md:text-sm text-gray-500 mt-1">
-                Problems with payments, cancellations, or refunds.
+          <div className="flex justify-between items-center gap-3 bg-white rounded-2xl shadow-sm p-2 md:p-4 border">
+            <div className="flex gap-3">
+              <p className="bg-orange-200 rounded-xl flex items-center justify-center p-5">
+                <TfiWrite size={25} />
               </p>
+              <div>
+                <p className="font-medium text-gray-900">Complaints</p>
+                <p className="text-xs md:text-sm text-gray-500 mt-1">
+                  Problems with payments, cancellations, or refunds.
+                </p>
+              </div>
             </div>
             <FaArrowRight size={20} />
           </div>
         </Link>
         <Link to={'/auth/user/report_property'}>
-          <div className="flex justify-between items-center gap-3 bg-white rounded-2xl shadow-sm p-3 md:p-5">
-            <div>
-              <p className="font-medium text-gray-900">Report Property</p>
-              <p className="text-xs md:text-sm text-gray-500 mt-1">
-                Fake listings, incorrect details, or policy violations.
-              </p>
+          <div className="flex justify-between items-center gap-3 bg-white rounded-2xl shadow-sm p-2 md:p-4 border">
+            <div className="flex gap-3">
+                <p className="bg-emerald-200 rounded-xl flex items-center justify-center p-5"> 
+                  <TfiWrite size={25} />
+                </p>
+              <div >
+                <p className="font-medium text-gray-900">Report Property</p>
+                <p className="text-xs md:text-sm text-gray-500 mt-1">
+                  Fake listings, incorrect details, or policy violations.
+                </p>
+              </div>
             </div>
             <FaArrowRight size={20} />
           </div>
         </Link>
         <Link to={'/auth/user/report_landowner'}>
-          <div className="flex justify-between items-center gap-3 bg-white rounded-2xl shadow-sm p-3 md:p-5">
-            <div>
+          <div className="flex justify-between items-center gap-3 bg-white rounded-2xl shadow-sm p-2 md:p-4 border">
+            <div className="flex gap-3">
+              <p className="bg-blue-200 rounded-xl flex items-center justify-center p-5"> 
+                  <TfiWrite size={25} />
+                </p>
+                <div>
+
               <p className="font-medium text-gray-900">Report Owner</p>
               <p className="text-xs md:text-sm text-gray-500 mt-1">
                 Suspicious behavior or guideline violations.
               </p>
+                </div>
             </div>
             <FaArrowRight size={20} />
           </div>
@@ -52,8 +70,10 @@ export default function UserSupport() {
       </div>
 
       {/* Support Form */}
-      <div className="bg-white rounded-2xl shadow-sm  p-3 md:p-6 space-y-5 ">
-        <h2 className="text-lg font-semibold text-gray-900 mt-10">Submit a Support Request</h2>
+      <div className="bg-white rounded-2xl shadow-sm  p-3 md:p-6 space-y-5 border">
+        <h2 className="flex items-center gap-3 text-lg font-semibold text-gray-900">
+          <MdSupportAgent size={50} className="p-2 bg-teal-200 rounded-xl"/>
+          Submit a Support Request</h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>

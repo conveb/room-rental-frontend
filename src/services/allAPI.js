@@ -48,6 +48,8 @@ export const getAllSupportApi= ()=>commonAPI('get','/api/v1/admin/support/')
 export const updateStatusApi = (id, data) => commonAPI("patch", `/api/v1/admin/support/${id}/update/`, data);
 
 export const getAllFeedbackApi= ()=>commonAPI('get','/api/v1/feedback') 
+export const sendFeedbackApi= (data)=>commonAPI('post','/api/v1/feedback/create/',data) 
+// /feedback/create/
 // /bookings/90edd763-eb24-47a7-ab80-02289c6c9c3b/status/ <- check status of selected bookings
 // /bookings/90edd763-eb24-47a7-ab80-02289c6c9c3b/complete/ <-complete selected booking
 // /properties/{{propertyId}}/ <- view selected property
@@ -55,7 +57,7 @@ export const getAllFeedbackApi= ()=>commonAPI('get','/api/v1/feedback')
 // /token/ <- list bookings (view if the property is booked or not)
 
 // /payments/history
-// /bookings/my
+export const getMyBookingsApi= ()=> commonAPI('get','/api/v1/bookings/my') 
 // /payments/razorpay/webhook
 // /bookings/d9ebc43d-0693-4bef-8529-a9d47127e480/cancel/
 // /bookings/90edd763-eb24-47a7-ab80-02289c6c9c3b

@@ -75,23 +75,14 @@ export default function Header() {
           <li><Link to="/workingonit">Rent a Room</Link></li>
           <li><Link to="/workingonit">Contact</Link></li>
 
-          {
-            !loading && (
-              user ? (
-                <Link to={getAccountRoute(role)}>
-                  <li className="bg-black text-white px-3 py-3 border border-white border-2 rounded-full border border-stone-700">
-                    <FaRegUser />
-                  </li>
-                </Link>
-              ) : (
-                <li className="bg-black text-white px-6 py-2 rounded-full border border-stone-700">
-                  <Link to="/signin">
-                    Sign In
-                  </Link>
-                </li>
-              )
-            )
-          }
+          <li className="bg-black text-white  rounded-full border border-stone-700">
+            <Link to={user ? getAccountRoute(role) : "/signin"}>
+            <button className="p-3">
+              {user ? <FaRegUser /> : "Sign In"}
+            </button>
+            </Link>
+          </li>
+
 
         </ul>
 
