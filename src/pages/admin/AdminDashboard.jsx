@@ -113,9 +113,9 @@ export default function AdminDashboard() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card title="Students" value={studentsCount} icon={PiStudent} color={'bg-sky-100'}/>
-        <Card title="Landowners" value={landOwnersCount} icon={FaPersonShelter} color={'bg-emerald-100'}/>
-        <Card title="Total Users" value={totalUsers} icon={IoIosPeople} color={'bg-purple-100'}/>
+        <Card title="Students" value={studentsCount} icon={PiStudent} color={'bg-sky-100'} />
+        <Card title="Landowners" value={landOwnersCount} icon={FaPersonShelter} color={'bg-emerald-100'} />
+        <Card title="Total Users" value={totalUsers} icon={IoIosPeople} color={'bg-purple-100'} />
         <Card
           title="Total Bookings"
           value={bookings.length}
@@ -123,22 +123,26 @@ export default function AdminDashboard() {
           color={'bg-orange-100'}
         />
       </div>
-<Link to={'/auth/admin/manage_constants'} >
-      <div className="flex gap-3 md:gap-5 items-center bg-white rounded-2xl p-2 md:p-4 my-3">
-        <div  className="bg-teal-200 p-3 md:p-5 rounded-xl">
-        <MdImportantDevices size={25}/>
+      <Link to={'/auth/admin/manage_constants'} >
+        <div className="flex gap-3 md:gap-5 items-center bg-white rounded-2xl p-2 md:p-4 my-3">
+          <div className="bg-teal-200 p-3 md:p-5 rounded-xl">
+            <MdImportantDevices size={25} />
+          </div>
+          <div className="">
+            <p>Manage Constants</p>
+            <p className="text-xs text-stone-400">Add Country , Add Locations , Add Amenities</p>
+          </div>
         </div>
-        <div className="">
-        <p>Manage Constants</p>
-        <p className="text-xs text-stone-400">Add Country , Add Locations , Add Amenities</p>
-        </div>
-      </div>
-</Link>
+      </Link>
+
 
       {/* Recent Bookings */}
       <div className="bg-white rounded-xl shadow">
-        <div className="p-4 border-b">
+        <div className="p-4 border-b flex justify-between items-center">
           <h3 className="text-lg font-semibold">Recent Bookings</h3>
+          <Link to={'/auth/admin/view_bookings'}>
+          <p className="text-xs md:text-sm">View All Bookings</p>
+          </Link>
         </div>
 
         <div className="overflow-x-auto">
@@ -163,8 +167,8 @@ export default function AdminDashboard() {
                   <td className="p-3">
                     <span
                       className={`px-2 py-1 rounded-full text-xs font-medium ${booking.status === "CONFIRMED"
-                          ? "bg-green-100 text-green-700"
-                          : "bg-yellow-100 text-yellow-700"
+                        ? "bg-green-100 text-green-700"
+                        : "bg-yellow-100 text-yellow-700"
                         }`}
                     >
                       {booking.status}
@@ -309,7 +313,7 @@ export default function AdminDashboard() {
   );
 }
 
-const Card = ({ title, value, icon: Icon , color }) => (
+const Card = ({ title, value, icon: Icon, color }) => (
   <div className="bg-white p-2 md:p-3 rounded-xl shadow flex items-center gap-5">
     {Icon && (
       <div className={`p-3 rounded-xl ${color}  text-gray-700`}>

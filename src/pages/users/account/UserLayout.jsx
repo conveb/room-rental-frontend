@@ -77,43 +77,18 @@ const UserLayout = () => {
             <span className="text-xs md:text-sm text-gray-500">admin@campusrooms.com</span>
           </div>
           <div className="relative gap-3 md:gap-5 flex items-center text-sm">
-          <a href='/notifications' className="relative text-2xl">
+          <Link to='/auth/user/notifications' className="relative text-2xl">
           <p className="absolute -top-2 -right-1 text-xs bg-red-500 text-white rounded-full h-5 w-5 flex items-center justify-center">
             6
           </p>
           <IoIosNotifications/>
-          </a>
+          </Link>
           <Link to={"/auth/user/saved"}>
           <p className="text-xl">
           <IoBookmark />
           </p>
           </Link>
-            {/* <button
-              onClick={() => setOpen(!open)}
-              className="rounded-full text-3xl text-gray-700 hover:bg-gray-50 transition p-1"
-            >
-              <HiMenu />
-            </button>
-
-            {open && (
-              <div className="absolute right-0 top-12 w-32 bg-white border rounded-lg shadow-md">
-                <Link
-                  to="/"
-                  className="block px-4 py-2 hover:bg-gray-100"
-                  onClick={() => setOpen(false)}
-                >
-                  Home
-                </Link>
-                <button
-                  className="w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600"
-                  onClick={() => {
-                    setOpen(false);
-                  }}
-                >
-                  Logout
-                </button>
-              </div>
-            )} */}
+           
           </div>
         </header>
 

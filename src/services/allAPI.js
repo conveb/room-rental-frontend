@@ -57,7 +57,9 @@ export const sendFeedbackApi= (data)=>commonAPI('post','/api/v1/feedback/create/
 // /token/ <- list bookings (view if the property is booked or not)
 
 // /payments/history
-export const getMyBookingsApi= ()=> commonAPI('get','/api/v1/bookings/my') 
+// export const getMyBookingsApi= ()=> commonAPI('get','/api/v1/bookings/my') 
+export const getAllBookings= ()=> commonAPI('get','/api/v1/admin/bookings') 
+// 
 // /payments/razorpay/webhook
 // /bookings/d9ebc43d-0693-4bef-8529-a9d47127e480/cancel/
 // /bookings/90edd763-eb24-47a7-ab80-02289c6c9c3b
