@@ -136,7 +136,7 @@ export default function AdminDashboard() {
           </div>
           <div className="">
             <p>Manage Constants</p>
-            <p className="text-xs text-stone-400">Add Country , Add Locations , Add Amenities</p>
+            <p className="text-xs text-stone-400">Add Country , Add Locations , Add Amenities , Groups and Permissions</p>
           </div>
         </div>
       </Link>

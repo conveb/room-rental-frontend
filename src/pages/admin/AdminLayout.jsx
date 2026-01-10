@@ -15,6 +15,7 @@ import { useAuth } from "../../context/AuthContext";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
 import { LuHandshake } from "react-icons/lu";
 import { Helmet } from "react-helmet";
+import { useUserProfile } from "../../hooks/users/useUserProfile";
 const titleMap = {
   "/auth/admin": "Dashboard",
   "/auth/admin/audits": "Audits",
@@ -41,6 +42,8 @@ const AdminLayout = () => {
     await logout();
     setShowModal(false);
   };
+
+  const {fetchUserProfile} = useUserProfile();
   return (
     <>
       <Helmet>
@@ -91,7 +94,7 @@ const AdminLayout = () => {
           <header className="py-3 md:py-4 bg-white/70 backdrop-blur-xl border-b border-white/30 flex items-center justify-between px-6 shadow-sm">
             <div>
               <h1 className="text-md md:text-lg font-semibold text-gray-900">
-                Hi, {user?.name || "😁"}
+                Hi, {fetchUserProfile?.full_name || "😁"}
                 <span className="bg-black text-xs md:text-sm text-white px-2 py-1 rounded-full ml-2">Admin</span>
               </h1>
               <span className="text-xs md:text-sm text-gray-500">{user?.email}</span>

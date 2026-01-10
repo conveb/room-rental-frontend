@@ -151,11 +151,15 @@ const Accommodation = () => {
       )}
 
       {/* PROPERTY LIST */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 px-4 md:px-20 mt-6">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 px-2 md:px-20 mt-6">
         {filteredProperties.map((property) => (
+          <Link
+            to={`/accommodation/${property.id}`} key={property.id}
+            
+          >
           <div
             key={property.id}
-            className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition"
+            className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition"
           >
             <img
               src={property.cover_image}
@@ -164,31 +168,27 @@ const Accommodation = () => {
               className="w-full h-52 object-cover"
             />
 
-            <div className="p-4">
-              <h2 className="text-lg font-semibold">
+            <div className="p-3 md:p-4">
+              <h2 className="text-sm md:text-lg font-semibold">
                 {property.title}
               </h2>
 
-              <p className="text-gray-500 text-sm">
+              <p className="text-gray-500 text-xs md:text-sm">
                 {property.city}, {property.country}
               </p>
 
+
+              <p className="text-xs md:text-sm text-gray-500">
+                Rooms: <span className="font-bold text-black">{property.rooms}</span> · Max <span className="font-bold text-black">{property.max_people}</span> people
+              </p>
               <p className="mt-2 font-medium">
                 €{property.rent_per_month} / month
               </p>
 
-              <p className="text-sm text-gray-500">
-                Rooms: {property.rooms} · Max {property.max_people} people
-              </p>
-
-              <Link
-                to={`/accommodation/${property.id}`}
-                className="block mt-4 bg-black text-white py-2 rounded-lg text-center"
-              >
-                View details
-              </Link>
+                
             </div>
           </div>
+              </Link>
         ))}
       </div>
 
