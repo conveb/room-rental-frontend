@@ -19,6 +19,8 @@ import { toast } from "react-toastify";
 import { useProperties } from "../../hooks/property/useProperties";
 import ImgSkeleton from '../../Assets/pngs/img_skeleton.png'
 import { getAvatarColor } from "./getAvatarColor";
+import { useBlockUser } from "../../hooks/users/useBlockUser";
+import StudentDetailsModal from "./components/StudentDetailsModal";
 export default function AdminDashboard() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("overview");
@@ -83,16 +85,16 @@ export default function AdminDashboard() {
   };
 
   // ---------------- Actions ----------------
-  const addLocation = async () => {
-    if (!newLocation) return;
-    try {
-      await addLocationAPI({ location: newLocation });
-      setNewLocation("");
-      fetchProperties();
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  // const addLocation = async () => {
+  //   if (!newLocation) return;
+  //   try {
+  //     await addLocationAPI({ location: newLocation });
+  //     setNewLocation("");
+  //     fetchProperties();
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // };
 
   const deleteLocation = async (id) => {
     try {
@@ -111,6 +113,13 @@ export default function AdminDashboard() {
       console.error(err);
     }
   };
+  const { blockUser, blocking } = useBlockUser();
+
+  const [showDetails, setShowDetails] = useState(false);
+  const [showBlockModal, setShowBlockModal] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [reason, setReason] = useState("");
+
 
   // ---------------- Render ----------------
   const renderOverview = () => (
@@ -221,14 +230,22 @@ export default function AdminDashboard() {
         </select>
       </div>
 
-
       {loading ? (
         <SkeletonAdmin />
       ) : filteredUsers.length === 0 ? (
         <p>No users found</p>
       ) : (
         filteredUsers.map(u => (
-          <div key={u.id} className="relative border p-2 rounded-2xl flex gap-3 items-center">
+          <div
+            key={u.id}
+            className="relative border p-2 rounded-2xl flex gap-3 items-center cursor-pointer"
+            onClick={() => {
+              setSelectedUser(u);
+              setShowDetails(true);
+            }}
+
+
+          >
 
             {/* Avatar */}
             <div
@@ -236,16 +253,11 @@ export default function AdminDashboard() {
                 }`}
             >
               {u.avatar ? (
-                <img
-                  src={u.avatar}
-                  alt={u.full_name}
-                  className="w-full h-full object-cover"
-                />
+                <img src={u.avatar} alt={u.full_name} className="w-full h-full object-cover" />
               ) : (
                 u.full_name?.charAt(0).toUpperCase()
               )}
             </div>
-
 
             {/* User Info */}
             <div>
@@ -263,10 +275,80 @@ export default function AdminDashboard() {
             </span>
           </div>
         ))
+      )}
+      {showDetails && selectedUser && (
+        <StudentDetailsModal
+          id={selectedUser.id}
+          onClose={() => {
+            setShowDetails(false);
+            setSelectedUser(null);
+          }}
+          onBlock={() => {
+            setShowBlockModal(true);
+          }}
+        />
+      )}
 
+
+      {/* BLOCK MODAL */}
+      {showBlockModal && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl p-6 w-[90%] max-w-md space-y-4">
+
+            <h3 className="text-lg font-semibold">Block User</h3>
+            <p className="text-sm text-gray-500">
+              {selectedUser?.full_name}
+            </p>
+
+            <textarea
+              value={reason}
+              onChange={e => setReason(e.target.value)}
+              placeholder="Enter reason..."
+              className="w-full border rounded-xl p-3 text-sm resize-none"
+              rows={4}
+            />
+
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => {
+                  setShowBlockModal(false);
+                  setReason("");
+                  setSelectedUser(null);
+                }}
+                className="px-4 py-2 rounded-xl border"
+              >
+                Cancel
+              </button>
+
+              <button
+                disabled={blocking || !reason}
+                onClick={async () => {
+                  const success = await blockUser(selectedUser.id, {
+                    is_active: false,
+                    reason,
+                  });
+
+                  if (success) {
+                    setShowBlockModal(false);
+                    setReason("");
+                    setSelectedUser(null);
+                  }
+                }}
+                className="px-4 py-2 rounded-xl bg-red-500 text-white disabled:opacity-50"
+              >
+                {blocking ? "Blocking..." : "Block"}
+              </button>
+            </div>
+
+          </div>
+        </div>
       )}
     </div>
   );
+
+
+
+
 
   const renderProperties = () => (
     <div className="space-y-4">

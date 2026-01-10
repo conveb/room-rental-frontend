@@ -9,7 +9,7 @@ export default function UserBookings() {
   const [bookingTab, setBookingTab] = useState("upcoming");
 
   return (
-    <div className="space-y-3 px-3 md:p-6 mt-20">
+    <div className="space-y-3 px-3 md:p-6 mt-20 md:mt-0 md:mx-auto md:container">
       {/* MAIN TABS */}
       <div className="flex bg-white rounded-3xl overflow-hidden w-full p-2 gap-2">
         {["bookings", "payments"].map((tab) => (

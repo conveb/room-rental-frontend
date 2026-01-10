@@ -2,7 +2,7 @@ import React from "react";
 
 const UserPayments = () => {
     return (
-        <div className="min-h-screen bg-gray-50 px-2 md:p-10 py-5">
+        <div className="min-h-screen  px-2 md:p-10 py-5">
             {/* HEADER */}
             <div className="mb-8">
                 <h1 className="text-xl md:text-3xl font-semibold text-gray-900">

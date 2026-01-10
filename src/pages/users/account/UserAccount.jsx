@@ -12,6 +12,7 @@ import { MdOutlinePassword } from "react-icons/md";
 import { TiUserDelete } from "react-icons/ti";
 import { AiOutlineLogout } from "react-icons/ai";
 import { MdFeedback } from "react-icons/md";
+import UserProfileSkeleton from "../../skeleton/UserProfileSkeleton";
 export default function UserAccount() {
   const navigate = useNavigate();
   const { logout } = useAuth();
@@ -105,7 +106,7 @@ export default function UserAccount() {
   };
 
   if (loading) {
-    return <div className="mt-32 text-center text-sm">Loading profile...</div>;
+    return <div className="mt-0 text-center text-sm"><UserProfileSkeleton/></div>;
   }
 
   if (error) {
@@ -115,7 +116,7 @@ export default function UserAccount() {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-neutral-50 px-5 md:p-6 mt-20">
+    <div className="min-h-screen px-5 md:p-6 mt-20 md:mt-0 md:mx-auto md:container">
       {activeTab === "profile" && (
         <div className="space-y-5 mt-3">
           <div className="bg-white rounded-3xl p-6 shadow text-center">
@@ -173,7 +174,7 @@ export default function UserAccount() {
               </div>
 
               <div>
-                <h2 className="font-semibold text-lg">{user.full_name}</h2>
+                <h2 className="font-semibold text-lg first-letter:uppercase">{user.full_name}</h2>
                 <p className="text-xs text-neutral-500">{user.email}</p>
               </div>
             </div>

@@ -14,9 +14,8 @@ export default function Header() {
     switch (role) {
       case "STUDENT":
         return "/auth/user/home";
-      case "LANDOWNER":
-        console.log('its landowner');
-        return "/landowner";
+      case "LAND_OWNER":
+        return "/auth/landowner";
       case "ADMIN":
         return "/auth/admin";
       default:

@@ -13,16 +13,19 @@ export const resendOtpAPI = (payload) => commonAPI("post", "/api/v1/auth/resend-
 export const getAllUsersAPI = ()=>commonAPI('get','/api/v1/admin/users') 
 export const AuthAPI = () => commonAPI("get", "/api/v1/auth/me");
 export const getUserProfileAPI = () => commonAPI("get", "/api/v1/me/profile");
+export const getUserCompleteDetailsAPI = (id) => commonAPI("get", `/api/v1/admin/users/students/${id}/detail`);
 export const updateUserProfileAPI = (payload) => commonAPI("patch", "/api/v1/me/profile/update/",payload);
 export const changeUserPasswordAPI = (payload) => commonAPI("post", "/api/v1/me/reset-password/",payload);
-export const deleteUserProfileAPI = () => commonAPI("post", "/api/v1/me/delete-account/");
+export const deleteUserProfileAPI = () => commonAPI("delete", "/api/v1/me/delete-account/");
+export const blockUserAPI = (userId, payload) => commonAPI("patch", `/api/v1/admin/users/${userId}/status/`, payload);
+
 export const LogoutAPI = () => commonAPI("post", "/api/v1/logout/");
 
 // export const getPropertiesAPI = ()=>commonAPI('post','/api/v1/') 
-export const approveLandownerAPI = ()=>commonAPI('post','/api/v1/') 
-export const addLocationAPI = ()=>commonAPI('post','/api/v1/') 
+// export const approveLandownerAPI = ()=>commonAPI('post','/api/v1/') 
+// export const addLocationAPI = ()=>commonAPI('post','/api/v1/') 
 export const getBookingsAPI= ()=>commonAPI('post','/api/v1/') 
-export const toggleBlockUserAPI= ()=>commonAPI('post','/api/v1/') 
+// export const toggleBlockUserAPI= ()=>commonAPI('post','/api/v1/') 
 export const approvePropertyAPI= ()=>commonAPI('post','/api/v1/') 
 
 export const addLocationsApi= (data)=>commonAPI('post','/api/v1/locations/',data) 

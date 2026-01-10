@@ -14,10 +14,10 @@ import { IoIosNotifications } from "react-icons/io";
 
 
 const navItems = [
-  { to: "/landowner", label: "Dashboard", icon: <HiMiniHome /> },
-  { to: "/landowner/properties", label: "Properties", icon: <FaDoorOpen /> },
-  { to: "/landowner/stats", label: "Stats", icon: <FaMoneyCheckDollar /> },
-  { to: "/landowner/account", label: "Account", icon: <FaUserGear /> },
+  { to: "/auth/landowner", label: "Dashboard", icon: <HiMiniHome /> },
+  { to: "/auth/landowner/properties", label: "Properties", icon: <FaDoorOpen /> },
+  { to: "/auth/landowner/stats", label: "Stats", icon: <FaMoneyCheckDollar /> },
+  { to: "/auth/landowner/account", label: "Account", icon: <FaUserGear /> },
 ];
 
 const Layout = () => {

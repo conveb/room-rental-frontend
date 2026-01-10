@@ -7,7 +7,7 @@ export default function UserSupport() {
   const [category, setCategory] = useState("general");
 
   return (
-    <div className="space-y-6 px-5 md:p-6 mt-20">
+    <div className="space-y-6 px-5 md:p-6 mt-20 md:mt-0 md:mx-auto md:container">
       {/* Header */}
       <div>
         <h1 className="text-2xl font-semibold text-gray-900">Support & Help</h1>

@@ -23,10 +23,10 @@ const Accommodation = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-14">
+    <div className="min-h-screen bg-gray-50 pb-14 ">
       {/* HEADER */}
       <div className="bg-black px-4 md:px-20 pb-6">
-        <h1 className="text-2xl md:text-4xl font-semibold text-white text-center mb-6 pt-24 md:pt-28">
+        <h1 className="text-2xl md:text-4xl font-semibold text-white text-center mb-6 pt-24 md:pt-14">
           Find Rooms
         </h1>
 
@@ -151,7 +151,7 @@ const Accommodation = () => {
       )}
 
       {/* PROPERTY LIST */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 px-2 md:px-20 mt-6">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 px-2 md:px-32 mt-6 ">
         {filteredProperties.map((property) => (
           <Link
             to={`/accommodation/${property.id}`} key={property.id}
@@ -165,7 +165,7 @@ const Accommodation = () => {
               src={property.cover_image}
               alt={property.title}
               onError={(e) => { e.target.onerror = null; e.target.src = ImgSkeleton; }}
-              className="w-full h-52 object-cover"
+              className="w-full h-58 object-cover"
             />
 
             <div className="p-3 md:p-4">

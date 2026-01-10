@@ -71,7 +71,7 @@ const renderOverview = () => (
     </div>
 
     {/* 2. PROPERTY STATUS OVERVIEW */}
-    <div className="rounded-2xl bg-white/70 backdrop-blur-xl shadow-xl p-4 sm:p-6 col-span-6 md:col-span-2">
+    {/* <div className="rounded-2xl bg-white/70 backdrop-blur-xl shadow-xl p-4 sm:p-6 col-span-6 md:col-span-2">
       <h3 className="text-base sm:text-lg font-semibold mb-4">
         Property Status
       </h3>
@@ -87,7 +87,7 @@ const renderOverview = () => (
           Rejected · 1
         </span>
       </div>
-    </div>
+    </div> */}
 
     </div>
     {/* 3. RECENT ACTIVITY */}
@@ -98,11 +98,11 @@ const renderOverview = () => (
 
       <ul className="space-y-3 text-sm">
         <li className="flex justify-between">
-          <span className="flex gap-3 items-center text-green-600"><FaCheckDouble/>Property approved</span>
+          <span className="flex gap-3 items-center text-green-600"><FaCheckDouble/>Property Booked</span>
           <span className="text-gray-500">2 hrs ago</span>
         </li>
         <li className="flex justify-between">
-          <span className="flex gap-3 items-center text-blue-600"><FaCheck/>Booking completed</span>
+          <span className="flex gap-3 items-center text-blue-600"><FaCheck/>Booking Requested</span>
           <span className="text-gray-500">Yesterday</span>
         </li>
         <li className="flex justify-between">

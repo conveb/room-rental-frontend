@@ -6,7 +6,7 @@ export function LandOwnerRoute() {
 
   if (loading) return <>loading...</>;
 
-  if (!user || user.role !== "LANDOWNER") {
+  if (!user || user.role_name !== "LAND_OWNER") {
     return <Navigate to="/page-not-found" replace />;
   }
 

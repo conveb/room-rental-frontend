@@ -117,8 +117,8 @@ const AccommodationDetails = () => {
               </div>
 
               {/* Action Buttons */}
-              <div className="sticky bottom-0 p-3 border rounded-xl bg-white">
-              <button onClick={() => navigate("/payment", { state: { property } })} className=" w-full bg-black text-white py-2.5 rounded-lg">
+              <div className="sticky bottom-2 p-3 border rounded-xl bg-white">
+              <button onClick={() => navigate("/auth/user/payment", { state: { property } })} className=" w-full bg-black text-white py-2.5 rounded-lg">
                 Request booking
               </button>
               </div>
