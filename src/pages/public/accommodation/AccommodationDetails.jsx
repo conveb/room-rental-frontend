@@ -90,14 +90,14 @@ const AccommodationDetails = () => {
             </div>
 
             {/* Price & Booking */}
-            <div className="rounded-2xl border bg-white p-5 shadow-sm space-y-4">
-              <div className="flex justify-between items-baseline">
+            <div className="rounded-2xl border bg-white p-3 md:p-5 shadow-sm space-y-4">
+              <div className="flex justify-between items-center">
                 <div>
                   <span className="text-xl md:text-3xl font-semibold">€{property.rent_per_month}</span>
                   <span className="text-sm text-gray-500"> / month</span>
                 </div>
-                <span className="text-xs bg-green-50 text-green-600 px-2 py-1 rounded-full">
-                  Available from {property.available_from}
+                <span className="flex flex-col text-xs bg-green-50 text-green-600 px-2 py-1 rounded-full">
+                 <p> Available from :</p> <p>{property.available_from}</p>
                 </span>
               </div>
 
@@ -117,9 +117,11 @@ const AccommodationDetails = () => {
               </div>
 
               {/* Action Buttons */}
-              <button onClick={() => navigate("/payment", { state: { property } })} className="w-full bg-black text-white py-2.5 rounded-lg">
+              <div className="sticky bottom-0 p-3 border rounded-xl bg-white">
+              <button onClick={() => navigate("/payment", { state: { property } })} className=" w-full bg-black text-white py-2.5 rounded-lg">
                 Request booking
               </button>
+              </div>
               {/* <button className="w-full border py-2.5 rounded-lg">
                 Chat with landlord
               </button> */}
