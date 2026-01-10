@@ -28,10 +28,10 @@ const AccommodationDetails = () => {
       {/* Main */}
       <main className="max-w-6xl mx-auto px-4 py-8">
         {/* Breadcrumb */}
-        <div className="text-xs text-gray-500 mb-4">
+        {/* <div className="text-xs text-gray-500 mb-4">
           Home / {property.country} / {property.city} /{" "}
           <span className="text-gray-700 font-medium">{property.title}</span>
-        </div>
+        </div> */}
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
           {/* Images */}
@@ -58,7 +58,7 @@ const AccommodationDetails = () => {
                   </button>
                 ))}
               </div>
-              <button onClick={() => setOpenStack(!openStack)} className="ml-2 h-12 w-12 rounded-full bg-black text-white">
+              <button onClick={() => setOpenStack(!openStack)} className="ml-2 w-10 h-10 md:h-12 md:w-12 rounded-full bg-black text-white">
                 +{images.length}
               </button>
             </div>
@@ -85,7 +85,7 @@ const AccommodationDetails = () => {
           <section className="space-y-6">
             {/* Title & Description */}
             <div>
-              <h1 className="text-3xl font-semibold">{property.property_type.replace("_", " ")} in {property.city}</h1>
+              <h1 className="text-2xl md:text-3xl font-semibold">{property.property_type.replace("_", " ")} in {property.city}</h1>
               <p className="mt-2 text-sm text-gray-600">{property.description}</p>
             </div>
 
@@ -93,7 +93,7 @@ const AccommodationDetails = () => {
             <div className="rounded-2xl border bg-white p-5 shadow-sm space-y-4">
               <div className="flex justify-between items-baseline">
                 <div>
-                  <span className="text-3xl font-semibold">€{property.rent_per_month}</span>
+                  <span className="text-xl md:text-3xl font-semibold">€{property.rent_per_month}</span>
                   <span className="text-sm text-gray-500"> / month</span>
                 </div>
                 <span className="text-xs bg-green-50 text-green-600 px-2 py-1 rounded-full">
@@ -120,9 +120,9 @@ const AccommodationDetails = () => {
               <button onClick={() => navigate("/payment", { state: { property } })} className="w-full bg-black text-white py-2.5 rounded-lg">
                 Request booking
               </button>
-              <button className="w-full border py-2.5 rounded-lg">
+              {/* <button className="w-full border py-2.5 rounded-lg">
                 Chat with landlord
-              </button>
+              </button> */}
             </div>
 
             {/* Amenities */}
