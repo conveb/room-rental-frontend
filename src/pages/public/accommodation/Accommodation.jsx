@@ -169,7 +169,7 @@ const Accommodation = () => {
             />
 
             <div className="p-3 md:p-4">
-              <h2 className="text-sm md:text-lg font-semibold">
+              <h2 className="text-lg font-semibold">
                 {property.title}
               </h2>
 
