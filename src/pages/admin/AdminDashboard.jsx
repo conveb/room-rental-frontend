@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import {
-  getPropertiesAPI,
   addLocationAPI,
   deleteLocationsApi,
   getBookingsAPI,
@@ -16,7 +15,10 @@ import SkeletonAdmin from "../skeleton/skeletonAdmin";
 import { useAdminUsers } from "../../hooks/admin/useAdminUsers";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
-
+import { toast } from "react-toastify";
+import { useProperties } from "../../hooks/property/useProperties";
+import ImgSkeleton from '../../Assets/pngs/img_skeleton.png'
+import { getAvatarColor } from "./getAvatarColor";
 export default function AdminDashboard() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("overview");
@@ -29,6 +31,9 @@ export default function AdminDashboard() {
     studentsCount,
     landOwnersCount,
   } = useAdminUsers(activeTab);
+
+  const { filteredProperties: listProperties, loading: propertiesLoading, } = useProperties();
+
 
   // ---------------- State ----------------
   const [properties, setProperties] = useState([]);
@@ -48,9 +53,10 @@ export default function AdminDashboard() {
 
   const filteredProperties = properties.filter(
     p =>
-      p.name.toLowerCase().includes(search.toLowerCase()) ||
-      p.location.toLowerCase().includes(search.toLowerCase())
+      (p.name || "").toLowerCase().includes(search.toLowerCase()) ||
+      (p.location || "").toLowerCase().includes(search.toLowerCase())
   );
+
 
   // ---------------- Fetch ----------------
   useEffect(() => {
@@ -58,14 +64,14 @@ export default function AdminDashboard() {
     if (activeTab === "overview") fetchBookings();
   }, [activeTab]);
 
-  const fetchProperties = async () => {
+  const fetchProperties = () => {
     try {
-      const res = await getPropertiesAPI();
-      setProperties(res.data);
+      setProperties(listProperties); // ✅ NO .data
     } catch (err) {
       console.error(err);
     }
   };
+
 
   const fetchBookings = async () => {
     try {
@@ -113,14 +119,14 @@ export default function AdminDashboard() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card title="Students" value={studentsCount} icon={PiStudent} color={'bg-sky-100'} />
-        <Card title="Landowners" value={landOwnersCount} icon={FaPersonShelter} color={'bg-emerald-100'} />
-        <Card title="Total Users" value={totalUsers} icon={IoIosPeople} color={'bg-purple-100'} />
+        <Card title="Students" value={studentsCount} icon={PiStudent} color={'bg-sky-200'} />
+        <Card title="Landowners" value={landOwnersCount} icon={FaPersonShelter} color={'bg-emerald-200'} />
+        <Card title="Total Users" value={totalUsers} icon={IoIosPeople} color={'bg-purple-200'} />
         <Card
           title="Total Bookings"
           value={bookings.length}
           icon={MdOutlineLibraryBooks}
-          color={'bg-orange-100'}
+          color={'bg-orange-200'}
         />
       </div>
       <Link to={'/auth/admin/manage_constants'} >
@@ -141,7 +147,7 @@ export default function AdminDashboard() {
         <div className="p-4 border-b flex justify-between items-center">
           <h3 className="text-lg font-semibold">Recent Bookings</h3>
           <Link to={'/auth/admin/view_bookings'}>
-          <p className="text-xs md:text-sm">View All Bookings</p>
+            <p className="text-xs md:text-sm">View All Bookings</p>
           </Link>
         </div>
 
@@ -222,12 +228,33 @@ export default function AdminDashboard() {
         <p>No users found</p>
       ) : (
         filteredUsers.map(u => (
-          <div key={u.id} className="relative border p-3 rounded-xl flex justify-between">
+          <div key={u.id} className="relative border p-2 rounded-2xl flex gap-3 items-center">
+
+            {/* Avatar */}
+            <div
+              className={`w-14 h-14 rounded-xl flex items-center justify-center overflow-hidden text-lg font-semibold text-black ${u.avatar ? "bg-gray-200" : getAvatarColor(u.full_name)
+                }`}
+            >
+              {u.avatar ? (
+                <img
+                  src={u.avatar}
+                  alt={u.full_name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                u.full_name?.charAt(0).toUpperCase()
+              )}
+            </div>
+
+
+            {/* User Info */}
             <div>
               <p className="font-medium">{u.full_name}</p>
               <p className="text-sm text-gray-500">{u.email}</p>
               <p className="text-xs text-gray-400">{u.role}</p>
             </div>
+
+            {/* Status */}
             <span
               className={`absolute top-2 right-2 px-3 py-1 text-xs rounded-2xl ${u.is_active ? "bg-green-500" : "bg-red-200"
                 }`}
@@ -236,6 +263,7 @@ export default function AdminDashboard() {
             </span>
           </div>
         ))
+
       )}
     </div>
   );
@@ -251,32 +279,62 @@ export default function AdminDashboard() {
         className="border p-2 rounded-md w-full"
       />
 
-      {filteredProperties.map(p => (
-        <div key={p.id} className="border p-3 rounded-xl flex justify-between">
-          <div>
-            <p className="font-medium">{p.name}</p>
-            <p className="text-sm text-gray-500">{p.location}</p>
-          </div>
-          <div className="flex gap-2">
-            {p.status === "Pending" && (
+      {propertiesLoading ? (
+        <p>Loading properties...</p>
+      ) : listProperties.length === 0 ? (
+        <p>No properties found</p>
+      ) : (
+        listProperties.map(p => (
+          <div
+            key={p.id}
+            className="border p-2 rounded-2xl flex flex-col md:flex-row justify-between md:items-center gap-3"
+          >
+            {/* Left */}
+            <div className="flex gap-3 items-center">
+              <img
+                src={p.cover_image}
+                alt={p.title}
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = ImgSkeleton;
+                }}
+                className="w-20 h-20 object-cover rounded-xl"
+              />
+              <div>
+                <p className="font-medium">{p.title || "Unnamed property"}</p>
+                <p className="text-sm text-gray-500">
+                  {p.location || "No location"}
+                </p>
+                <p className="mt-2 font-medium">
+                  €{p.rent_per_month} / month
+                </p>
+              </div>
+            </div>
+
+            {/* Right */}
+            <div className="flex flex-col md:flex-row gap-2 w-full md:w-auto">
+              {p.status === "Pending" && (
+                <button
+                  onClick={() => approveProperty(p.id)}
+                  className="bg-green-500 text-white px-4 py-2 rounded-lg w-full md:w-auto"
+                >
+                  Approve
+                </button>
+              )}
               <button
-                onClick={() => approveProperty(p.id)}
-                className="bg-green-500 text-white px-4 py-2 rounded-lg"
+                onClick={() => deleteLocation(p.id)}
+                className="bg-red-500 text-white px-4 py-1 md:py-2 rounded-lg w-full md:w-auto"
               >
-                Approve
+                Delete
               </button>
-            )}
-            <button
-              onClick={() => deleteLocation(p.id)}
-              className="bg-red-500 text-white px-4 py-2 rounded-lg"
-            >
-              Delete
-            </button>
+            </div>
           </div>
-        </div>
-      ))}
+
+        ))
+      )}
     </div>
   );
+
 
   return (
     <>

@@ -12,9 +12,13 @@ export const signupAPI = (payload) => commonAPI("post", "/api/v1/auth/register/"
 export const resendOtpAPI = (payload) => commonAPI("post", "/api/v1/auth/resend-otp/", payload);
 export const getAllUsersAPI = ()=>commonAPI('get','/api/v1/admin/users') 
 export const AuthAPI = () => commonAPI("get", "/api/v1/auth/me");
+export const getUserProfileAPI = () => commonAPI("get", "/api/v1/me/profile");
+export const updateUserProfileAPI = (payload) => commonAPI("patch", "/api/v1/me/profile/update/",payload);
+export const changeUserPasswordAPI = (payload) => commonAPI("post", "/api/v1/me/reset-password/",payload);
+export const deleteUserProfileAPI = () => commonAPI("post", "/api/v1/me/delete-account/");
 export const LogoutAPI = () => commonAPI("post", "/api/v1/logout/");
 
-export const getPropertiesAPI = ()=>commonAPI('post','/api/v1/') 
+// export const getPropertiesAPI = ()=>commonAPI('post','/api/v1/') 
 export const approveLandownerAPI = ()=>commonAPI('post','/api/v1/') 
 export const addLocationAPI = ()=>commonAPI('post','/api/v1/') 
 export const getBookingsAPI= ()=>commonAPI('post','/api/v1/') 
@@ -34,6 +38,7 @@ export const getPropertiesAuditApi= ()=>commonAPI('get','/api/v1/admin/propertie
 export const getLogsAuditApi= ()=>commonAPI('get','/api/v1/audit-logs/')
 // /admin/users/audit-logs/
 
+//landowner
 export const viewMyPropertyApi= ()=>commonAPI('get','/api/v1/properties/my/') 
 export const deletePropertyApi = (propertyId) => commonAPI("delete", `/api/v1/properties/${propertyId}/delete/`);
 export const updatePropertyApi = (propertyId, data) => commonAPI("patch", `/api/v1/properties/${propertyId}/update/`, data);

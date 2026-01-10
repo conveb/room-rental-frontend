@@ -34,10 +34,10 @@ export const AuthProvider = ({ children }) => {
   // const login = (response) => {
   //   setUser(response?.user ?? null);
   // };
-const login = async () => {
-  setLoading(true);
-  await fetchCurrentUser();
-};
+  const login = async () => {
+    setLoading(true);
+    await fetchCurrentUser();
+  };
 
   const logout = async () => {
     try {
@@ -50,6 +50,23 @@ const login = async () => {
     }
   };
 
+  // AUTO REFRESH: call fetchCurrentUser every 14 minutes only if user is logged in
+  useEffect(() => {
+    if (!user) return; // skip if not logged in
+
+    const interval = setInterval(async () => {
+      try {
+        await fetchCurrentUser();
+        console.log("Token refreshed");
+      } catch (err) {
+        console.error("Token refresh failed", err);
+        setUser(null);
+        navigate("/"); // redirect if refresh fails
+      }
+    }, 14 * 60 * 1000); // 14 minutes
+
+    return () => clearInterval(interval);
+  }, [user, fetchCurrentUser, navigate]);
 
   return (
     <AuthContext.Provider
