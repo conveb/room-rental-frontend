@@ -15,7 +15,6 @@ import SkeletonAdmin from "../skeleton/skeletonAdmin";
 import { useAdminUsers } from "../../hooks/admin/useAdminUsers";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
-import { toast } from "react-toastify";
 import { useProperties } from "../../hooks/property/useProperties";
 import ImgSkeleton from '../../Assets/pngs/img_skeleton.png'
 import { getAvatarColor } from "./getAvatarColor";
@@ -131,12 +130,7 @@ export default function AdminDashboard() {
         <Card title="Students" value={studentsCount} icon={PiStudent} color={'bg-sky-200'} />
         <Card title="Landowners" value={landOwnersCount} icon={FaPersonShelter} color={'bg-emerald-200'} />
         <Card title="Total Users" value={totalUsers} icon={IoIosPeople} color={'bg-purple-200'} />
-        <Card
-          title="Total Bookings"
-          value={bookings.length}
-          icon={MdOutlineLibraryBooks}
-          color={'bg-orange-200'}
-        />
+        <Card title="Total Bookings" value={bookings.length} icon={MdOutlineLibraryBooks} color={'bg-orange-200'}/>
       </div>
       <Link to={'/auth/admin/manage_constants'} >
         <div className="flex gap-3 md:gap-5 items-center bg-white rounded-2xl p-2 md:p-4 my-3">

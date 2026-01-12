@@ -151,21 +151,20 @@ const SignUp = () => {
           <StepperPanel header="Details">
             <div className="space-y-4 mt-4">
               {/* Account Type */}
-              <div className="flex border-b border-gray-200">
-                {["STUDENT", "LANDOWNER"].map((type) => (
+              <div className="flex bg-white rounded-3xl p-2 gap-2">
+                {["STUDENT", "LAND_OWNER"].map((type) => (
                   <button
                     key={type}
                     type="button"
-                    className={`flex-1 py-2 text-sm font-medium border-b-2 ${
+                    className={`flex-1 py-3 rounded-2xl text-sm md:text-md ${
                       form.account_type === type
-                        ? "border-blue-600 text-blue-600"
-                        : "border-transparent text-gray-500"
+                        ? "bg-black text-white" : "bg-gray-100"
                     }`}
                     onClick={() =>
                       setForm({ ...form, account_type: type })
                     }
                   >
-                    {type}
+                    {type.replace("_", " ")}
                   </button>
                 ))}
               </div>

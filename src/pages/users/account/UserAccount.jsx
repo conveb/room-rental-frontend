@@ -7,12 +7,13 @@ import { FaCheck } from "react-icons/fa6";
 import UserFeedback from "./UserFeedback";
 import { useAuth } from "../../../context/AuthContext";
 import { useUserProfile } from "../../../hooks/users/useUserProfile";
-import { toast } from "react-toastify";
+
 import { MdOutlinePassword } from "react-icons/md";
 import { TiUserDelete } from "react-icons/ti";
 import { AiOutlineLogout } from "react-icons/ai";
 import { MdFeedback } from "react-icons/md";
 import UserProfileSkeleton from "../../skeleton/UserProfileSkeleton";
+import { toast } from "sonner";
 export default function UserAccount() {
   const navigate = useNavigate();
   const { logout } = useAuth();

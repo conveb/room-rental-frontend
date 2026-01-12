@@ -46,7 +46,9 @@ export const commonAPI = async (
     url,
     data: reqBody,
     headers: {
-      ...(isFormData ? {} : { "Content-Type": "application/json" }),
+      // If it's NOT FormData, default to JSON. 
+      // If it IS FormData, don't set Content-Type at all (let the browser do it)
+      ...(!isFormData && { "Content-Type": "application/json" }),
       ...reqHeaders,
     },
   };

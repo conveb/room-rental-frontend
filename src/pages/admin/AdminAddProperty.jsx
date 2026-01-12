@@ -14,7 +14,7 @@ export default function AddProperty() {
  const [activeTab, setActiveTab] = useState("add");
  return(
 
-   <div className="space-y-6">
+   <div className="space-y-6 bg-white p-3">
       {/* Tabs */}
       <div className="flex gap-3 border-b">
         <button

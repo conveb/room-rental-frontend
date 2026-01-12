@@ -50,7 +50,7 @@ export const listAmenitiesApi= ()=>commonAPI('get','/api/v1/amenities')
 export const createAmenities= (data)=>commonAPI('post','/api/v1/amenities/',data) 
 export const deleteAmenityApi = (amenityId) => commonAPI("delete", `/api/v1/amenities/${amenityId}`);
 
-export const createPropertyApi= ()=>commonAPI('post','/api/v1/properties/create/') 
+export const createPropertyApi= (data)=>commonAPI('post','/api/v1/properties/create/',data) 
 
 export const getAllSupportApi= ()=>commonAPI('get','/api/v1/admin/support/') 
 export const updateStatusApi = (id, data) => commonAPI("patch", `/api/v1/admin/support/${id}/update/`, data);

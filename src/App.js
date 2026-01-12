@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import SignIn from "./pages/Auth/user-auth/Signin";
 import SignUp from "./pages/Auth/user-auth/SIgnUp";
-import { ToastContainer, toast } from 'react-toastify';
+import { toast, Toaster } from "sonner";
 import ForgotPassword from "./pages/Auth/user-auth/Forgot-password";
 import Layouts from "./components/Layouts/Layouts";
 import Home from "./pages/public/Home";
@@ -61,7 +61,7 @@ function App() {
     <>
       {showSplash && <SplashScreen />}
 
-        <ToastContainer />
+        <Toaster position="top-center"/>
       <Routes>
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/signin" element={<SignIn />} />

@@ -48,3 +48,23 @@
 .hide-scrollbar::-webkit-scrollbar {
   display: none;             /* Chrome, Safari, Opera */
 }
+/* Ensure the amenities list wraps and looks like capsules */
+.p-multiselect-label {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 4px !important;
+    padding: 6px !important;
+}
+
+.p-multiselect-token {
+    background: #e5e7eb !important; /* light gray */
+    color: #374151 !important;
+    border-radius: 9999px !important; /* perfect pill shape */
+    padding: 2px 8px !important;
+    margin: 0 !important;
+}
+
+.p-multiselect-token-label {
+    font-size: 10px !important;
+    font-weight: 600 !important;
+}

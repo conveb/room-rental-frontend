@@ -26,7 +26,6 @@ export default function MyProperties() {
     setPrice(property.price);
     setDescription(property.description);
     setSelectedAmenities(property.amenities?.map(a => a.id) || []);
-    // Prepare image previews if needed
     setImages(property.images?.map(img => ({ file: null, preview: img.url })) || []);
     setSelectedIndex(0);
   };

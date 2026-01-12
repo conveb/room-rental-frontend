@@ -15,7 +15,6 @@ import { useAuth } from "../../context/AuthContext";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
 import { LuHandshake } from "react-icons/lu";
 import { Helmet } from "react-helmet";
-import { useUserProfile } from "../../hooks/users/useUserProfile";
 const titleMap = {
   "/auth/admin": "Dashboard",
   "/auth/admin/audits": "Audits",
@@ -43,7 +42,6 @@ const AdminLayout = () => {
     setShowModal(false);
   };
 
-  const {user:userData,fetchUserProfile} = useUserProfile();
 
   return (
     <>
@@ -95,8 +93,7 @@ const AdminLayout = () => {
           <header className="py-3 md:py-4 bg-white/70 backdrop-blur-xl border-b border-white/30 flex items-center justify-between px-6 shadow-sm">
             <div>
               <h1 className="text-md md:text-lg font-semibold text-gray-900">
-                Hi, 
-                <span className="bg-black text-xs md:text-sm text-white px-2 py-1 rounded-full ml-2">Admin</span>
+                <span className="bg-black text-xs md:text-sm text-white px-2 py-1 rounded-full ">Admin</span>
               </h1>
               <span className="text-xs md:text-sm text-gray-500">{user?.email}</span>
             </div>
@@ -165,7 +162,7 @@ const AdminLayout = () => {
           </header>
 
           {/* OUTLET */}
-          <main className="flex-1 p-4 md:p-6 pb-20 md:pb-6 overflow-auto min-w-0">
+          <main className="flex-1  pb-20 md:pb-6 overflow-auto min-w-0">
             {/* min-w-0 ensures flex child can shrink */}
             <Outlet />
           </main>
