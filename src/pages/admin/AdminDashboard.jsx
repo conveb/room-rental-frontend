@@ -39,7 +39,6 @@ export default function AdminDashboard() {
 
   // ---------------- State ----------------
   const [properties, setProperties] = useState([]);
-  const [bookings, setBookings] = useState([]);
   const [newLocation, setNewLocation] = useState("");
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("ALL");
@@ -61,10 +60,10 @@ export default function AdminDashboard() {
 
 
   // ---------------- Fetch ----------------
-  useEffect(() => {
-    if (activeTab === "properties") fetchProperties();
-    if (activeTab === "overview") fetchBookings();
-  }, [activeTab]);
+  // useEffect(() => {
+  //   if (activeTab === "properties") fetchProperties();
+  //   if (activeTab === "overview") fetchBookings();
+  // }, [activeTab]);
 
   const fetchProperties = () => {
     try {
@@ -75,14 +74,7 @@ export default function AdminDashboard() {
   };
 
 
-  const fetchBookings = async () => {
-    try {
-      const res = await getBookingsAPI();
-      setBookings(res.data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+
 
   // ---------------- Actions ----------------
   // const addLocation = async () => {
@@ -120,7 +112,7 @@ export default function AdminDashboard() {
   const [selectedUser, setSelectedUser] = useState(null);
   const [reason, setReason] = useState("");
 
-  const { bookings: recentBookings, loading: bookingsLoading, error } = useBookings();
+  const { bookings, loading: bookingsLoading, error } = useBookings();
 
   // 1. Helper for status styles
   const getStatusStyle = (status) => {
@@ -139,7 +131,7 @@ export default function AdminDashboard() {
   };
 
   // 2. Sort by date (descending) and take the first 6
-  const recentData = [...recentBookings]
+  const recentData = [...bookings]
     .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
     .slice(0, 6);
   // ---------------- Render ----------------
