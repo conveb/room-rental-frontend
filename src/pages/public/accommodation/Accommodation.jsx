@@ -151,44 +151,44 @@ const Accommodation = () => {
       )}
 
       {/* PROPERTY LIST */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 px-2 md:px-32 mt-6 ">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 px-2 md:px-32 mt-6 items-stretch">
         {filteredProperties.map((property) => (
           <Link
-            to={`/accommodation/${property.id}`} key={property.id}
-            
-          >
-          <div
+            to={`/accommodation/${property.id}`}
             key={property.id}
-            className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition"
+            className="flex flex-col h-full" // 1. Ensure the link container takes full height
           >
-            <img
-              src={property.cover_image}
-              alt={property.title}
-              onError={(e) => { e.target.onerror = null; e.target.src = ImgSkeleton; }}
-              className="w-full h-58 object-cover"
-            />
+            <div
+              className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition flex flex-col h-full" // 2. Make card a flex container
+            >
+              <img
+                src={property.cover_image}
+                alt={property.title}
+                onError={(e) => { e.target.onerror = null; e.target.src = ImgSkeleton; }}
+                className="w-full h-60 object-cover"
+              />
 
-            <div className="p-3 md:p-4">
-              <h2 className="text-lg font-semibold">
-                {property.title}
-              </h2>
+              {/* 3. Add flex-1 here so this section expands to push the price to the bottom */}
+              <div className="p-3 md:p-4 flex flex-col flex-1">
+                <h2 className="text-lg font-semibold line-clamp-1"> {/* Added line-clamp to keep titles consistent */}
+                  {property.title}
+                </h2>
 
-              <p className="text-gray-500 text-xs md:text-sm">
-                {property.city}, {property.country}
-              </p>
+                <p className="text-gray-500 text-xs md:text-sm">
+                  {property.city}, {property.country}
+                </p>
 
+                <p className="text-xs md:text-sm text-gray-500">
+                  Rooms: <span className="font-bold text-black">{property.rooms}</span> · Max <span className="font-bold text-black">{property.max_people}</span> people
+                </p>
 
-              <p className="text-xs md:text-sm text-gray-500">
-                Rooms: <span className="font-bold text-black">{property.rooms}</span> · Max <span className="font-bold text-black">{property.max_people}</span> people
-              </p>
-              <p className="mt-2 font-medium">
-                €{property.rent_per_month} / month
-              </p>
-
-                
+                {/* mt-auto pushes the price to the very bottom of the card */}
+                <p className="mt-auto pt-2 font-medium">
+                  €{property.rent_per_month} / month
+                </p>
+              </div>
             </div>
-          </div>
-              </Link>
+          </Link>
         ))}
       </div>
 

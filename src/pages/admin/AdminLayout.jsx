@@ -162,7 +162,7 @@ const AdminLayout = () => {
           </header>
 
           {/* OUTLET */}
-          <main className="flex-1  pb-20 md:pb-6 overflow-auto min-w-0">
+          <main className="flex-1 p-5  pb-20 md:pb-6 overflow-auto min-w-0">
             {/* min-w-0 ensures flex child can shrink */}
             <Outlet />
           </main>
