@@ -63,7 +63,7 @@ export default function AdminSupportAndFeedback() {
         <title>Admin Console | Support & Feedback</title>
       </Helmet>
 
-      <div className="p-4 md:p-6 space-y-6">
+      <div className="p-0 md:p-6 space-y-6">
         {/* TABS */}
         <div className="flex bg-white rounded-3xl overflow-hidden w-full p-2 gap-2 shadow">
           <button

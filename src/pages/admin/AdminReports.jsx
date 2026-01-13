@@ -60,7 +60,7 @@ export default function AdminReportsAndComplaints() {
         <meta name="description" content="Admin Reports & Complaints" />
       </Helmet>
 
-      <div className="p-2 md:p-6 space-y-6">
+      <div className="p-0 md:p-6 space-y-6">
         {/* HEADER */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <h1 className="text-xl md:text-2xl font-semibold">

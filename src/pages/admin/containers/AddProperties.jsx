@@ -147,13 +147,13 @@ export default function AddProperties() {
   }
 
   return (
-    <div className="text-xs md:text-sm p-2 md:p-6 max-w-7xl mx-auto bg-white">
-      <div className="flex justify-between items-center mb-6">
+    
+    <div className="text-xs md:text-sm  md:p-6  mx-auto">
+      <div className="flex justify-between items-center mb-2 md:mb-6">
         <h1 className="text-lg md:text-2xl font-bold text-gray-800">Add New Property</h1>
-
       </div>
 
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-2 gap-10 p-2 bg-white rounded-xl">
 
         {/* LEFT COLUMN: IMAGES & LOCATION */}
         <div className="space-y-6">

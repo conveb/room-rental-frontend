@@ -3,6 +3,7 @@ import { MdAddCircle } from "react-icons/md";
 import { Dropdown } from "primereact/dropdown";
 import { useAmenities } from "../../../hooks/admin/constants/useAmenities";
 import useMyProperties from "../../../hooks/property/useMyProperties";
+import ImgSkeleton from '../../../Assets/pngs/img_skeleton.png'
 
 export default function MyProperties() {
   const { properties, loading, error, deleteProperty, updateProperty, actionLoading } = useMyProperties();
@@ -86,30 +87,52 @@ export default function MyProperties() {
 
       {loading && <p>Loading properties...</p>}
       {error && <p className="text-red-500">{error}</p>}
+<div className="grid grid-cols-1 md:grid-cols-3">
 
       {properties.map(property => (
-        <div key={property.id} className="border p-4 rounded-xl space-y-2">
-          <h3 className="font-semibold">{property.title}</h3>
-          <p>{property.city}, {property.country}</p>
-          <p>₹ {property.price}</p>
+        <div key={property.id} className="flex flex-col md:flex-row border p-4 rounded-xl flex gap-4 bg-white shadow-sm hover:shadow-md transition">
+          {/* Property Thumbnail */}
+          <img
+            src={property.cover_image}
+            className="w-24 h-24 rounded-lg object-cover bg-stone-200"
+            onError={(e) => { e.target.onerror = null; e.target.src = ImgSkeleton; }}
+            alt={property.title}
+          />
 
-          <div className="flex gap-3">
-            <button
-              className="border py-1 px-3 rounded-lg"
-              onClick={() => openEditModal(property)}
-            >
-              Edit
-            </button>
-            <button
-              className="border py-1 px-3 rounded-lg text-red-500"
-              disabled={actionLoading}
-              onClick={() => deleteProperty(property.id)}
-            >
-              Delete
-            </button>
+          <div className="flex-1 space-y-1">
+            <h3 className="font-bold text-gray-800">{property.title}</h3>
+            <p className="text-gray-500 text-xs">{property.city}, {property.country}</p>
+            <p className="font-bold text-blue-600">€ {property.rent_per_month}</p>
+
+            {/* Amenities Preview */}
+            <div className="flex flex-wrap gap-1 mt-2">
+              {property.amenities_data?.slice(0, 3).map(a => (
+                <span key={a.id} className="text-[10px] bg-gray-100 px-2 py-0.5 rounded text-gray-600">
+                  {a.amenity_name}
+                </span>
+              ))}
+              {property.amenities_data?.length > 3 && <span className="text-[10px] text-gray-400">+{property.amenities_data.length - 3} more</span>}
+            </div>
+
+            <div className="flex gap-2 pt-2">
+              <button
+                className="bg-black text-white text-xs py-1.5 px-4 rounded-lg hover:bg-gray-800"
+                onClick={() => openEditModal(property)}
+                >
+                Edit Property
+              </button>
+              <button
+                className="border border-red-200 text-red-500 text-xs py-1.5 px-4 rounded-lg hover:bg-red-50"
+                disabled={actionLoading}
+                onClick={() => deleteProperty(property.id)}
+                >
+                Delete
+              </button>
+            </div>
           </div>
         </div>
       ))}
+      </div>
 
       {/* EDIT MODAL */}
       {editingProperty && (

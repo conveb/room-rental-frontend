@@ -130,7 +130,7 @@ export default function AdminDashboard() {
         <Card title="Students" value={studentsCount} icon={PiStudent} color={'bg-sky-200'} />
         <Card title="Landowners" value={landOwnersCount} icon={FaPersonShelter} color={'bg-emerald-200'} />
         <Card title="Total Users" value={totalUsers} icon={IoIosPeople} color={'bg-purple-200'} />
-        <Card title="Total Bookings" value={bookings.length} icon={MdOutlineLibraryBooks} color={'bg-orange-200'}/>
+        <Card title="Total Bookings" value={bookings.length} icon={MdOutlineLibraryBooks} color={'bg-orange-200'} />
       </div>
       <Link to={'/auth/admin/manage_constants'} >
         <div className="flex gap-3 md:gap-5 items-center bg-white rounded-2xl p-2 md:p-4 my-3">
@@ -378,9 +378,13 @@ export default function AdminDashboard() {
               />
               <div>
                 <p className="font-medium">{p.title || "Unnamed property"}</p>
+
+                {/* FIX START: Access the nested location_name property */}
                 <p className="text-sm text-gray-500">
-                  {p.location || "No location"}
+                  {p.location?.location_name || p.city || "No location"}
                 </p>
+                {/* FIX END */}
+
                 <p className="mt-2 font-medium">
                   €{p.rent_per_month} / month
                 </p>

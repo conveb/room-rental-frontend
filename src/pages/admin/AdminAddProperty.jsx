@@ -14,15 +14,14 @@ export default function AddProperty() {
  const [activeTab, setActiveTab] = useState("add");
  return(
 
-   <div className="space-y-6 bg-white p-3">
+   <div className="space-y-3">
       {/* Tabs */}
-      <div className="flex gap-3 border-b">
+      <div className="flex bg-white rounded-3xl p-2 gap-2">
         <button
           onClick={() => setActiveTab("add")}
-          className={`px-4 py-2 text-sm font-medium border-b-2 ${
+          className={`flex-1 py-3 rounded-2xl text-sm md:text-md  ${
             activeTab === "add"
-              ? "border-black text-black"
-              : "border-transparent text-gray-500"
+              ? "bg-black text-white" : "bg-gray-100"
           }`}
         >
           Add Property
@@ -30,10 +29,9 @@ export default function AddProperty() {
 
         <button
           onClick={() => setActiveTab("list")}
-          className={`px-4 py-2 text-sm font-medium border-b-2 ${
+          className={`flex-1 py-3 rounded-2xl text-sm md:text-md  ${
             activeTab === "list"
-              ? "border-black text-black"
-              : "border-transparent text-gray-500"
+              ? "bg-black text-white" : "bg-gray-100"
           }`}
         >
           My Properties
