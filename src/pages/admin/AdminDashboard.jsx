@@ -20,6 +20,7 @@ import ImgSkeleton from '../../Assets/pngs/img_skeleton.png'
 import { getAvatarColor } from "./getAvatarColor";
 import { useBlockUser } from "../../hooks/users/useBlockUser";
 import StudentDetailsModal from "./components/StudentDetailsModal";
+import { useBookings } from "../../hooks/bookings/useBookings";
 export default function AdminDashboard() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("overview");
@@ -119,7 +120,28 @@ export default function AdminDashboard() {
   const [selectedUser, setSelectedUser] = useState(null);
   const [reason, setReason] = useState("");
 
+  const { bookings: recentBookings, loading: bookingsLoading, error } = useBookings();
 
+  // 1. Helper for status styles
+  const getStatusStyle = (status) => {
+    switch (status?.toLowerCase()) {
+      case "paid":
+      case "confirmed":
+        return "bg-green-100 text-green-700";
+      case "pending":
+        return "bg-yellow-100 text-yellow-700";
+      case "failed":
+      case "cancelled":
+        return "bg-red-100 text-red-700";
+      default:
+        return "bg-gray-100 text-gray-700";
+    }
+  };
+
+  // 2. Sort by date (descending) and take the first 6
+  const recentData = [...recentBookings]
+    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+    .slice(0, 6);
   // ---------------- Render ----------------
   const renderOverview = () => (
     <div className="space-y-4">
@@ -130,7 +152,7 @@ export default function AdminDashboard() {
         <Card title="Students" value={studentsCount} icon={PiStudent} color={'bg-sky-200'} />
         <Card title="Landowners" value={landOwnersCount} icon={FaPersonShelter} color={'bg-emerald-200'} />
         <Card title="Total Users" value={totalUsers} icon={IoIosPeople} color={'bg-purple-200'} />
-        <Card title="Total Bookings" value={bookings.length} icon={MdOutlineLibraryBooks} color={'bg-orange-200'} />
+        <Card title="Bookings" value={bookings.length} icon={MdOutlineLibraryBooks} color={'bg-orange-200'} />
       </div>
       <Link to={'/auth/admin/manage_constants'} >
         <div className="flex gap-3 md:gap-5 items-center bg-white rounded-2xl p-2 md:p-4 my-3">
@@ -146,55 +168,78 @@ export default function AdminDashboard() {
 
 
       {/* Recent Bookings */}
-      <div className="bg-white rounded-xl shadow">
-        <div className="p-4 border-b flex justify-between items-center">
-          <h3 className="text-lg font-semibold">Recent Bookings</h3>
-          <Link to={'/auth/admin/view_bookings'}>
-            <p className="text-xs md:text-sm">View All Bookings</p>
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        {/* HEADER */}
+        <div className="p-4 border-b flex justify-between items-center bg-white">
+          <h3 className="text-lg font-semibold text-gray-800">Recent Bookings</h3>
+          <Link
+            to="/auth/admin/view_bookings"
+            className="text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors"
+          >
+            View All
           </Link>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="bg-gray-50 text-gray-600">
+        {/* DESKTOP VIEW (Table) - Hidden on small screens */}
+        <div className="hidden md:block overflow-x-auto">
+          <table className="w-full text-sm text-left">
+            <thead className="bg-gray-50 text-gray-500 uppercase text-[11px] font-bold tracking-wider">
               <tr>
-                <th className="text-left p-3">User</th>
-                <th className="text-left p-3">Property</th>
-                <th className="text-left p-3">Date</th>
-                <th className="text-left p-3">Status</th>
+                <th className="p-4">User</th>
+                <th className="p-4">Property</th>
+                <th className="p-4">Date</th>
+                <th className="p-4">Status</th>
               </tr>
             </thead>
-
-            <tbody>
-              {bookings.slice(0, 5).map((booking) => (
-                <tr key={booking.id} className="border-t">
-                  <td className="p-3">{booking.user_name}</td>
-                  <td className="p-3">{booking.property_title}</td>
-                  <td className="p-3">
-                    {new Date(booking.created_at).toLocaleDateString()}
-                  </td>
-                  <td className="p-3">
-                    <span
-                      className={`px-2 py-1 rounded-full text-xs font-medium ${booking.status === "CONFIRMED"
-                        ? "bg-green-100 text-green-700"
-                        : "bg-yellow-100 text-yellow-700"
-                        }`}
-                    >
-                      {booking.status}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-
-              {bookings.length === 0 && (
+            <tbody className="divide-y divide-gray-100">
+              {recentData.length > 0 ? (
+                recentData.map((booking) => (
+                  <tr key={booking.id} className="hover:bg-gray-50/50 transition-colors">
+                    <td className="p-4 font-medium text-gray-700">{booking.user_name || "Unknown User"}</td>
+                    <td className="p-4 text-gray-600 truncate max-w-[200px]">{booking.property_title}</td>
+                    <td className="p-4 text-gray-500">
+                      {new Date(booking.created_at).toLocaleDateString()}
+                    </td>
+                    <td className="p-4">
+                      <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold uppercase ${getStatusStyle(booking.status)}`}>
+                        {booking.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              ) : (
                 <tr>
-                  <td colSpan="4" className="p-4 text-center text-gray-500">
-                    No recent bookings
-                  </td>
+                  <td colSpan="4" className="p-8 text-center text-gray-400">No recent bookings found</td>
                 </tr>
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* MOBILE VIEW (Stacked Cards) - Hidden on medium+ screens */}
+        <div className="md:hidden divide-y divide-gray-100">
+          {bookingsLoading ? ("Loading Data") : (
+            <>
+              {recentData.length > 0 ? (
+                recentData.map((booking) => (
+                  <div key={booking.id} className="p-4 active:bg-gray-50">
+                    <div className="flex justify-between items-start mb-1">
+                      <p className="font-semibold text-gray-800">{booking.user_name || "Guest"}</p>
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${getStatusStyle(booking.status)}`}>
+                        {booking.status}
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-600 mb-2">{booking.property_title}</p>
+                    <p className="text-xs text-gray-400">
+                      {new Date(booking.created_at).toLocaleDateString(undefined, { dateStyle: 'medium' })}
+                    </p>
+                  </div>
+                ))
+              ) : (
+                <div className="p-8 text-center text-gray-400 text-sm">No recent bookings found</div>
+              )}
+            </>
+          )}
         </div>
       </div>
     </div>
