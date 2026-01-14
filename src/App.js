@@ -100,10 +100,10 @@ function App() {
           <Route path="/auth/landowner" element={<Layout />}>
             <Route index element={<Dashboard />} />
             <Route path="notifications" element={<NotificationPage />} />
-            <Route path="properties" element={<PropertiesList />} />
+            {/* <Route path="properties" element={<PropertiesList />} /> */}
             <Route path="stats" element={<Stats />} />
             <Route path="account" element={<Account />} />
-            <Route path="create" element={<CreateProperty />} />
+            <Route path="create_property" element={<CreateProperty />} />
           </Route>
         </Route>
 

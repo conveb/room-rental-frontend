@@ -21,26 +21,19 @@ export const blockUserAPI = (userId, payload) => commonAPI("patch", `/api/v1/adm
 
 export const LogoutAPI = () => commonAPI("post", "/api/v1/logout/");
 
-// export const getPropertiesAPI = ()=>commonAPI('post','/api/v1/') 
-// export const approveLandownerAPI = ()=>commonAPI('post','/api/v1/') 
-// export const addLocationAPI = ()=>commonAPI('post','/api/v1/') 
-export const getBookingsAPI= ()=>commonAPI('post','/api/v1/') 
-// export const toggleBlockUserAPI= ()=>commonAPI('post','/api/v1/') 
 export const approvePropertyAPI= ()=>commonAPI('post','/api/v1/') 
+export const googleAuthAPI= (data)=>commonAPI('post','/api/v1/auth/google/web',data)
 
 export const addLocationsApi= (data)=>commonAPI('post','/api/v1/locations/',data) 
 export const listAllLocationsApi= ()=>commonAPI('get','/api/v1/locations') 
 export const deleteLocationsApi = (locationId) => commonAPI("delete", `/api/v1/locations/${locationId}`);
 
-// /locations/:id/
-// /admin/bookings
-// /verification/:id/update/
-// /admin/users-list/
+
 export const getUsersAuditApi= ()=>commonAPI('get','/api/v1/admin/users/audit-logs/') 
 export const getPropertiesAuditApi= ()=>commonAPI('get','/api/v1/admin/properties/audit-logs/') 
 export const getLogsAuditApi= ()=>commonAPI('get','/api/v1/audit-logs/')
-// /admin/users/audit-logs/
 
+export const getReportedLandownersApi= ()=>commonAPI('get','/api/v1/admin/reported-landowners/') 
 //landowner
 export const viewMyPropertyApi= ()=>commonAPI('get','/api/v1/properties/my/') 
 export const deletePropertyApi = (propertyId) => commonAPI("delete", `/api/v1/properties/${propertyId}/delete/`);

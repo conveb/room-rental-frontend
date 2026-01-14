@@ -5,6 +5,7 @@ import { HiMiniHome } from "react-icons/hi2";
 import { PiStudentFill } from "react-icons/pi";
 import { FaHouseFlag } from "react-icons/fa6";
 import { BsFillHousesFill } from "react-icons/bs";
+import { AiOutlineLogout } from "react-icons/ai";
 import colors from "../../theme/colors";
 import { HiMenu } from "react-icons/hi";
 import Logo from '../../Assets/pngs/logo.png';
@@ -35,9 +36,9 @@ const AdminLayout = () => {
   const title = titleMap[location.pathname] ?? "Admin";
   const { user, loading } = useAuth();
   const [open, setOpen] = useState(false);
-  const {logout} = useAuth();
+  const { logout } = useAuth();
   const [showModal, setShowModal] = useState(false);
-    const handleConfirmLogout = async () => {
+  const handleConfirmLogout = async () => {
     await logout();
     setShowModal(false);
   };
@@ -80,10 +81,45 @@ const AdminLayout = () => {
               </NavLink>
             ))}
           </nav>
-
           {/* FOOTER */}
-          <div className="fixed bottom-0 left-0  px-6 py-4 border-t border-white/10 text-xs text-gray-400">
-            Logged in as <span className="text-gray-300">Super Admin</span>
+          <div className="fixed bottom-5 left-5 w-52 p-2  text-sm text-red-500">
+            <button
+              onClick={() => setShowModal(true)}
+              className="flex items-center gap-3 w-full text-left p-4 rounded-xl  hover:bg-black/30 bg-black"
+            >
+              <AiOutlineLogout size={20} /> Logout
+            </button>
+            {showModal && (
+              <div className="fixed inset-0  flex items-center justify-center bg-black/50 px-4 h-dvh ">
+                <div className="bg-white rounded-2xl w-full max-w-md p-6 space-y-4">
+                  <h2 className="text-lg font-semibold text-gray-900">
+                    Confirm Logout
+                  </h2>
+
+                  <p className="text-sm text-gray-600">
+                    Are you sure you want to logout from all devices?
+                    This will end all active sessions.
+                  </p>
+
+                  <div className="flex justify-end gap-3 pt-3">
+                    <button
+                      onClick={() => setShowModal(false)}
+                      className="px-4 py-2 rounded-xl border text-sm hover:bg-gray-100 transition"
+                    >
+                      Cancel
+                    </button>
+
+                    <button
+                      onClick={handleConfirmLogout}
+                      className="px-4 py-2 rounded-xl bg-red-600 text-white text-sm hover:bg-red-700 transition"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+            {/* Logged in as <span className="text-gray-300">Super Admin</span> */}
           </div>
         </aside>
 
@@ -106,56 +142,50 @@ const AdminLayout = () => {
               </Link>
               <button
                 onClick={() => setOpen(!open)}
-                className="rounded-full text-3xl text-gray-700 hover:bg-gray-50 transition p-1"
+                className="block md:hidden rounded-full text-3xl text-gray-700 hover:bg-gray-50 transition p-1"
               >
                 <HiMenu />
               </button>
 
               {open && (
                 <div className="absolute right-0 top-12 w-32 bg-white border rounded-lg shadow-md">
-                  <Link
-                    to="/"
-                    className="block px-4 py-2 hover:bg-gray-100"
-                    onClick={() => setOpen(false)}
-                  >
-                    Home
-                  </Link>
+
                   <button
-                onClick={() => setShowModal(true)}
-                className="w-full text-left p-4 rounded-xl  hover:bg-neutral-50"
-              >
-                Logout
-              </button>
-              {showModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-                  <div className="bg-white rounded-2xl w-full max-w-md p-6 space-y-4">
-                    <h2 className="text-lg font-semibold text-gray-900">
-                      Confirm Logout
-                    </h2>
+                    onClick={() => setShowModal(true)}
+                    className="w-full text-left p-4 rounded-xl  hover:bg-neutral-50"
+                  >
+                    Logout
+                  </button>
+                  {showModal && (
+                    <div className="fixed inset-0  flex items-center justify-center bg-black/50 px-4 h-dvh ">
+                      <div className="bg-white rounded-2xl w-full max-w-md p-6 space-y-4">
+                        <h2 className="text-lg font-semibold text-gray-900">
+                          Confirm Logout
+                        </h2>
 
-                    <p className="text-sm text-gray-600">
-                      Are you sure you want to logout from all devices?
-                      This will end all active sessions.
-                    </p>
+                        <p className="text-sm text-gray-600">
+                          Are you sure you want to logout from all devices?
+                          This will end all active sessions.
+                        </p>
 
-                    <div className="flex justify-end gap-3 pt-3">
-                      <button
-                        onClick={() => setShowModal(false)}
-                        className="px-4 py-2 rounded-xl border text-sm hover:bg-gray-100 transition"
-                      >
-                        Cancel
-                      </button>
+                        <div className="flex justify-end gap-3 pt-3">
+                          <button
+                            onClick={() => setShowModal(false)}
+                            className="px-4 py-2 rounded-xl border text-sm hover:bg-gray-100 transition"
+                          >
+                            Cancel
+                          </button>
 
-                      <button
-                        onClick={handleConfirmLogout}
-                        className="px-4 py-2 rounded-xl bg-red-600 text-white text-sm hover:bg-red-700 transition"
-                      >
-                        Logout
-                      </button>
+                          <button
+                            onClick={handleConfirmLogout}
+                            className="px-4 py-2 rounded-xl bg-red-600 text-white text-sm hover:bg-red-700 transition"
+                          >
+                            Logout
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              )}
+                  )}
                 </div>
               )}
             </div>

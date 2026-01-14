@@ -15,7 +15,7 @@ import { IoIosNotifications } from "react-icons/io";
 
 const navItems = [
   { to: "/auth/landowner", label: "Dashboard", icon: <HiMiniHome /> },
-  { to: "/auth/landowner/properties", label: "Properties", icon: <FaDoorOpen /> },
+  { to: "/auth/landowner/create_property", label: "Add", icon: <FaDoorOpen /> },
   { to: "/auth/landowner/stats", label: "Stats", icon: <FaMoneyCheckDollar /> },
   { to: "/auth/landowner/account", label: "Account", icon: <FaUserGear /> },
 ];
