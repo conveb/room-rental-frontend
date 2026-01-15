@@ -1,49 +1,30 @@
-import React, { useState, useEffect } from "react";
-import BacktoHome from "../../../components/btns/BacktoHome";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { useGoogleLogin } from '@react-oauth/google';
 import { FcGoogle } from "react-icons/fc";
 import { FiEye, FiEyeOff } from "react-icons/fi";
+
+import BacktoHome from "../../../components/btns/BacktoHome";
 import { useSignin } from "../../../hooks/auth/useSignin";
-import { useGoogleAuth } from "../../../hooks/auth/useGoogleAuth"; // Your hook
-import { Link } from "react-router-dom";
+import { useGoogleAuth } from "../../../hooks/auth/useGoogleAuth";
 
 const SignIn = () => {
-  // Manual Signin Hook
   const { signin, loading: manualLoading, error: manualError } = useSignin();
-  // Google Signin Hook
-  const { googleLogin, loading: googleLoading, error: googleError } = useGoogleAuth();
+  const { handleGoogleLogin, loading: googleLoading, error: googleError } = useGoogleAuth();
 
-  const [form, setForm] = useState({email: "",password: "",});
+  const [form, setForm] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
-  const [codeClient, setCodeClient] = useState(null);
-  useEffect(() => {
-    /* global google */
-   if (window.google) {
-      const client = google.accounts.oauth2.initCodeClient({
-        client_id: "484008610238-ptd10rj6tjd5gqnsh5st5np6ggkiuns1.apps.googleusercontent.com",
-        scope: "openid email profile",
-        ux_mode: "popup",
-        redirect_uri: "postmessage",
-       callback: (response) => {
-          if (response.code) {
-            googleLogin(response.code);
-          }
-        },
-      });
-      setCodeClient(client);
-    }
-  }, [googleLogin]);
 
-
+  // 1. Initialize Google Login Hook
+  const loginWithGoogle = useGoogleLogin({
+    onSuccess: (codeResponse) => handleGoogleLogin(codeResponse.code),
+    onError: (error) => console.log('Login Failed:', error),
+    flow: 'auth-code', // Crucial: This returns a "code" for your Django backend
+  });
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setForm({
-      ...form,
-      [name]: type === "checkbox" ? checked : value,
-    });
-  };
-  const handleGoogleClick = () => {
-    if (codeClient) codeClient.requestCode();
+    const { name, value } = e.target;
+    setForm(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
@@ -51,7 +32,7 @@ const SignIn = () => {
     await signin(form);
   };
 
-  // Combined loading state for buttons
+  // 2. Combined loading state
   const isProcessing = manualLoading || googleLoading;
 
   return (
@@ -60,7 +41,7 @@ const SignIn = () => {
         <BacktoHome />
       </div>
 
-      <div className="w-full max-w-5xl mx-auto flex overflow-hidden">
+      <div className="w-full max-w-5xl mx-auto flex overflow-hidden shadow-xl rounded-2xl">
         {/* LEFT PANEL */}
         <div className="hidden md:flex w-1/2 relative">
           <img
@@ -74,37 +55,33 @@ const SignIn = () => {
               <div className="h-8 w-8 rounded-xl bg-white flex items-center justify-center">🏠</div>
               <span className="text-white font-semibold text-sm">Alive Paris</span>
             </div>
-            <div>
-              <h2 className="text-white text-3xl font-semibold leading-snug">
-                Find your perfect student room near campus.
-              </h2>
-            </div>
+            <h2 className="text-white text-3xl font-semibold leading-snug">
+              Find your perfect student room near campus.
+            </h2>
           </div>
         </div>
 
         {/* RIGHT PANEL */}
-        <div className="w-full md:w-1/2 flex items-center justify-center">
+        <div className="w-full md:w-1/2 flex items-center justify-center bg-white">
           <div className="w-full max-w-md px-6 py-10">
             <div className="mb-8">
               <h1 className="text-2xl font-semibold text-gray-900">Sign in</h1>
               <p className="mt-1 text-sm text-gray-500">
-                Log in to manage bookings, shortlist rooms, and chat with landlords.
+                Log in to manage bookings and chat with landlords.
               </p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
-              {/* EMAIL */}
               <input
                 name="email"
                 type="email"
                 value={form.email}
                 onChange={handleChange}
                 placeholder="Email"
-                className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+                className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-black outline-none"
                 required
               />
 
-              {/* PASSWORD */}
               <div className="relative">
                 <input
                   name="password"
@@ -112,7 +89,7 @@ const SignIn = () => {
                   value={form.password}
                   onChange={handleChange}
                   placeholder="Password"
-                  className="w-full border border-gray-300 px-3 py-2 rounded-lg pr-10 focus:outline-none focus:ring-2 focus:ring-black"
+                  className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-black outline-none"
                   required
                 />
                 <button
@@ -125,54 +102,48 @@ const SignIn = () => {
               </div>
 
               <div className="flex justify-end">
-                <Link to='/forgot-password' theme="text-sm text-black hover:underline">
+                <Link to='/forgot-password' title="text-sm text-black hover:underline">
                   Forgot Password?
                 </Link>
               </div>
 
               {/* ERROR DISPLAY */}
               {(manualError || googleError) && (
-                <p className="text-red-600 text-sm">{manualError || googleError}</p>
+                <p className="text-red-600 text-sm bg-red-50 p-2 rounded">{manualError || googleError}</p>
               )}
 
-              {/* MANUAL SUBMIT */}
               <button
                 type="submit"
                 disabled={isProcessing}
-                className="w-full bg-black text-white py-2.5 rounded-lg font-medium hover:bg-gray-900 transition disabled:opacity-60"
+                className="w-full bg-black text-white py-2.5 rounded-lg font-medium hover:bg-gray-800 transition disabled:opacity-50"
               >
                 {manualLoading ? "Signing in..." : "Sign in"}
               </button>
 
-              {/* DIVIDER */}
               <div className="flex items-center my-4">
-                <div className="flex-grow h-px bg-gray-300" />
-                <span className="mx-3 text-xs font-semibold text-gray-500">OR</span>
-                <div className="flex-grow h-px bg-gray-300" />
+                <div className="flex-grow h-px bg-gray-200" />
+                <span className="mx-3 text-xs font-semibold text-gray-400">OR</span>
+                <div className="flex-grow h-px bg-gray-200" />
               </div>
 
               {/* GOOGLE LOGIN BUTTON */}
               <button
                 type="button"
-                onClick={handleGoogleClick}
+                onClick={() => loginWithGoogle()}
                 disabled={isProcessing}
-                className="w-full flex items-center justify-center gap-3 border py-2.5 rounded-lg hover:bg-gray-50 transition disabled:opacity-50"
+                className="w-full flex items-center justify-center gap-3 border border-gray-300 py-2.5 rounded-lg hover:bg-gray-50 transition disabled:opacity-50"
               >
-                {googleLoading ? (
-                  <span className="text-sm">Exchanging Code...</span>
-                ) : (
-                  <>
-                    <FcGoogle size={20} />
-                    <span className="font-medium text-gray-700">Continue with Google</span>
-                  </>
-                )}
+                <FcGoogle size={20} />
+                <span className="font-semibold text-gray-700">
+                  {googleLoading ? "Connecting..." : "Sign in with Google"}
+                </span>
               </button>
             </form>
 
             <p className="mt-6 text-xs text-gray-500 text-center">
-              New to CampusRooms?{" "}
+              New to Alive Paris?{" "}
               <Link to="/signup" className="font-semibold text-gray-900 hover:underline">
-                Create a free student account
+                Create an account
               </Link>
             </p>
           </div>

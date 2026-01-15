@@ -8,17 +8,20 @@ import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
 import { AuthProvider } from './context/AuthContext';
 import { BrowserRouter } from 'react-router-dom';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 // import 'primeflex/primeflex.css';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
+    <GoogleOAuthProvider clientId="484008610238-ptd10rj6tjd5gqnsh5st5np6ggkiuns1.apps.googleusercontent.com">
     <BrowserRouter>
     <AuthProvider>
     <App />
     </AuthProvider>
     </BrowserRouter>
+    </GoogleOAuthProvider>
   </React.StrictMode>
 );
 
