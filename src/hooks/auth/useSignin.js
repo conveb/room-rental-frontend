@@ -21,7 +21,7 @@ export const useSignin = () => {
       setLoading(true);
 
       const res = await signinAPI(payload);
-
+  
       if (!res?.data) {
         throw new Error("Login failed");
       }
@@ -31,13 +31,13 @@ export const useSignin = () => {
     await login();
 
 
-      if (res.data.role === "STUDENT") {
-        navigate("/auth/user");
+      if (res.data.user.role === "STUDENT") {
+        navigate("/accommodation");
 
-      } else if (res.data.role === "LAND_OWNER") {
-        navigate("/landowner");
+      } else if (res.data.user.role === "LAND_OWNER") {
+        navigate("/auth/landowner");
 
-      } else if (res.data.role === "ADMIN") {
+      } else if (res.data.user.role === "ADMIN") {
         navigate("/auth/admin");
 
       } else {

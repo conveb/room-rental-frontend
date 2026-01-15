@@ -61,9 +61,9 @@ export const AuthProvider = ({ children }) => {
       } catch (err) {
         console.error("Token refresh failed", err);
         setUser(null);
-        navigate("/"); // redirect if refresh fails
+        navigate("/");
       }
-    }, 14 * 60 * 1000); // 14 minutes
+    }, 14 * 60 * 1000); 
 
     return () => clearInterval(interval);
   }, [user, fetchCurrentUser, navigate]);
