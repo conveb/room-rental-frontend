@@ -17,11 +17,9 @@ import AdminStudents from "./pages/admin/AdminStudents";
 import PaymentPage from "./pages/public/accommodation/PaymentPage";
 import ConfirmationPage from "./pages/public/accommodation/ConfirmationPage";
 import UserProfilePage from "./pages/users/account/UserAccount";
-import Dashboard from "./pages/landlord/account/Dashboard";
 import Layout from "./pages/landlord/account/Layout";
 import PropertiesList from "./pages/landlord/account/Properties";
 import Stats from "./pages/landlord/account/stats";
-import Account from "./pages/landlord/account/Account";
 
 import UserAccount from "./pages/users/account/UserAccount";
 import UserLayout from "./pages/users/account/UserLayout";
@@ -53,6 +51,8 @@ import AdminReportsAndComplaints from "./pages/admin/AdminReports";
 import AdminSupportAndFeedback from "./pages/admin/AdminSupportAndFeedback";
 import AdminManageConstants from "./pages/admin/AdminManageConstants";
 import ViewBookings from "./pages/admin/containers/ViewBookings";
+import LandownerDashboard from "./pages/landlord/account/RoomownerDashboard";
+import RoomOwnerAccount from "./pages/landlord/account/RoomOwnerAccount";
 
 function App() {
   const showSplash = useSplash(1800);
@@ -96,16 +96,16 @@ function App() {
           <Route path="support&feedback" element={<AdminSupportAndFeedback />} />
         </Route>
 
-        <Route element={<LandOwnerRoute />}>
+        {/* <Route element={<LandOwnerRoute />}> */}
           <Route path="/auth/landowner" element={<Layout />}>
-            <Route index element={<Dashboard />} />
+            <Route index element={<LandownerDashboard />} />
             <Route path="notifications" element={<NotificationPage />} />
             {/* <Route path="properties" element={<PropertiesList />} /> */}
             <Route path="stats" element={<Stats />} />
-            <Route path="account" element={<Account />} />
+            <Route path="account" element={<RoomOwnerAccount />} />
             <Route path="create_property" element={<CreateProperty />} />
           </Route>
-        </Route>
+        {/* </Route> */}
 
         {/* <Route element={<PrivateRoute />}> */}
           <Route path="/auth/user" element={<UserLayout />}>

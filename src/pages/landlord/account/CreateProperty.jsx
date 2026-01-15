@@ -9,21 +9,12 @@ import MyProperties from "../../admin/containers/MyProperties";
 
 export default function CreateProperty() {
    
- const [activeTab, setActiveTab] = useState("add");
+ const [activeTab, setActiveTab] = useState("list");
  return(
 
    <div className="space-y-3">
       {/* Tabs */}
       <div className="flex bg-white rounded-3xl p-2 gap-2">
-        <button
-          onClick={() => setActiveTab("add")}
-          className={`flex-1 py-3 rounded-2xl text-sm md:text-md  ${
-            activeTab === "add"
-              ? "bg-black text-white" : "bg-gray-100"
-          }`}
-        >
-          Add Property
-        </button>
 
         <button
           onClick={() => setActiveTab("list")}
@@ -33,6 +24,15 @@ export default function CreateProperty() {
           }`}
         >
           My Properties
+        </button>
+        <button
+          onClick={() => setActiveTab("add")}
+          className={`flex-1 py-3 rounded-2xl text-sm md:text-md  ${
+            activeTab === "add"
+              ? "bg-black text-white" : "bg-gray-100"
+          }`}
+        >
+          Add Property
         </button>
       </div>
 

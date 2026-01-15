@@ -11,20 +11,37 @@ import { HiMenu } from "react-icons/hi";
 import Logo from '../../../Assets/pngs/logo.png';
 import { FaDoorOpen } from "react-icons/fa6";
 import { IoIosNotifications } from "react-icons/io";
+import { useAuth } from "../../../context/AuthContext";
+import { Helmet } from "react-helmet";
+import { useUserProfile } from "../../../hooks/users/useUserProfile";
 
 
 const navItems = [
   { to: "/auth/landowner", label: "Dashboard", icon: <HiMiniHome /> },
-  { to: "/auth/landowner/create_property", label: "Add", icon: <FaDoorOpen /> },
-  { to: "/auth/landowner/stats", label: "Stats", icon: <FaMoneyCheckDollar /> },
   { to: "/auth/landowner/account", label: "Account", icon: <FaUserGear /> },
+  { to: "/auth/landowner/create_property", label: "Properties", icon: <FaDoorOpen /> },
+  { to: "/auth/landowner/stats", label: "Payments", icon: <FaMoneyCheckDollar /> },
 ];
 
 const Layout = () => {
-  const location = useLocation();
-  const [open, setOpen] = useState(false);
+ const location = useLocation();
+   const title = navItems[location.pathname] ?? "Room Owner";
+   const {user} = useUserProfile();
+   const [open, setOpen] = useState(false);
+   const { logout } = useAuth();
+   const [showModal, setShowModal] = useState(false);
+   const handleConfirmLogout = async () => {
+     await logout();
+     setShowModal(false);
+   };
+
+
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-gradient-to-br from-slate-100 to-indigo-100">
+    <>
+    <Helmet>
+        <title>{title} | Alive Paris</title>
+      </Helmet>
+    <div className="min-h-screen flex flex-col md:flex-row bg-stone-100">
       {/* SIDEBAR (DESKTOP ONLY) */}
       <aside className="hidden md:flex w-64 bg-black text-gray-200 flex-col shadow-2xl flex-shrink-0" >
         {/* LOGO */}
@@ -41,7 +58,7 @@ const Layout = () => {
           {navItems.map(item => (
             <NavLink
               key={item.to}
-              end={item.to === "/landowner"}
+              end={item.to === "/auth/landowner"}
               to={item.to}
               className={({ isActive }) =>
                 `flex items-center px-4 py-2.5 rounded-xl transition-all ${isActive
@@ -72,9 +89,10 @@ const Layout = () => {
         <header className="py-3 md:py-4 bg-white/70 backdrop-blur-xl border-b border-white/30 flex items-center justify-between px-6 shadow-sm">
           <div>
             <h1 className="text-md md:text-lg font-semibold text-gray-900">
-              Hi, Walkingtoy <span className="text-xs md:text-sm text-white px-2 py-1 rounded-full" style={{ backgroundColor: `${colors.landLordColor}` }}>Landowner</span>
+              Hi, {user? user.full_name : "😁"}
+               {/* <span className="text-xs md:text-sm text-white px-2 py-1 rounded-full" style={{ backgroundColor: `${colors.landLordColor}` }}>Landowner</span> */}
             </h1>
-            <span className="text-xs md:text-sm text-gray-500">admin@campusrooms.com</span>
+            <span className="text-xs md:text-sm text-gray-500">{user?.email}</span>
           </div>
           <div className="relative gap-3 md:gap-5 flex items-center text-sm">
             <a href='/notifications' className="relative text-2xl">
@@ -85,36 +103,57 @@ const Layout = () => {
             </a>
             <button
               onClick={() => setOpen(!open)}
-              className="rounded-full text-3xl text-gray-700 hover:bg-gray-50 transition p-1"
+              className="block md:hidden rounded-full text-3xl text-gray-700 hover:bg-gray-50 transition p-1"
             >
               <HiMenu />
             </button>
 
             {open && (
               <div className="absolute right-0 top-12 w-32 bg-white border rounded-lg shadow-md">
-                <Link
-                  to="/"
-                  className="block px-4 py-2 hover:bg-gray-100"
-                  onClick={() => setOpen(false)}
-                >
-                  Home
-                </Link>
+
                 <button
-                  className="w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600"
-                  onClick={() => {
-                    setOpen(false);
-                    // logout logic here
-                  }}
+                  onClick={() => setShowModal(true)}
+                  className="w-full text-left p-4 rounded-xl  hover:bg-neutral-50"
                 >
                   Logout
                 </button>
+                {showModal && (
+                  <div className="fixed inset-0  flex items-center justify-center bg-black/50 px-4 h-dvh ">
+                    <div className="bg-white rounded-2xl w-full max-w-md p-6 space-y-4">
+                      <h2 className="text-lg font-semibold text-gray-900">
+                        Confirm Logout
+                      </h2>
+
+                      <p className="text-sm text-gray-600">
+                        Are you sure you want to logout from all devices?
+                        This will end all active sessions.
+                      </p>
+
+                      <div className="flex justify-end gap-3 pt-3">
+                        <button
+                          onClick={() => setShowModal(false)}
+                          className="px-4 py-2 rounded-xl border text-sm hover:bg-gray-100 transition"
+                        >
+                          Cancel
+                        </button>
+
+                        <button
+                          onClick={handleConfirmLogout}
+                          className="px-4 py-2 rounded-xl bg-red-600 text-white text-sm hover:bg-red-700 transition"
+                        >
+                          Logout
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
         </header>
 
         {/* OUTLET */}
-        <main className="flex-1 p-3 md:p-0 pb-20 md:pb-6 overflow-auto min-w-0">
+        <main className="flex-1 p-5  pb-20 md:pb-6 overflow-auto min-w-0">
           {/* min-w-0 ensures flex child can shrink */}
           <Outlet />
         </main>
@@ -146,6 +185,7 @@ const Layout = () => {
         </div>
       </nav>
     </div>
+    </>
   );
 };
 
