@@ -26,7 +26,7 @@ const Accommodation = () => {
     <div className="min-h-screen bg-gray-50 pb-14 ">
       {/* HEADER */}
       <div className="bg-black px-4 md:px-20 pb-6">
-        <h1 className="text-2xl md:text-4xl font-semibold text-white text-center mb-6 pt-24 md:pt-14">
+        <h1 className="text-2xl md:text-4xl font-semibold text-white text-center mb-6 pt-8 md:pt-14">
           Find Rooms
         </h1>
 
@@ -151,7 +151,7 @@ const Accommodation = () => {
       )}
 
       {/* PROPERTY LIST */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 px-2 md:px-32 mt-6 items-stretch">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-4 px-2 md:px-32 mt-6 items-stretch">
         {filteredProperties.map((property) => (
           <Link
             to={`/accommodation/${property.id}`}
