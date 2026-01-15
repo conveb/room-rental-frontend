@@ -53,6 +53,7 @@ import AdminManageConstants from "./pages/admin/AdminManageConstants";
 import ViewBookings from "./pages/admin/containers/ViewBookings";
 import LandownerDashboard from "./pages/landlord/account/RoomownerDashboard";
 import RoomOwnerAccount from "./pages/landlord/account/RoomOwnerAccount";
+import RoomOwnerSupport from "./pages/landlord/account/RoomOwnerSupport";
 
 function App() {
   const showSplash = useSplash(1800);
@@ -100,6 +101,7 @@ function App() {
           <Route path="/auth/landowner" element={<Layout />}>
             <Route index element={<LandownerDashboard />} />
             <Route path="notifications" element={<NotificationPage />} />
+            <Route path="support" element={<RoomOwnerSupport />} />
             {/* <Route path="properties" element={<PropertiesList />} /> */}
             <Route path="stats" element={<Stats />} />
             <Route path="account" element={<RoomOwnerAccount />} />

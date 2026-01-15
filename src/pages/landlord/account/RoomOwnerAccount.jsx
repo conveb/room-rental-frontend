@@ -30,6 +30,7 @@ export default function RoomOwnerAccount() {
     deleteUserProfile
   } = useUserProfile();
 
+
   const [passwordModal, setPasswordModal] = useState(false);
   const [passwordForm, setPasswordForm] = useState({
     old_password: "",
@@ -42,7 +43,9 @@ export default function RoomOwnerAccount() {
   const [isEditing, setIsEditing] = useState(false);
   const [editValues, setEditValues] = useState({});
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
+  
 
   useEffect(() => {
     if (user) {
@@ -74,41 +77,36 @@ export default function RoomOwnerAccount() {
     navigate("/");
   };
 
+    const handleDeleteAccount = async () => {
+      const result = await deleteUserProfile();
+      if (result.success) {
+        toast.success("Account deleted successfully.");
+        navigate("/");
+      } else if (result.message) {
+        toast.error(result.message);
+      }
+    };
+
   if (loading) return <UserProfileSkeleton />;
   if (error) return <div className="mt-32 text-center text-red-500">{error}</div>;
   if (!user) return null;
 
   return (
-    <div className="min-h-screen px-5 md:p-6 mt-20 md:mt-0 md:mx-auto md:container">
+    <div className="min-h-screen  md:mx-auto md:container">
       <div className="space-y-5 mt-3">
         {/* Header Section */}
         <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 text-center">
           <div className="flex flex-col justify-center items-center gap-4">
             <div className="relative">
-              <img
-                src={selectedAvatar}
-                className={`h-40 w-40 rounded-full object-cover border-4 ${avatarEditMode ? "border-black scale-105" : "border-transparent"} transition-all`}
-              />
-              <button
-                onClick={() => setAvatarEditMode(!avatarEditMode)}
-                className="absolute bottom-1 right-1 bg-black border border-white text-white p-2 rounded-full shadow"
+              <p
+                className="h-40 w-40 rounded-full object-cover border-4 bg-emerald-100 flex items-center justify-center text-5xl font-bold text-emerald-700 uppercase"
               >
-                {avatarEditMode ? <FaCheck /> : <CiEdit />}
-              </button>
+                {user?.full_name ? user.full_name.charAt(0) : "U"}
+              </p>
+
             </div>
-            
-            {avatarEditMode && (
-              <div className="w-full max-w-md overflow-x-auto py-4 flex gap-4 no-scrollbar">
-                {Characters.map((char) => (
-                  <img
-                    key={char.id}
-                    src={char.img}
-                    onClick={() => setSelectedAvatar(char.img)}
-                    className={`h-16 w-16 rounded-full cursor-pointer border-2 ${selectedAvatar === char.img ? "border-black" : "border-transparent"}`}
-                  />
-                ))}
-              </div>
-            )}
+
+
 
             <div>
               <div className="flex items-center justify-center gap-2">
@@ -122,11 +120,11 @@ export default function RoomOwnerAccount() {
 
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          
+
           {/* Form Side */}
           <div className="bg-white p-6 rounded-3xl shadow-sm space-y-4">
             <h3 className="font-semibold text-gray-800">Business Details</h3>
-            
+
             <div className="space-y-1">
               <label className="text-[10px] uppercase font-bold text-neutral-400 ml-1">Full Name</label>
               <input
@@ -170,59 +168,183 @@ export default function RoomOwnerAccount() {
           </div>
 
           {/* Owner Actions Side */}
-          <div className="space-y-3">
+          <div className="">
             <h3 className="font-semibold text-gray-800 ml-2">Account Management</h3>
-            
-            <ActionBtn 
-               icon={<MdOutlineAccountBalance size={22}/>} 
-               label="Payout Settings" 
-               color="bg-blue-100" 
-               link="/auth/owner/payouts"
-            />
-            
-            <ActionBtn 
-               icon={<MdOutlinePassword size={22}/>} 
-               label="Security & Password" 
-               color="bg-purple-100" 
-               onClick={() => setPasswordModal(true)}
+
+            <ActionBtn
+              icon={<MdOutlineAccountBalance size={22} />}
+              label="Payout Settings"
+              color="bg-blue-100"
+              link="/auth/owner/payouts"
             />
 
-            <ActionBtn 
-               icon={<HiOutlineDocumentText size={22}/>} 
-               label="Terms & Property Policy" 
-               color="bg-orange-100" 
-               link="/terms"
+            <ActionBtn
+              icon={<MdOutlinePassword size={22} />}
+              label="Security & Password"
+              color="bg-purple-100"
+              onClick={() => setPasswordModal(true)}
+            />
+            {passwordModal && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+                <div className="bg-white rounded-2xl w-full max-w-md p-6 space-y-4">
+                  <h2 className="text-lg font-semibold">Change Password</h2>
+
+                  <input
+                    type="password"
+                    placeholder="Current password"
+                    value={passwordForm.old_password}
+                    onChange={(e) =>
+                      setPasswordForm({ ...passwordForm, old_password: e.target.value })
+                    }
+                    className="w-full rounded-xl border px-4 py-3 text-sm"
+                  />
+
+                  <input
+                    type="password"
+                    placeholder="New password"
+                    value={passwordForm.new_password}
+                    onChange={(e) =>
+                      setPasswordForm({ ...passwordForm, new_password: e.target.value })
+                    }
+                    className="w-full rounded-xl border px-4 py-3 text-sm"
+                  />
+
+                  <input
+                    type="password"
+                    placeholder="Confirm new password"
+                    value={passwordForm.confirm_password}
+                    onChange={(e) =>
+                      setPasswordForm({
+                        ...passwordForm,
+                        confirm_password: e.target.value,
+                      })
+                    }
+                    className="w-full rounded-xl border px-4 py-3 text-sm"
+                  />
+
+                  <div className="flex justify-end gap-3 pt-2">
+                    <button
+                      onClick={() => setPasswordModal(false)}
+                      className="px-4 py-2 rounded-xl border text-sm"
+                    >
+                      Cancel
+                    </button>
+
+                    <button
+                      disabled={changingPassword}
+                      onClick={async () => {
+                        if (
+                          passwordForm.new_password !==
+                          passwordForm.confirm_password
+                        ) {
+                          toast.error("Passwords do not match");
+                          return;
+                        }
+
+                        const result = await changeUserPassword(passwordForm);
+
+                        if (result.success) {
+                          toast.success("Password changed successfully");
+                          setPasswordModal(false);
+                          setPasswordForm({
+                            old_password: "",
+                            new_password: "",
+                            confirm_password: "",
+                          });
+                        } else {
+                          toast.error(result.message);
+                        }
+                      }}
+                      className="px-4 py-2 rounded-xl bg-black text-white text-sm disabled:opacity-50"
+                    >
+                      {changingPassword ? "Updating..." : "Update"}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <ActionBtn
+              icon={<HiOutlineDocumentText size={22} />}
+              label="Terms & Property Policy"
+              color="bg-orange-100"
+              link="/terms"
             />
 
-            <ActionBtn 
-               icon={<MdOutlineContactSupport size={22}/>} 
-               label="Owner Support" 
-               color="bg-teal-100" 
-               link="/support"
+            <ActionBtn
+              icon={<MdOutlineContactSupport size={22} />}
+              label="Owner Support"
+              color="bg-teal-100"
+              link="/auth/landowner/support"
             />
 
             <hr className="my-4 border-gray-100" />
 
-            <ActionBtn 
-               icon={<AiOutlineLogout size={22}/>} 
-               label="Sign Out" 
-               color="bg-gray-200" 
-               onClick={() => setShowLogoutModal(true)}
+            <ActionBtn
+              icon={<AiOutlineLogout size={22} />}
+              label="Sign Out"
+              color="bg-gray-200"
+              onClick={() => setShowLogoutModal(true)}
             />
+            {
+              showLogoutModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+                  <div className="bg-white rounded-2xl w-full max-w-md p-6 space-y-4">
+                    <h2 className="text-lg font-semibold text-red-600">Delete Account</h2>
+                    <p>Are you sure you want to Logout?</p>
+                    <div className="flex justify-end gap-3 pt-2">
+                      <button
+                        onClick={() => setShowLogoutModal(false)}
+                        className="px-4 py-2 rounded-xl border text-sm"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={async () => handleConfirmLogout()}
+                        className="px-4 py-2 rounded-xl bg-red-500 text-white text-sm"
+                      >
+                        Logout
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )
+            }
 
-            <ActionBtn 
-               icon={<TiUserDelete size={22}/>} 
-               label="Close Owner Account" 
-               color="bg-red-100" 
-               textColor="text-red-600"
-               onClick={() => setDeleteModal(true)}
+            <ActionBtn
+              icon={<TiUserDelete size={22} />}
+              label="Close Owner Account"
+              color="bg-red-100"
+              textColor="text-red-600"
+              onClick={() => setDeleteModal(true)}
             />
+            {deleteModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+                  <div className="bg-white rounded-2xl w-full max-w-md p-6 space-y-4">
+                    <h2 className="text-lg font-semibold text-red-600">Delete Account</h2>
+                    <p>Are you sure you want to delete your account? This action cannot be undone.</p>
+                    <div className="flex justify-end gap-3 pt-2">
+                      <button
+                        onClick={() => setDeleteModal(false)}
+                        className="px-4 py-2 rounded-xl border text-sm"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={async () => handleDeleteAccount()}
+                        className="px-4 py-2 rounded-xl bg-red-500 text-white text-sm"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
           </div>
         </div>
       </div>
 
-      {/* Modals - Reuse your existing logic for Logout, Delete, and Password */}
-      {/* ... PasswordModal, LogoutModal, DeleteModal ... */}
+    
     </div>
   );
 }
@@ -230,9 +352,9 @@ export default function RoomOwnerAccount() {
 // Helper Component for scannable actions
 const ActionBtn = ({ icon, label, color, textColor = "text-gray-700", onClick, link }) => {
   const content = (
-    <button 
+    <button
       onClick={onClick}
-      className="w-full flex items-center justify-between p-3 bg-white border border-gray-50 rounded-2xl hover:shadow-md hover:border-gray-200 transition-all group"
+      className="w-full flex items-center justify-between p-3 bg-white border border-gray-50 rounded-2xl hover:shadow-md hover:border-gray-200 transition-all group my-2"
     >
       <div className="flex items-center gap-4">
         <div className={`p-3 ${color} rounded-xl group-hover:scale-110 transition-transform`}>{icon}</div>

@@ -1,0 +1,144 @@
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { FaArrowRight } from "react-icons/fa";
+import { TfiWrite } from "react-icons/tfi";
+import { MdSupportAgent } from "react-icons/md";
+
+export default function RoomOwnerSupport() {
+  const [category, setCategory] = useState("general");
+
+  return (
+    <div className="space-y-6 px-2 md:p-6  md:mx-auto md:container">
+      {/* Header */}
+      <div>
+        <h1 className="text-2xl font-semibold text-gray-900">Support & Help</h1>
+        <p className="text-xs md:text-sm text-gray-500 mt-1">
+          Contact our support team or report issues related website.
+        </p>
+      </div>
+
+      {/* Quick Help Cards */}
+      {/* <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <Link to={'/auth/user/complaints'}>
+          <div className="flex justify-between items-center gap-3 bg-white rounded-2xl shadow-sm p-2 md:p-4 border">
+            <div className="flex gap-3">
+              <p className="bg-orange-200 rounded-xl flex items-center justify-center p-5">
+                <TfiWrite size={25} />
+              </p>
+              <div>
+                <p className="font-medium text-gray-900">Complaints</p>
+                <p className="text-xs md:text-sm text-gray-500 mt-1">
+                  Problems with payments, cancellations, or refunds.
+                </p>
+              </div>
+            </div>
+            <FaArrowRight size={20} />
+          </div>
+        </Link>
+        <Link to={'/auth/user/report_property'}>
+          <div className="flex justify-between items-center gap-3 bg-white rounded-2xl shadow-sm p-2 md:p-4 border">
+            <div className="flex gap-3">
+                <p className="bg-emerald-200 rounded-xl flex items-center justify-center p-5"> 
+                  <TfiWrite size={25} />
+                </p>
+              <div >
+                <p className="font-medium text-gray-900">Report Property</p>
+                <p className="text-xs md:text-sm text-gray-500 mt-1">
+                  Fake listings, incorrect details, or policy violations.
+                </p>
+              </div>
+            </div>
+            <FaArrowRight size={20} />
+          </div>
+        </Link>
+        <Link to={'/auth/user/report_landowner'}>
+          <div className="flex justify-between items-center gap-3 bg-white rounded-2xl shadow-sm p-2 md:p-4 border">
+            <div className="flex gap-3">
+              <p className="bg-blue-200 rounded-xl flex items-center justify-center p-5"> 
+                  <TfiWrite size={25} />
+                </p>
+                <div>
+
+              <p className="font-medium text-gray-900">Report Owner</p>
+              <p className="text-xs md:text-sm text-gray-500 mt-1">
+                Suspicious behavior or guideline violations.
+              </p>
+                </div>
+            </div>
+            <FaArrowRight size={20} />
+          </div>
+        </Link>
+      </div> */}
+
+      {/* Support Form */}
+      <div className="bg-white rounded-2xl shadow-sm  p-3 md:p-6 space-y-5 border">
+        <h2 className="flex items-center gap-3 text-lg font-semibold text-gray-900">
+          <MdSupportAgent size={50} className="p-2 bg-teal-200 rounded-xl"/>
+          Submit a Support Request</h2>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            >
+              <option value="general">General Support</option>
+              <option value="booking">Booking / Payment Issue</option>
+              <option value="property">Report Property</option>
+              <option value="owner">Report Owner</option>
+              <option value="technical">Technical Issue</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Related Booking / Property ID</label>
+            <input
+              type="text"
+              placeholder="Optional"
+              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+          <input
+            type="text"
+            placeholder="Brief summary of the issue"
+            className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+          <textarea
+            rows={5}
+            placeholder="Describe the issue in detail"
+            className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+        </div>
+
+        {/* <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Attachments (optional)</label>
+          <input
+            type="file"
+            className="w-full text-sm"
+          />
+        </div> */}
+
+        <div className="flex justify-end">
+          <button className="px-6 py-2 rounded-lg bg-black text-white text-sm font-medium hover:bg-indigo-700 transition">
+            Submit Request
+          </button>
+        </div>
+      </div>
+
+      {/* Info Note */}
+      <div className="text-sm text-gray-500">
+        Reports are reviewed by our admin team. False reports may lead to account action.
+      </div>
+    </div>
+  );
+}

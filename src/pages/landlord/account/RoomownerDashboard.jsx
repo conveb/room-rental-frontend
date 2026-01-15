@@ -48,9 +48,9 @@ export default function LandownerDashboard() {
 
   // ---------------- SECTIONS ----------------
   const renderOverview = () => (
-    <div className="space-y-6">
+    <div className="space-y-3">
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
         <StatCard title="Total Rooms" value={stats.totalProperties} icon={MdOutlineHouse} color="bg-blue-100" />
         <StatCard title="Active Tenants" value={stats.activeTenants} icon={FiUsers} color="bg-purple-100" />
         <StatCard title="Occupancy" value={stats.occupancyRate} icon={MdAutoGraph} color="bg-emerald-100" />
@@ -149,7 +149,7 @@ export default function LandownerDashboard() {
 }
 
 const StatCard = ({ title, value, icon: Icon, color }) => (
-  <div className="bg-white p-2 md:p-3 rounded-xl shadow flex items-center gap-5">
+  <div className="bg-white p-2 md:p-3 rounded-xl shadow flex items-center gap-2 md:gap-5">
     {Icon && (
       <div className={`p-3 rounded-xl ${color}  text-gray-700`}>
         <Icon size={22} />

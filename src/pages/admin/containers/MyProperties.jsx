@@ -8,7 +8,6 @@ import ImgSkeleton from '../../../Assets/pngs/img_skeleton.png'
 export default function MyProperties() {
   const { properties, loading, error, deleteProperty, updateProperty, actionLoading } = useMyProperties();
   const { amenities, loading: amenitiesLoading } = useAmenities();
-
   const [editingProperty, setEditingProperty] = useState(null);
   const [title, setTitle] = useState("");
   const [location, setLocation] = useState("");
@@ -87,51 +86,70 @@ export default function MyProperties() {
 
       {loading && <p>Loading properties...</p>}
       {error && <p className="text-red-500">{error}</p>}
-<div className="grid grid-cols-1 md:grid-cols-3">
+      <div className="grid grid-cols-1 md:grid-cols-2">
 
-      {properties.map(property => (
-        <div key={property.id} className="flex flex-col md:flex-row border p-4 rounded-xl flex gap-4 bg-white shadow-sm hover:shadow-md transition">
-          {/* Property Thumbnail */}
-          <img
-            src={property.cover_image}
-            className="w-24 h-24 rounded-lg object-cover bg-stone-200"
-            onError={(e) => { e.target.onerror = null; e.target.src = ImgSkeleton; }}
-            alt={property.title}
-          />
+        {properties.map(property => (
+          <div key={property.id} className="flex flex-col sm:flex-row border border-gray-100 p-3 sm:p-4 rounded-2xl gap-4 bg-white shadow-sm hover:shadow-md transition-all">
 
-          <div className="flex-1 space-y-1">
-            <h3 className="font-bold text-gray-800">{property.title}</h3>
-            <p className="text-gray-500 text-xs">{property.city}, {property.country}</p>
-            <p className="font-bold text-blue-600">€ {property.rent_per_month}</p>
+            {/* Left: Image Section */}
+            <div className="relative flex-shrink-0">
+              <img
+                src={property.cover_image}
+                className="w-full sm:w-32 md:w-44 h-48 sm:h-32 md:h-44 rounded-xl object-cover bg-stone-100"
+                onError={(e) => { e.target.onerror = null; e.target.src = ImgSkeleton; }}
+                alt={property.title}
+              />
 
-            {/* Amenities Preview */}
-            <div className="flex flex-wrap gap-1 mt-2">
-              {property.amenities_data?.slice(0, 3).map(a => (
-                <span key={a.id} className="text-[10px] bg-gray-100 px-2 py-0.5 rounded text-gray-600">
-                  {a.amenity_name}
-                </span>
-              ))}
-              {property.amenities_data?.length > 3 && <span className="text-[10px] text-gray-400">+{property.amenities_data.length - 3} more</span>}
+              {/* Dynamic Status Badge */}
+              <div className="absolute top-2 left-2 shadow-sm">
+                {property.is_active ? (
+                  <span className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-white rounded-md bg-emerald-600">Active</span>
+                ) : (
+                  <span className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-white rounded-md bg-rose-600">Inactive</span>
+                )}
+              </div>
             </div>
 
-            <div className="flex gap-2 pt-2">
-              <button
-                className="bg-black text-white text-xs py-1.5 px-4 rounded-lg hover:bg-gray-800"
-                onClick={() => openEditModal(property)}
+            {/* Right: Info Section */}
+            <div className="flex flex-col justify-between flex-grow min-w-0">
+              <div className="space-y-1 md:space-y-2">
+                  <h3 className="font-bold text-gray-800 text-lg md:text-xl truncate">
+                    {property.title}
+                  </h3>
+
+                <p className="text-gray-500 text-xs md:text-sm">
+                  {property.city}, {property.country}
+                </p>
+
+                <div className="flex items-center gap-2 text-gray-500">
+                  <span className="text-xs bg-gray-100 px-2 py-0.5 rounded-md">{property.property_type}</span>
+                  <span className="text-gray-300">|</span>
+                  <span className="text-xs">{property.size_m2} sq m</span>
+                </div>
+                  <p className="font-bold text-blue-600 text-base md:text-xl whitespace-nowrap">
+                    €{property.rent_per_month}
+                  </p>
+              </div>
+
+              {/* Actions Section */}
+              <div className="flex gap-2 pt-4 mt-auto">
+                <button
+                  className="flex-1 sm:flex-none bg-gray-900 text-white text-xs font-semibold py-2 px-4 rounded-lg hover:bg-black transition-colors"
+                  onClick={() => openEditModal(property)}
                 >
-                Edit Property
-              </button>
-              <button
-                className="border border-red-200 text-red-500 text-xs py-1.5 px-4 rounded-lg hover:bg-red-50"
-                disabled={actionLoading}
-                onClick={() => deleteProperty(property.id)}
+                  Edit Property
+                </button>
+                <button
+                  className="flex-1 sm:flex-none border border-red-100 text-red-500 text-xs font-semibold py-2 px-4 rounded-lg hover:bg-red-50 transition-colors disabled:opacity-50"
+                  disabled={actionLoading}
+                  onClick={() => deleteProperty(property.id)}
                 >
-                Delete
-              </button>
+                  Delete
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        ))}
       </div>
 
       {/* EDIT MODAL */}

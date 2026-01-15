@@ -18,6 +18,7 @@ export const useUserProfile = () => {
       setLoading(true);
       const res = await getUserProfileAPI();
       setUser(res.data);
+
     } catch (err) {
       setError(err?.response?.data?.message || "Failed to load profile");
     } finally {
