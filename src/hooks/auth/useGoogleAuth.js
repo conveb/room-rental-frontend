@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { googleAuthAPI } from "../../services/allAPI";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 export const useGoogleAuth = () => {
   const [loading, setLoading] = useState(false);
@@ -11,13 +12,21 @@ export const useGoogleAuth = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await googleAuthAPI({ code: authCode });
+      // Your Django backend needs the code and the explicit callback_url string
+      const response = await googleAuthAPI({ 
+        code: authCode,
+        callback_url: "postmessage" 
+      });
       
       if (response.status === 200 || response.status === 201) {
-        navigate("/auth/user/home");
+        toast.success("Welcome to Alive Paris!");
+        navigate("/dashboard");
       }
     } catch (err) {
-      setError(err.response?.data?.message || "Google login failed");
+      // Django allauth usually returns errors under the 'detail' key
+      const msg = err.response?.data?.detail || "Google authentication failed";
+      setError(msg);
+      toast.error(msg);
     } finally {
       setLoading(false);
     }

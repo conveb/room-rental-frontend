@@ -12,36 +12,28 @@ const SignIn = () => {
   // Google Signin Hook
   const { googleLogin, loading: googleLoading, error: googleError } = useGoogleAuth();
 
-  const [form, setForm] = useState({
-    email: "",
-    password: "",
-  });
-
+  const [form, setForm] = useState({email: "",password: "",});
   const [showPassword, setShowPassword] = useState(false);
   const [codeClient, setCodeClient] = useState(null);
   useEffect(() => {
     /* global google */
-    if (window.google) { // Added !tokenClient check for safety
+   if (window.google) {
       const client = google.accounts.oauth2.initCodeClient({
         client_id: "484008610238-ptd10rj6tjd5gqnsh5st5np6ggkiuns1.apps.googleusercontent.com",
         scope: "openid email profile",
         ux_mode: "popup",
-        callback: (response) => {
+        redirect_uri: "postmessage",
+       callback: (response) => {
           if (response.code) {
             googleLogin(response.code);
-            console.log("Google auth code received:", response.code);
           }
         },
       });
       setCodeClient(client);
     }
-  }, [googleLogin]); 
+  }, [googleLogin]);
 
-  const handleGoogleClick = () => {
-    if (codeClient) {
-      codeClient.requestCode(); 
-    }
-  };
+
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -49,6 +41,9 @@ const SignIn = () => {
       ...form,
       [name]: type === "checkbox" ? checked : value,
     });
+  };
+  const handleGoogleClick = () => {
+    if (codeClient) codeClient.requestCode();
   };
 
   const handleSubmit = async (e) => {
@@ -160,13 +155,15 @@ const SignIn = () => {
               <button
                 type="button"
                 onClick={handleGoogleClick}
-                disabled={manualLoading || googleLoading}
-                className="w-full flex items-center justify-center gap-2 border border-gray-300 py-2.5 rounded-lg"
+                disabled={isProcessing}
+                className="w-full flex items-center justify-center gap-3 border py-2.5 rounded-lg hover:bg-gray-50 transition disabled:opacity-50"
               >
-                {googleLoading ? "Exchanging code..." : (
+                {googleLoading ? (
+                  <span className="text-sm">Exchanging Code...</span>
+                ) : (
                   <>
-                    <FcGoogle size={18} />
-                    Continue with Google
+                    <FcGoogle size={20} />
+                    <span className="font-medium text-gray-700">Continue with Google</span>
                   </>
                 )}
               </button>
