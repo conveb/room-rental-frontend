@@ -10,7 +10,7 @@ import { useGoogleAuth } from "../../../hooks/auth/useGoogleAuth";
 
 const SignIn = () => {
   const { signin, loading: manualLoading, error: manualError } = useSignin();
-  const { loading: googleLoading ,error:googleError } = useGoogleAuth();
+  const { loading: googleLoading , error:googleError } = useGoogleAuth();
 
   const [form, setForm] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);

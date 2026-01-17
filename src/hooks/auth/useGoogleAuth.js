@@ -5,7 +5,7 @@ import { toast } from "sonner";
 
 export const useGoogleAuth = () => {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
@@ -24,7 +24,8 @@ export const useGoogleAuth = () => {
         navigate("/");
       }
     } catch (err) {
-      setError(err?.response?.data?.detail || "Google login failed");
+      const errMsg = err.response?.data?.detail || "Google login failed";
+      setError(errMsg);
       toast.error(err.response?.data?.detail || "Google login failed");
     } finally {
       setLoading(false);
