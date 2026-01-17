@@ -10,16 +10,16 @@ import { useGoogleAuth } from "../../../hooks/auth/useGoogleAuth";
 
 const SignIn = () => {
   const { signin, loading: manualLoading, error: manualError } = useSignin();
-  const { handleGoogleLogin, loading: googleLoading, error: googleError } = useGoogleAuth();
+  const { loading: googleLoading ,error:googleError } = useGoogleAuth();
 
   const [form, setForm] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
 
   // 1. Initialize Google Login Hook
   const loginWithGoogle = useGoogleLogin({
-    onSuccess: (codeResponse) => handleGoogleLogin(codeResponse.code),
-    onError: (error) => console.log('Login Failed:', error),
-    flow: 'auth-code', // Crucial: This returns a "code" for your Django backend
+    flow: 'auth-code',
+    ux_mode: 'redirect',
+    redirect_uri: "https://www.aliveparis.com/signin",
   });
 
   const handleChange = (e) => {
@@ -130,13 +130,9 @@ const SignIn = () => {
               <button
                 type="button"
                 onClick={() => loginWithGoogle()}
-                disabled={isProcessing}
-                className="w-full flex items-center justify-center gap-3 border border-gray-300 py-2.5 rounded-lg hover:bg-gray-50 transition disabled:opacity-50"
+                disabled={googleLoading}
               >
-                <FcGoogle size={20} />
-                <span className="font-semibold text-gray-700">
-                  {googleLoading ? "Connecting..." : "Sign in with Google"}
-                </span>
+                {googleLoading ? "Processing..." : "Sign in with Google"}
               </button>
             </form>
 
