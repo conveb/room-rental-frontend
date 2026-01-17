@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react"; // Added useCallback
 import { googleAuthAPI } from "../../services/allAPI";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -11,8 +11,10 @@ export const useGoogleAuth = () => {
 
   const REDIRECT_URI = "https://www.aliveparis.com/signin"; 
 
-  const handleGoogleLogin = async (authCode) => {
+  // Wrap this in useCallback to stabilize the reference
+  const handleGoogleLogin = useCallback(async (authCode) => {
     setLoading(true);
+    setError(null);
     try {
       const response = await googleAuthAPI({ 
         code: authCode,
@@ -24,15 +26,14 @@ export const useGoogleAuth = () => {
         navigate("/");
       }
     } catch (err) {
-      const errMsg = err.response?.data?.detail || "Google login failed";
-      setError(errMsg);
-      toast.error(err.response?.data?.detail || "Google login failed");
+      const msg = err.response?.data?.detail || "Google login failed";
+      setError(msg);
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
-  };
+  }, [navigate, REDIRECT_URI]); // Dependencies for the function itself
 
-  // AUTOMATIC CHECK: This runs whenever the hook is used (like on the SignIn page)
   useEffect(() => {
     const code = searchParams.get("code");
     if (code) {
@@ -40,7 +41,7 @@ export const useGoogleAuth = () => {
       window.history.replaceState({}, document.title, window.location.pathname);
       handleGoogleLogin(code);
     }
-  }, [searchParams]);
+  }, [searchParams, handleGoogleLogin]); // handleGoogleLogin is now a stable dependency
 
   return { handleGoogleLogin, loading, error };
 };
