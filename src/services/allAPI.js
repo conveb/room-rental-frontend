@@ -22,7 +22,7 @@ export const blockUserAPI = (userId, payload) => commonAPI("patch", `/api/v1/adm
 export const LogoutAPI = () => commonAPI("post", "/api/v1/logout/");
 
 export const approvePropertyAPI= ()=>commonAPI('post','/api/v1/') 
-export const googleAuthAPI= (data)=>commonAPI('post','/api/v1/auth/google/web',data)
+export const googleAuthAPI= (data)=>commonAPI('post','/api/v1/auth/google/',data)
 
 export const addLocationsApi= (data)=>commonAPI('post','/api/v1/locations/',data) 
 export const listAllLocationsApi= ()=>commonAPI('get','/api/v1/locations') 
