@@ -15,7 +15,7 @@ const SignIn = () => {
   const [form, setForm] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
 
-  // 1. Initialize Google Login Hook
+
   const loginWithGoogle = useGoogleLogin({
     flow: 'auth-code',
     ux_mode: 'redirect',
