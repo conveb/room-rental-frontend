@@ -131,8 +131,9 @@ const SignIn = () => {
                 type="button"
                 onClick={() => loginWithGoogle()}
                 disabled={googleLoading}
+                className="flex gap-3 items-center justify-center border p-2 w-full rounded-xl"
               >
-                {googleLoading ? "Processing..." : "Sign in with Google"}
+              <FcGoogle/>  {googleLoading ? "Processing..." : "Sign in with Google"}
               </button>
             </form>
 
