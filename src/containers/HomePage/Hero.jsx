@@ -1,10 +1,10 @@
-import heroImg from '../../Assets/Images/heroImg.jpg';
+import heroImg from '../../Assets/Images/paris-img.jpg';
 import { useState } from "react";
 
 
 
 export default function HeroSection() {
- 
+
   const [selectedPrice, setSelectedPrice] = useState("Select Price");
 
 
@@ -29,7 +29,7 @@ export default function HeroSection() {
         <header className="relative h-screen w-full">
           {/* background image */}
           <div
-            className="absolute inset-0 bg-cover bg-center"
+            className="absolute inset-0 bg-cover bg-[center_25%]"
             style={{ backgroundImage: `url(${heroImg})` }}
             aria-hidden
           />
@@ -38,10 +38,10 @@ export default function HeroSection() {
 
 
           {/* content area */}
-          <div className="relative z-20 h-full max-w-6xl mx-auto px-5 md:px-0 flex flex-col justify-start pt-28 md:pt-48">
+          <div className="relative z-20 h-full max-w-6xl mx-auto px-5 md:px-0 flex flex-col justify-start pt-32 md:pt-48">
             {/* LEFT TEXT */}
             <div className="max-w-6xl">
-              <h1 className="special-font text-[2.8rem] md:text-[5.2rem] leading-tight text-white font-extrabold drop-shadow-lg">
+              <h1 className="special-font text-[2.5rem] md:text-[5.2rem] leading-tight text-white font-extrabold drop-shadow-lg">
                 {/* Live Better in Spaces
                 <br />
                 Made for You */}
@@ -114,7 +114,7 @@ export default function HeroSection() {
                 {/* BUTTON */}
                 <button className="col-span-3 md:col-span-1 w-full rounded-full px-8 py-4 bg-stone-950 text-white font-medium border border-white/20">
                   <a href="/accommodation">
-                  Find
+                    Find
                   </a>
                 </button>
               </div>

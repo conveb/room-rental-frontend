@@ -11,7 +11,7 @@ const ConfirmationPage = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       navigate("/");
-    }, 1000);
+    }, 10000);
 
     return () => clearTimeout(timer);
   }, [navigate]);
