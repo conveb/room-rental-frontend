@@ -10,7 +10,7 @@ import { useGoogleAuth } from "../../../hooks/auth/useGoogleAuth";
 
 const SignIn = () => {
   const { signin, loading: manualLoading, error: manualError } = useSignin();
-  const { loading: googleLoading , error:googleError } = useGoogleAuth();
+  const { loading: googleLoading, error: googleError } = useGoogleAuth();
 
   const [form, setForm] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
@@ -102,7 +102,7 @@ const SignIn = () => {
               </div>
 
               <div className="flex justify-end">
-                <Link to='/forgot-password' title="text-sm text-black hover:underline">
+                <Link to='/forgot-password' className="text-sm text-black hover:underline">
                   Forgot Password?
                 </Link>
               </div>
@@ -133,7 +133,7 @@ const SignIn = () => {
                 disabled={googleLoading}
                 className="flex gap-3 items-center justify-center border p-2 w-full rounded-xl"
               >
-              <FcGoogle/>  {googleLoading ? "Processing..." : "Sign in with Google"}
+                <FcGoogle />  {googleLoading ? "Processing..." : "Sign in with Google"}
               </button>
             </form>
 
@@ -142,7 +142,7 @@ const SignIn = () => {
               <Link to="/signup" className="font-semibold text-gray-900 hover:underline">
                 Create an account
               </Link>
-            </p>   
+            </p>
           </div>
         </div>
       </div>

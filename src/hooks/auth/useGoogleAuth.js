@@ -9,18 +9,18 @@ export const useGoogleAuth = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  const REDIRECT_URI = "https://www.aliveparis.com/signin"; 
+  const REDIRECT_URI = "https://www.aliveparis.com/signin";
 
   // Wrap this in useCallback to stabilize the reference
   const handleGoogleLogin = useCallback(async (authCode) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await googleAuthAPI({ 
+      const response = await googleAuthAPI({
         code: authCode,
-        redirect_uri: REDIRECT_URI 
+        redirect_uri: REDIRECT_URI
       });
-      
+
       if (response.status === 200 || response.status === 201) {
         toast.success("Logged in successfully!");
         navigate("/");
