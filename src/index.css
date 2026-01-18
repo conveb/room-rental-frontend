@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Kalnia:wght@500&family=Rozha+One&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Lavishly+Yours&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -68,3 +68,36 @@
     font-size: 10px !important;
     font-weight: 600 !important;
 }
+
+/* //bonjour */
+ .bonjour-container {
+        position: relative;
+    }
+
+    .bonjour-text {
+        font-family: 'Lavishly Yours', cursive;
+        font-size: 150px; /* Large size like your reference */
+        fill: none;
+        stroke: white;
+        stroke-width: 1; /* The 'writing' outline */
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-dasharray: 1200;
+        stroke-dashoffset: 1200;
+        animation: write 4s cubic-bezier(0.45, 0.05, 0.55, 0.95) forwards;
+    }
+
+    @keyframes write {
+        70% {
+            fill: rgba(255, 255, 255, 0);
+        }
+        100% {
+            stroke-dashoffset: 0;
+            fill: rgba(255, 255, 255, 1); /* Fills in solid white like the image */
+        }
+    }
+
+    /* Adding a slight slant to match the image style */
+    svg {
+        transform: skewX(-5deg);
+    }

@@ -1,7 +1,7 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import SignIn from "./pages/Auth/user-auth/Signin";
 import SignUp from "./pages/Auth/user-auth/SIgnUp";
-import { toast, Toaster } from "sonner";
+import { Toaster } from "sonner";
 import ForgotPassword from "./pages/Auth/user-auth/Forgot-password";
 import Layouts from "./components/Layouts/Layouts";
 import Home from "./pages/public/Home";
@@ -18,7 +18,6 @@ import PaymentPage from "./pages/public/accommodation/PaymentPage";
 import ConfirmationPage from "./pages/public/accommodation/ConfirmationPage";
 import UserProfilePage from "./pages/users/account/UserAccount";
 import Layout from "./pages/landlord/account/Layout";
-import PropertiesList from "./pages/landlord/account/Properties";
 import Stats from "./pages/landlord/account/stats";
 
 import UserAccount from "./pages/users/account/UserAccount";
@@ -31,11 +30,7 @@ import NotificationPage from "./pages/public/NotificationPage";
 import CreateProperty from "./pages/landlord/account/CreateProperty";
 // import { AdminRoute } from "./components/routes/AdminRoute";
 import PageNotFound from "./pages/public/PageNotFound";
-import { LandOwnerRoute } from "./components/routes/LandOwnerRoute";
-import PrivateRoute from "./components/routes/PrivateRoute";
 import AdminAddProperty from "./pages/admin/AdminAddProperty";
-import AdminReports from "./pages/admin/AdminReports";
-import AdminRequests from "./pages/admin/requests/AdminRequests";
 import UserPayments from "./pages/users/account/UserPayments";
 import UserFeedback from "./pages/users/account/UserFeedback";
 import UserComplaints from "./pages/users/account/UserComplaints";
@@ -44,7 +39,6 @@ import UserReportProperty from "./pages/users/account/UserReportProperty";
 import { AddCountries } from "./pages/admin/containers/AddCountry";
 import { AddLocations } from "./pages/admin/containers/AddLocations";
 import { AddAmenities } from "./pages/admin/containers/AddAmenities";
-import AddProperty from "./pages/admin/AdminAddProperty";
 import AdminAudits from "./pages/admin/AdminAudits";
 import AdminMyProperty from "./pages/admin/containers/AdminMyProperty";
 import AdminReportsAndComplaints from "./pages/admin/AdminReports";
@@ -54,13 +48,14 @@ import ViewBookings from "./pages/admin/containers/ViewBookings";
 import LandownerDashboard from "./pages/landlord/account/RoomownerDashboard";
 import RoomOwnerAccount from "./pages/landlord/account/RoomOwnerAccount";
 import RoomOwnerSupport from "./pages/landlord/account/RoomOwnerSupport";
+import { useState } from "react";
 
 function App() {
-  const showSplash = useSplash(1800);
+  const [loading, setLoading] = useState(true);
 
   return (
     <>
-      {showSplash && <SplashScreen />}
+      {loading && <SplashScreen onFinish={() => setLoading(false)} />}
 
         <Toaster position="top-center"/>
       <Routes>
