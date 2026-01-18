@@ -4,7 +4,9 @@ import { FiFilter } from "react-icons/fi";
 import { useProperties } from "../../../hooks/property/useProperties";
 import { FaSearch } from "react-icons/fa";
 import ImgSkeleton from '../../../Assets/pngs/img_skeleton.png'
-const Accommodation = () => {
+import AccommodationSkeleton from "../../skeleton/AccommodationSkeleton";
+
+const Accommodation = ({baseRoute}) => {
   const {
     loading,
     error,
@@ -25,7 +27,7 @@ const Accommodation = () => {
   return (
     <div className="min-h-screen bg-gray-50 pb-14 ">
       {/* HEADER */}
-      <div className="bg-black px-4 md:px-20 pb-6">
+      <div className="bg-black px-4 md:px-20 pb-6 ">
         <h1 className="text-2xl md:text-4xl font-semibold text-white text-center mb-6 pt-8">
           Find Rooms
         </h1>
@@ -143,7 +145,7 @@ const Accommodation = () => {
 
       {/* STATES */}
       {loading && (
-        <p className="text-center mt-10">Loading properties...</p>
+        <AccommodationSkeleton />
       )}
 
       {error && (
@@ -154,7 +156,7 @@ const Accommodation = () => {
       <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-4 px-2 md:px-32 mt-2 md:mt-6 items-stretch">
         {filteredProperties.map((property) => (
           <Link
-            to={`/accommodation/${property.id}`}
+            to={`${baseRoute}accommodation-details/${property.id}`}
             key={property.id}
             className="flex flex-col h-full" // 1. Ensure the link container takes full height
           >

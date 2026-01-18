@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { usePropertyDetails } from "../../../hooks/property/usePropertyDetails";
 import ImgSkeleton from '../../../Assets/pngs/img_skeleton.png'
+import AccommodationDetailsSkeleton from "../../skeleton/AccommodationDetailsSkeleton";
 
 const AccommodationDetails = () => {
   const { id } = useParams();
@@ -11,7 +12,7 @@ const AccommodationDetails = () => {
   const [activeImage, setActiveImage] = useState(null);
   const [openStack, setOpenStack] = useState(false);
 
-  if (loading) return <p className="text-center mt-32">Loading property...</p>;
+  if (loading) return <AccommodationDetailsSkeleton />;
   if (error || !property) return <p className="text-center mt-32 text-red-500">Property not found</p>;
 
   // Images
@@ -21,9 +22,9 @@ const AccommodationDetails = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="border-b bg-black">
+      {/* <header className="border-b bg-black">
         <div className="max-w-6xl mx-auto px-4 py-12" />
-      </header>
+      </header> */}
 
       {/* Main */}
       <main className="max-w-6xl mx-auto px-4 py-8">

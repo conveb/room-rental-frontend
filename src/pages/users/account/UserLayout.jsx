@@ -14,7 +14,7 @@ import { useAuth } from "../../../context/AuthContext";
 import { useUserProfile } from "../../../hooks/users/useUserProfile";
 
 const navItems = [
-  { to: "/auth/user/home", label: "Home", icon: <HiMiniHome /> },
+  { to: "/auth/user/accommodation", label: "Home", icon: <HiMiniHome /> },
   { to: "/auth/user/bookings", label: "Bookings", icon: <FaDoorOpen /> },
   { to: "/auth/user/account", label: "Profile", icon: <FaUserGear /> },
   { to: "/auth/user/support", label: "Support", icon: <MdOutlineSupportAgent /> },

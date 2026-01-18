@@ -74,8 +74,8 @@ function App() {
           <Route path="/workingonit" element={<WorkingOnIt />} />
           <Route path="/student/1" element={<UserProfilePage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/accommodation" element={<Accommodation />} />
-          <Route path="/accommodation/:id" element={<AccommodationDetails />} />
+          <Route path="/accommodation" element={<Accommodation baseRoute="/"/>} />
+          <Route path="/accommodation-details/:id" element={<AccommodationDetails />} />
         </Route>
 
         {/* <Route element={<AdminRoute />}> */}
@@ -111,7 +111,8 @@ function App() {
 
         {/* <Route element={<PrivateRoute />}> */}
           <Route path="/auth/user" element={<UserLayout />}>
-            <Route index path="home" element={<Accommodation />} />
+            <Route index path="accommodation" element={<Accommodation baseRoute="/auth/user/"/>} />
+            <Route path="/auth/user/accommodation-details/:id" element={<AccommodationDetails />} />
             <Route path="account" element={<UserAccount />} />
             <Route path="feedbacks" element={<UserFeedback />} />
             <Route path="bookings" element={<UserBookings />} />

@@ -32,7 +32,7 @@ export const useSignin = () => {
 
 
       if (res.data.user.role === "STUDENT") {
-        navigate("/accommodation");
+        navigate("/auth/user/accommodation");
 
       } else if (res.data.user.role === "LAND_OWNER") {
         navigate("/auth/landowner");
