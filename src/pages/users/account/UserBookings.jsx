@@ -4,9 +4,22 @@ import UserPayments from "./UserPayments";
 import { MdHistory } from "react-icons/md";
 import { TiCancel } from "react-icons/ti";
 import { IoTimerOutline } from "react-icons/io5";
+import { useMyBookings } from "../../../hooks/bookings/useMyBookings";
+
 export default function UserBookings() {
   const [mainTab, setMainTab] = useState("bookings");
   const [bookingTab, setBookingTab] = useState("upcoming");
+  
+  const { bookings, loading, error } = useMyBookings();
+
+  // Filter logic: This assumes your API returns a 'status' field 
+  // (e.g., 'confirmed', 'completed', 'cancelled')
+  const filteredBookings = bookings.filter((b) => {
+    if (bookingTab === "upcoming") return b.status === "confirmed";
+    if (bookingTab === "past") return b.status === "completed";
+    if (bookingTab === "cancelled") return b.status === "cancelled";
+    return true;
+  });
 
   return (
     <div className="space-y-3 px-3 md:p-6 mt-20 md:mt-0 md:mx-auto md:container">
@@ -16,124 +29,83 @@ export default function UserBookings() {
           <button
             key={tab}
             onClick={() => setMainTab(tab)}
-            className={`flex-1 py-3 md:py-4 text-sm font-medium transition rounded-2xl shadow ${mainTab === tab
-              ? "bg-black font-medium text-white"
-              : "bg-white text-gray-500 hover:bg-gray-200"
-              }`}
+            className={`flex-1 py-3 md:py-4 text-sm font-medium transition rounded-2xl shadow ${
+              mainTab === tab ? "bg-black text-white" : "bg-white text-gray-500 hover:bg-gray-200"
+            }`}
           >
-            {tab}
+            {tab.toUpperCase()}
           </button>
         ))}
       </div>
 
-      {/* BOOKINGS SECTION */}
       {mainTab === "bookings" && (
         <>
-          {/* BOOKING SUB-TABS */}
-          {/* BOOKING SUB-TABS */}
+          {/* SUB-TABS */}
           <div className="flex gap-4 border-b text-sm px-2 w-full">
             {[
-              {
-                key: "upcoming",
-                text: "Upcoming",
-                icon: <IoTimerOutline />,
-              },
-              {
-                key: "past",
-                text: "Past",
-                icon: <MdHistory />,
-              },
-              {
-                key: "cancelled",
-                text: "Cancelled",
-                icon: <TiCancel />,
-              },
+              { key: "upcoming", text: "Upcoming", icon: <IoTimerOutline /> },
+              { key: "past", text: "Past", icon: <MdHistory /> },
+              { key: "cancelled", text: "Cancelled", icon: <TiCancel /> },
             ].map((tab) => (
               <button
                 key={tab.key}
                 onClick={() => setBookingTab(tab.key)}
-                className={`py-3 transition w-full ${bookingTab === tab.key
-                    ? "border-b-2 border-black font-medium text-black"
-                    : "text-gray-500 hover:text-gray-700"
-                  }`}
+                className={`py-3 transition w-full ${
+                  bookingTab === tab.key ? "border-b-2 border-black font-medium text-black" : "text-gray-500"
+                }`}
               >
                 <div className="flex justify-center items-center gap-2">
-                  {tab.icon}
-                  <span>{tab.text}</span>
+                  {tab.icon} <span>{tab.text}</span>
                 </div>
               </button>
             ))}
           </div>
 
+          {/* DYNAMIC LIST */}
+          <div className="space-y-4 px-2 mt-4">
+            {loading ? (
+              <p className="text-center py-10">Loading bookings...</p>
+            ) : error ? (
+              <p className="text-center py-10 text-red-500">{error}</p>
+            ) : filteredBookings.length > 0 ? (
+              filteredBookings.map((item) => (
+                <div key={item._id} className="bg-white rounded-2xl shadow-sm p-5 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                  <div className="space-y-1">
+                    <p className="font-medium text-gray-900">{item.propertyName || "Property Name"}</p>
+                    <p className="text-sm text-gray-500">
+                      {item.location} · {new Date(item.startDate).toLocaleDateString()} – {new Date(item.endDate).toLocaleDateString()}
+                    </p>
+                    <span className={`inline-block mt-2 px-3 py-1 text-xs rounded-full ${
+                      item.status === 'confirmed' ? 'bg-emerald-50 text-emerald-600' : 'bg-gray-100 text-gray-600'
+                    }`}>
+                      {item.status.charAt(0).toUpperCase() + item.status.slice(1)}
+                    </span>
+                  </div>
 
-          {/* BOOKING CARDS */}
-          <div className="space-y-4 px-2">
-            {bookingTab === "upcoming" && (
-              <div className="bg-white rounded-2xl shadow-sm p-5 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-                <div className="space-y-1">
-                  <p className="font-medium text-gray-900">
-                    Modern Studio Apartment
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    Paris · 12 Aug – 18 Aug
-                  </p>
-                  <span className="inline-block mt-2 px-3 py-1 text-xs rounded-full bg-emerald-50 text-emerald-600">
-                    Confirmed
-                  </span>
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <Link
+                      to={`/bookings/${item._id}`}
+                      className="px-4 py-2 text-sm text-center rounded-lg border hover:border-black hover:bg-gray-50 transition"
+                    >
+                      View Details
+                    </Link>
+                    {bookingTab === "upcoming" && (
+                      <button className="px-4 py-2 text-sm rounded-lg border border-red-200 text-red-600 hover:bg-red-50 transition">
+                        Cancel Booking
+                      </button>
+                    )}
+                  </div>
                 </div>
-
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <Link
-                    to="/bookings/1"
-                    className="px-4 py-2 text-sm rounded-lg border hover:border-black hover:bg-gray-50 transition"
-                  >
-                    View Details
-                  </Link>
-                  <button className="px-4 py-2 text-sm rounded-lg border border-red-200 text-red-600 hover:bg-red-50 transition">
-                    Cancel Booking
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {bookingTab === "past" && (
-              <div className="bg-white rounded-2xl shadow-sm p-5 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 opacity-80">
-                <div className="space-y-1">
-                  <p className="font-medium text-gray-900">
-                    Cozy City Room
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    Berlin · 02 Jun – 06 Jun
-                  </p>
-                  <span className="inline-block mt-2 px-3 py-1 text-xs rounded-full bg-gray-100 text-gray-600">
-                    Completed
-                  </span>
-                </div>
-
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <Link
-                    to="/bookings/2"
-                    className="px-4 py-2 text-sm rounded-lg border hover:border-black hover:bg-gray-50 transition"
-                  >
-                    View Details
-                  </Link>
-                  <button className="px-4 py-2 text-sm rounded-lg border hover:bg-gray-50 transition">
-                    Download Invoice
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {bookingTab === "cancelled" && (
+              ))
+            ) : (
               <div className="bg-white rounded-2xl shadow-sm p-10 text-center text-gray-500">
-                No cancelled bookings
+                No {bookingTab} bookings found.
               </div>
             )}
           </div>
         </>
       )}
 
-      {/* PAYMENTS SECTION */}
       {mainTab === "payments" && <UserPayments />}
     </div>
   );

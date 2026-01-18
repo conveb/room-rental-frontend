@@ -50,6 +50,8 @@ export const updateStatusApi = (id, data) => commonAPI("patch", `/api/v1/admin/s
 
 export const getAllFeedbackApi= ()=>commonAPI('get','/api/v1/feedback') 
 export const sendFeedbackApi= (data)=>commonAPI('post','/api/v1/feedback/create/',data) 
+
+export const getMyBookingsApi= ()=>commonAPI('get','/api/v1/bookings/my') 
 // /feedback/create/
 // /bookings/90edd763-eb24-47a7-ab80-02289c6c9c3b/status/ <- check status of selected bookings
 // /bookings/90edd763-eb24-47a7-ab80-02289c6c9c3b/complete/ <-complete selected booking

@@ -46,46 +46,39 @@ export default function UserAccount() {
   const [editValues, setEditValues] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
-
+  const hasAvatarChanged = Number(selectedAvatar) !== Number(user?.avatar_id);
   useEffect(() => {
     if (user) {
       setEditValues(user);
-      setSelectedAvatar(user.avatarUrl || defaultAvatar);
+      setSelectedAvatar(user.avatar_id || defaultAvatar);
     }
   }, [user]);
 
   useEffect(() => {
-    const savedAvatarId = localStorage.getItem("selectedAvatarId");
-    if (savedAvatarId) {
-      const savedAvatar = Characters.find(
-        (char) => char.id === savedAvatarId
-      );
-      if (savedAvatar) {
-        setSelectedAvatar(savedAvatar.img);
-        setUser((prev) => ({
-          ...prev,
-          avatarUrl: savedAvatar.img,
-        }));
-      }
+    if (user) {
+      setEditValues(user);
+      // Ensure we store the ID. If the backend sends a full URL by mistake, 
+      // we fallback to the default ID (1)
+      const initialId = user.avatar_id ? Number(user.avatar_id) : 1;
+      setSelectedAvatar(initialId);
     }
-  }, [setUser]);
+  }, [user]);
 
   const handleSaveProfile = async () => {
     const payload = {
       full_name: editValues.full_name,
       email: editValues.email,
       phone: editValues.phone,
-      avatarUrl: selectedAvatar,
+      avatar_id: selectedAvatar,
     };
 
     const result = await updateUserProfile(payload);
 
     if (result.success) {
       setIsEditing(false);
-      toast.success("Profile Updated Successfully.")
+      toast.success("Profile Updated Successfully.");
     } else {
-      console.log(result.message);
-      toast.error("Profile Updation Failed.")
+      toast.error(result.message || "Profile Updation Failed.");
     }
   };
 
@@ -107,7 +100,7 @@ export default function UserAccount() {
   };
 
   if (loading) {
-    return <div className="mt-0 text-center text-sm"><UserProfileSkeleton/></div>;
+    return <div className="mt-0 text-center text-sm"><UserProfileSkeleton /></div>;
   }
 
   if (error) {
@@ -117,54 +110,105 @@ export default function UserAccount() {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen px-5 md:p-6 mt-20 md:mt-0 md:mx-auto md:container">
+    <div className="min-h-screen px-5 md:p-6 mt-0 md:mx-auto md:container">
       {activeTab === "profile" && (
         <div className="space-y-5 mt-3">
           <div className="bg-white rounded-3xl p-6 shadow text-center">
             <div className="flex flex-col justify-center items-center gap-4">
               <div className="relative flex flex-col items-center gap-4">
-                <div
-                  className={`relative transition-transform duration-300 ${avatarEditMode ? "scale-110" : "scale-100"
-                    }`}
-                >
+                {/* Main Avatar Display */}
+                <div className={`relative transition-transform duration-300 ${avatarEditMode ? "scale-110" : "scale-100"}`}>
+                  {/* Main Avatar Display */}
                   <img
-                    src={selectedAvatar}
-                    className="h-52 w-52 rounded-full object-cover"
+                    src={
+                      Characters.find((c) => c.id === Number(selectedAvatar))?.img ||
+                      defaultAvatar
+                    }
+                    className="h-52 w-52 rounded-full object-cover border-4 border-white shadow-lg"
+                    alt="User Avatar"
                   />
-                  <button
-                    onClick={() => setAvatarEditMode((prev) => !prev)}
-                    className="absolute bottom-3 right-3 bg-black border border-white text-white text-xl p-2 rounded-full shadow"
-                  >
-                    {avatarEditMode ? <FaCheck /> : <CiEdit />}
-                  </button>
+
+                  {/* The Action Button (Edit / Save) */}
+                  {/* Container for the buttons, positioned over the avatar */}
+                  <div className="absolute bottom-3 left-0 right-0 px-3 flex justify-between items-center pointer-events-none">
+
+                    {/* 1. LEFT SIDE: Close/Cancel Button */}
+                    <div className="pointer-events-auto">
+                      {avatarEditMode && !updating && (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation(); // Prevent triggering any parent clicks
+                            setSelectedAvatar(user.avatar_id);
+                            setAvatarEditMode(false);
+                          }}
+                          className="bg-red-500 border border-white text-white p-2 rounded-full shadow-lg hover:bg-red-600 transition-all"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      )}
+                    </div>
+
+                    {/* 2. RIGHT SIDE: Edit/Save Button */}
+                    <div className="pointer-events-auto">
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          if (avatarEditMode) {
+                            // Logic: If in edit mode, we only save if something actually changed
+                            if (hasAvatarChanged) {
+                              await handleSaveProfile();
+                            }
+                            setAvatarEditMode(false);
+                          } else {
+                            setAvatarEditMode(true);
+                          }
+                        }}
+                        // Disable if updating OR if we are in edit mode but haven't picked a new avatar yet
+                        disabled={updating || (avatarEditMode && !hasAvatarChanged)}
+                        className={`flex items-center justify-center border border-white text-white p-2 rounded-full shadow-lg transition-all text-xl
+        ${updating || (avatarEditMode && !hasAvatarChanged)
+                            ? "bg-gray-400 cursor-not-allowed opacity-50"
+                            : "bg-black hover:bg-neutral-800"
+                          }`}
+                      >
+                        {updating ? (
+                          <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full" />
+                        ) : avatarEditMode ? (
+                          <FaCheck className="h-5 w-5" />
+                        ) : (
+                          <CiEdit className="h-5 w-5" />
+                        )}
+                      </button>
+                    </div>
+                  </div>
                 </div>
 
+                {/* Avatar Selection Carousel */}
                 {avatarEditMode && (
                   <div className="w-full h-28 overflow-x-auto pt-4 avatar-scroll">
                     <div className="flex gap-4 px-1 md:px-6 snap-x snap-mandatory">
                       {Characters.map((char) => {
-                        const isActive = selectedAvatar === char.img;
+                        // Compare selectedAvatar ID with the current character ID
+                        const isActive = Number(selectedAvatar) === char.id;
+
                         return (
                           <button
                             key={char.id}
                             onClick={() => {
-                              setSelectedAvatar(char.img);
-                              localStorage.setItem(
-                                "selectedAvatarId",
-                                char.id
-                              );
+                              setSelectedAvatar(char.id); // This triggers hasAvatarChanged to become true
+                              setEditValues((prev) => ({ ...prev, avatar_id: char.id }));
                             }}
-                            className={`snap-center flex-shrink-0 transition-all duration-300 ${isActive
-                              ? "scale-105"
-                              : "scale-95 opacity-70"
+                            className={`snap-center flex-shrink-0 transition-all duration-300 ${Number(selectedAvatar) === char.id ? "scale-110" : "scale-95 opacity-60"
                               }`}
                           >
                             <img
                               src={char.img}
-                              className={`h-20 w-20 rounded-full object-cover border-2 ${isActive
-                                ? "border-black"
-                                : "border-transparent"
+                              className={`h-20 w-20 rounded-full object-cover border-2 ${Number(selectedAvatar) === char.id ? "border-black" : "border-transparent"
                                 }`}
+                              alt="Avatar Option"
                             />
                           </button>
                         );
@@ -349,26 +393,26 @@ export default function UserAccount() {
               </button>
               {
                 showModal && (
-                   <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-                  <div className="bg-white rounded-2xl w-full max-w-md p-6 space-y-4">
-                    <h2 className="text-lg font-semibold text-red-600">Delete Account</h2>
-                    <p>Are you sure you want to Logout?</p>
-                    <div className="flex justify-end gap-3 pt-2">
-                      <button
-                        onClick={() => setShowModal(false)}
-                        className="px-4 py-2 rounded-xl border text-sm"
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        onClick={async () => handleConfirmLogout()}
-                        className="px-4 py-2 rounded-xl bg-red-500 text-white text-sm"
-                      >
-                        Logout
-                      </button>
+                  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+                    <div className="bg-white rounded-2xl w-full max-w-md p-6 space-y-4">
+                      <h2 className="text-lg font-semibold text-red-600">Delete Account</h2>
+                      <p>Are you sure you want to Logout?</p>
+                      <div className="flex justify-end gap-3 pt-2">
+                        <button
+                          onClick={() => setShowModal(false)}
+                          className="px-4 py-2 rounded-xl border text-sm"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          onClick={async () => handleConfirmLogout()}
+                          className="px-4 py-2 rounded-xl bg-red-500 text-white text-sm"
+                        >
+                          Logout
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
                 )
               }
 
