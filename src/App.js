@@ -50,6 +50,8 @@ import RoomOwnerAccount from "./pages/landlord/account/RoomOwnerAccount";
 import RoomOwnerSupport from "./pages/landlord/account/RoomOwnerSupport";
 import { useState } from "react";
 import AboutPage from "./pages/public/About";
+import ListYourRoom from "./pages/public/ListYourRoom";
+import Contact from "./pages/public/Contact";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -67,6 +69,8 @@ function App() {
         <Route element={<Layouts />}>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<AboutPage />} />
+          <Route path="/list-room" element={<ListYourRoom />} />
+          <Route path="/contact-us" element={<Contact />} />
           <Route path="/page-not-found" element={<PageNotFound />} />
           <Route path="/workingonit" element={<WorkingOnIt />} />
           <Route path="/student/1" element={<UserProfilePage />} />

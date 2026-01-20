@@ -30,8 +30,12 @@ export default function Header() {
     "/workingonit",
     "/notifications",
   ];
+    const BlackTextPages = [
+    "/list-room"
+  ];
 
   const isBlackRoute = blackHeaderPages.includes(location.pathname);
+  const isWhiteRoute = BlackTextPages.includes(location.pathname);
 
   // Scroll listener
   useEffect(() => {
@@ -46,10 +50,10 @@ export default function Header() {
   return (
     <nav
       className={`fixed left-0 right-0 z-30 w-full px-2 md:px-0 
-        transition-all duration-300
+        transition-all duration-300 ${isWhiteRoute ? "text-black" : "text-white"}  ${scrolled ? "text-white":"text-black"}
         ${isBlackRoute || scrolled
-          ? "bg-black text-white shadow-lg py-2 md:py-3"
-          : "bg-transparent text-white py-2 md:py-3"
+          ? "bg-black  shadow-lg py-2 md:py-3"
+          : "bg-transparent  py-2 md:py-3"
         }
       `}
     >
@@ -71,8 +75,8 @@ export default function Header() {
           <li><Link to="/">Home</Link></li>
           <li><Link to="/about">About</Link></li>
           <li><Link to="/accommodation">Find a Room</Link></li>
-          <li><Link to="/workingonit">Rent a Room</Link></li>
-          <li><Link to="/workingonit">Contact</Link></li>
+          <li><Link to="/list-room">List your room</Link></li>
+          <li><Link to="/contact-us">Contact</Link></li>
 
           <li className="bg-black text-white  rounded-full border border-stone-700">
             <Link to={user ? getAccountRoute(role) : "/signin"}>
@@ -123,10 +127,10 @@ export default function Header() {
               <Link to="/accommodation">Find a Room</Link>
             </li>
             <li onClick={() => setOpen(false)}>
-              <Link to="/workingonit">Rent a Room</Link>
+              <Link to="/list-room">List your room</Link>
             </li>
             <li onClick={() => setOpen(false)}>
-              <Link to="/workingonit">Contact</Link>
+              <Link to="/contact-us">Contact</Link>
             </li>
             {
               !loading && (
