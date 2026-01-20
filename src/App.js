@@ -49,6 +49,7 @@ import LandownerDashboard from "./pages/landlord/account/RoomownerDashboard";
 import RoomOwnerAccount from "./pages/landlord/account/RoomOwnerAccount";
 import RoomOwnerSupport from "./pages/landlord/account/RoomOwnerSupport";
 import { useState } from "react";
+import AboutPage from "./pages/public/About";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -65,6 +66,7 @@ function App() {
 
         <Route element={<Layouts />}>
           <Route path="/" element={<Home />} />
+          <Route path="/about" element={<AboutPage />} />
           <Route path="/page-not-found" element={<PageNotFound />} />
           <Route path="/workingonit" element={<WorkingOnIt />} />
           <Route path="/student/1" element={<UserProfilePage />} />

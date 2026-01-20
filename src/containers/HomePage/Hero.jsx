@@ -1,5 +1,5 @@
-import heroImg from '../../Assets/Images/paris-img.jpg';
 import { useState } from "react";
+// import heroImg from '../../Assets/Images/paris-img.jpg';
 
 
 
@@ -29,10 +29,10 @@ export default function HeroSection() {
         <header className="relative h-screen w-full">
           {/* background image */}
           <div
-            className="absolute inset-0 bg-cover bg-[center_25%]"
-            style={{ backgroundImage: `url(${heroImg})` }}
-            aria-hidden
-          />
+  className="absolute inset-0 bg-cover bg-[center_25%] bg-slate-800" // Add bg-slate-800
+  style={{ backgroundImage: `url('https://res.cloudinary.com/dlfqobh58/image/upload/f_auto,c_scale/v1768793975/Alive_paris/zwdqc1dyvr5jbrfqgzhn.jpg')` }}
+  aria-hidden
+/>
           {/* dark overlay */}
           <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/40 to-black/25 pointer-events-none z-0" />
 

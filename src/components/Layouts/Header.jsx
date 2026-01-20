@@ -69,7 +69,7 @@ export default function Header() {
         {/* Desktop Menu */}
         <ul className="hidden md:flex gap-8 text-sm items-center opacity-90">
           <li><Link to="/">Home</Link></li>
-          <li><Link to="/workingonit">About</Link></li>
+          <li><Link to="/about">About</Link></li>
           <li><Link to="/accommodation">Find a Room</Link></li>
           <li><Link to="/workingonit">Rent a Room</Link></li>
           <li><Link to="/workingonit">Contact</Link></li>
@@ -117,7 +117,7 @@ export default function Header() {
               <Link to="/">Home</Link>
             </li>
             <li onClick={() => setOpen(false)}>
-              <Link to="/workingonit">About</Link>
+              <Link to="/about">About</Link>
             </li>
             <li onClick={() => setOpen(false)}>
               <Link to="/accommodation">Find a Room</Link>
