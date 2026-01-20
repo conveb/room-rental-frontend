@@ -32,7 +32,7 @@ const Contact = () => {
                   General Inquiries
                 </h3>
                 <div className="space-y-4">
-                  <p className="text-2xl font-serif italic text-slate-800">bonjour@aliveparis.com</p>
+                  <p className="text-2xl font-serif italic text-slate-800">info@aliveparis.com</p>
                   <p className="text-gray-500 font-medium tracking-widest uppercase text-xs">+33 (0) 1 23 45 67 89</p>
                 </div>
               </div>
