@@ -21,6 +21,7 @@ export default function AdminSupportAndFeedback() {
     updating,
     updateSupportStatus,
   } = useSupportAndFeedback();
+  console.log(feedbacks)
 
   const [activeTab, setActiveTab] = useState("support");
 
@@ -124,10 +125,10 @@ export default function AdminSupportAndFeedback() {
                     <tr key={s.id} className="border-t">
                       <td className="p-3">
                         <p className="font-medium">
-                          {s.user_details.full_name}
+                          {s.user_details?.full_name}
                         </p>
                         <p className="text-xs text-gray-500">
-                          {s.user_details.email}
+                          {s.user_details?.email}
                         </p>
                       </td>
 
@@ -182,9 +183,9 @@ export default function AdminSupportAndFeedback() {
                 <thead className="bg-gray-100">
                   <tr>
                     <th className="p-3 text-left">User</th>
-                    <th className="p-3 text-left">Subject</th>
                     <th className="p-3 text-left">Message</th>
-                    <th className="p-3 text-left">Status</th>
+                    <th className="p-3 text-left">Ratings</th>
+                    <th className="p-3 text-left">Date</th>
                   </tr>
                 </thead>
 
@@ -193,31 +194,21 @@ export default function AdminSupportAndFeedback() {
                     <tr key={f.id} className="border-t">
                       <td className="p-3">
                         <p className="font-medium">
-                          {f.user_details.full_name}
+                          {f?.full_name}
                         </p>
-                        <p className="text-xs text-gray-500">
-                          {f.user_details.email}
-                        </p>
+                        
                       </td>
 
                       <td className="p-3">
-                        {f.subject}
+                        {f.comment}
                       </td>
 
                       <td className="p-3 truncate max-w-xs">
-                        {f.message}
+                        {f.rating}
                       </td>
 
                       <td className="p-3">
-                        <span
-                          className={`px-2 py-1 rounded-full text-xs ${
-                            f.is_active
-                              ? "bg-blue-100 text-blue-800"
-                              : "bg-gray-200 text-gray-700"
-                          }`}
-                        >
-                          {f.is_active ? "Active" : "Inactive"}
-                        </span>
+                       {f.created_at.split("T")[0]}
                       </td>
                     </tr>
                   ))}
@@ -239,7 +230,7 @@ export default function AdminSupportAndFeedback() {
               <div>
                 <p className="text-gray-500">User</p>
                 <p className="font-medium">
-                  {selectedTicket.user_details.full_name}
+                  {selectedTicket.user_details?.full_name}
                 </p>
               </div>
 

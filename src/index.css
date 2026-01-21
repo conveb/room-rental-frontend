@@ -98,6 +98,4 @@
     }
 
     /* Adding a slight slant to match the image style */
-    svg {
-        transform: skewX(-5deg);
-    }
+ 

@@ -21,6 +21,7 @@ import { getAvatarColor } from "./getAvatarColor";
 import { useBlockUser } from "../../hooks/users/useBlockUser";
 import StudentDetailsModal from "./components/StudentDetailsModal";
 import { useBookings } from "../../hooks/bookings/useBookings";
+import { Characters } from '../users/account/characterCollection';
 export default function AdminDashboard() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("overview");
@@ -43,6 +44,7 @@ export default function AdminDashboard() {
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("ALL");
 
+
   // ---------------- Filters ----------------
   const filteredUsers = users
     .filter(
@@ -59,11 +61,6 @@ export default function AdminDashboard() {
   );
 
 
-  // ---------------- Fetch ----------------
-  // useEffect(() => {
-  //   if (activeTab === "properties") fetchProperties();
-  //   if (activeTab === "overview") fetchBookings();
-  // }, [activeTab]);
 
   const fetchProperties = () => {
     try {
@@ -76,17 +73,6 @@ export default function AdminDashboard() {
 
 
 
-  // ---------------- Actions ----------------
-  // const addLocation = async () => {
-  //   if (!newLocation) return;
-  //   try {
-  //     await addLocationAPI({ location: newLocation });
-  //     setNewLocation("");
-  //     fetchProperties();
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // };
 
   const deleteLocation = async (id) => {
     try {
@@ -266,46 +252,56 @@ export default function AdminDashboard() {
       ) : filteredUsers.length === 0 ? (
         <p>No users found</p>
       ) : (
-        filteredUsers.map(u => (
-          <div
-            key={u.id}
-            className="relative border p-2 rounded-2xl flex gap-3 items-center cursor-pointer"
-            onClick={() => {
-              setSelectedUser(u);
-              setShowDetails(true);
-            }}
-
-
-          >
-
-            {/* Avatar */}
+        filteredUsers.map(u => {
+          
+          const character = Characters.find((c) => String(c.id) === String(u.avatar_id));
+          console.log(u.avatar_id)
+       
+          return (
             <div
-              className={`w-14 h-14 rounded-xl flex items-center justify-center overflow-hidden text-lg font-semibold text-black ${u.avatar ? "bg-gray-200" : getAvatarColor(u.full_name)
-                }`}
-            >
-              {u.avatar ? (
-                <img src={u.avatar} alt={u.full_name} className="w-full h-full object-cover" />
-              ) : (
-                u.full_name?.charAt(0).toUpperCase()
-              )}
-            </div>
+              key={u.id}
+              className="relative border p-2 rounded-2xl flex gap-3 items-center cursor-pointer"
+              onClick={() => {
+                setSelectedUser(u);
+                setShowDetails(true);
+              }}
 
-            {/* User Info */}
-            <div>
-              <p className="font-medium">{u.full_name}</p>
-              <p className="text-sm text-gray-500">{u.email}</p>
-              <p className="text-xs text-gray-400">{u.role}</p>
-            </div>
 
-            {/* Status */}
-            <span
-              className={`absolute top-2 right-2 px-3 py-1 text-xs rounded-2xl ${u.is_active ? "bg-green-500" : "bg-red-200"
-                }`}
             >
-              {u.is_active ? "Active" : "Blocked"}
-            </span>
-          </div>
-        ))
+
+              {/* Avatar */}
+              <div
+                className={`w-14 h-14 rounded-xl flex items-center justify-center overflow-hidden text-lg font-semibold text-black ${u.avatar ? "bg-gray-200" : getAvatarColor(u.full_name)
+                  }`}
+              >
+                {u.avatar_id && character ? ( // Added check for character existence
+                  <img
+                    src={character.img}
+                    alt={u.full_name}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  u.full_name?.charAt(0).toUpperCase()
+                )}
+              </div>
+
+              {/* User Info */}
+              <div>
+                <p className="font-medium">{u.full_name}</p>
+                <p className="text-sm text-gray-500">{u.email}</p>
+                <p className="text-xs text-gray-400">{u.role}</p>
+              </div>
+
+              {/* Status */}
+              <span
+                className={`absolute top-2 right-2 px-3 py-1 text-xs rounded-2xl ${u.is_active ? "bg-green-500" : "bg-red-200"
+                  }`}
+              >
+                {u.is_active ? "Active" : "Blocked"}
+              </span>
+            </div>
+          )
+        })
       )}
       {showDetails && selectedUser && (
         <StudentDetailsModal

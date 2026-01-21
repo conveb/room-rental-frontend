@@ -10,6 +10,7 @@ export function useAdminUsers(activeTab) {
     try {
       const res = await getAllUsersAPI();
       setUsers(res.data.users || []);
+      console.log(res.data.users);
     } catch (err) {
       console.error(err);
     } finally {

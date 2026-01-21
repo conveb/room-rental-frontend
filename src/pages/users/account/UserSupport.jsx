@@ -1,142 +1,157 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { FaArrowRight } from "react-icons/fa";
+import { FaArrowRight, FaSpinner } from "react-icons/fa";
 import { TfiWrite } from "react-icons/tfi";
 import { MdSupportAgent } from "react-icons/md";
+import { useSupport } from "../../../hooks/users/useSupport";
+
 export default function UserSupport() {
-  const [category, setCategory] = useState("general");
+  const { submitSupportRequest, loading } = useSupport();
+
+  // Form State - issue_type defaults to "payment" as per backend choices
+  const [formData, setFormData] = useState({
+    issue_type: "payment",
+    subject: "",
+    message: ""
+  });
+
+  const handleSubmit = async () => {
+    // Validation
+    if (!formData.subject.trim() || !formData.message.trim()) {
+      alert("Please enter a subject and a message.");
+      return;
+    }
+
+    // Payload construction based on backend OPTIONS metadata
+    // Merging subject into message since backend doesn't have a 'subject' field
+    const payload = {
+      issue_type: formData.issue_type,
+      message: `SUBJECT: ${formData.subject.toUpperCase()}\n\nCONTENT: ${formData.message}`
+    };
+
+    const result = await submitSupportRequest(payload);
+
+    if (result.success) {
+      alert("Your support ticket has been created successfully.");
+      // Reset form
+      setFormData({
+        issue_type: "payment",
+        subject: "",
+        message: ""
+      });
+    } else {
+      alert(`Error: ${result.error}`);
+    }
+  };
 
   return (
     <div className="space-y-6 px-5 md:p-6 mt-20 md:mt-0 md:mx-auto md:container">
-      {/* Header */}
+      {/* Header Section */}
       <div>
-        <h1 className="text-2xl font-semibold text-gray-900">Support & Help</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Support & Help</h1>
         <p className="text-xs md:text-sm text-gray-500 mt-1">
-          Contact our support team or report issues related to properties or owners.
+          Open a ticket for payment, booking, or account-related inquiries.
         </p>
       </div>
 
-      {/* Quick Help Cards */}
+      {/* Quick Navigation Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Link to={'/auth/user/complaints'}>
-          <div className="flex justify-between items-center gap-3 bg-white rounded-2xl shadow-sm p-2 md:p-4 border">
-            <div className="flex gap-3">
-              <p className="bg-orange-200 rounded-xl flex items-center justify-center p-5">
-                <TfiWrite size={25} />
-              </p>
-              <div>
-                <p className="font-medium text-gray-900">Complaints</p>
-                <p className="text-xs md:text-sm text-gray-500 mt-1">
-                  Problems with payments, cancellations, or refunds.
-                </p>
-              </div>
-            </div>
-            <FaArrowRight size={20} />
-          </div>
-        </Link>
-        <Link to={'/auth/user/report_property'}>
-          <div className="flex justify-between items-center gap-3 bg-white rounded-2xl shadow-sm p-2 md:p-4 border">
-            <div className="flex gap-3">
-                <p className="bg-emerald-200 rounded-xl flex items-center justify-center p-5"> 
-                  <TfiWrite size={25} />
-                </p>
-              <div >
-                <p className="font-medium text-gray-900">Report Property</p>
-                <p className="text-xs md:text-sm text-gray-500 mt-1">
-                  Fake listings, incorrect details, or policy violations.
-                </p>
-              </div>
-            </div>
-            <FaArrowRight size={20} />
-          </div>
-        </Link>
-        <Link to={'/auth/user/report_landowner'}>
-          <div className="flex justify-between items-center gap-3 bg-white rounded-2xl shadow-sm p-2 md:p-4 border">
-            <div className="flex gap-3">
-              <p className="bg-blue-200 rounded-xl flex items-center justify-center p-5"> 
-                  <TfiWrite size={25} />
+        {[
+          { to: "/auth/user/complaints", label: "Complaints", color: "bg-orange-200", desc: "Payment or refund issues." },
+          { to: "/auth/user/report_property", label: "Report Property", color: "bg-emerald-200", desc: "Fake or policy violations." },
+          { to: "/auth/user/report_landowner", label: "Report Owner", color: "bg-blue-200", desc: "Behavior or guideline issues." }
+        ].map((item, idx) => (
+          <Link key={idx} to={item.to}>
+            <div className="flex justify-between items-center gap-3 bg-white rounded-2xl shadow-sm p-4 border hover:shadow-md hover:-translate-y-1 transition-all duration-200">
+              <div className="flex gap-3">
+                <p className={`${item.color} rounded-xl flex items-center justify-center p-4`}>
+                  <TfiWrite size={22} />
                 </p>
                 <div>
-
-              <p className="font-medium text-gray-900">Report Owner</p>
-              <p className="text-xs md:text-sm text-gray-500 mt-1">
-                Suspicious behavior or guideline violations.
-              </p>
+                  <p className="font-semibold text-gray-900">{item.label}</p>
+                  <p className="text-[11px] md:text-xs text-gray-500 mt-1">{item.desc}</p>
                 </div>
+              </div>
+              <FaArrowRight size={16} className="text-gray-300" />
             </div>
-            <FaArrowRight size={20} />
-          </div>
-        </Link>
+          </Link>
+        ))}
       </div>
 
-      {/* Support Form */}
-      <div className="bg-white rounded-2xl shadow-sm  p-3 md:p-6 space-y-5 border">
-        <h2 className="flex items-center gap-3 text-lg font-semibold text-gray-900">
-          <MdSupportAgent size={50} className="p-2 bg-teal-200 rounded-xl"/>
-          Submit a Support Request</h2>
+      {/* Ticket Creation Form */}
+      <div className="bg-white rounded-3xl shadow-sm p-6 md:p-10 space-y-6 border border-gray-100">
+        <h2 className="flex items-center gap-4 text-xl font-bold text-gray-900">
+          <MdSupportAgent size={50} className="p-2 bg-teal-100 text-teal-700 rounded-2xl"/>
+          Create Support Ticket
+        </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+        <div className="space-y-5">
+          {/* Category Selector - Values match backend choices */}
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-gray-500 ml-1 uppercase tracking-widest">Category</label>
             <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              value={formData.issue_type}
+              onChange={(e) => setFormData({ ...formData, issue_type: e.target.value })}
+              className="w-full border-gray-200 border-2 rounded-2xl px-4 py-3 text-sm focus:border-black outline-none transition appearance-none bg-white cursor-pointer"
             >
-              <option value="general">General Support</option>
-              <option value="booking">Booking / Payment Issue</option>
-              <option value="property">Report Property</option>
-              <option value="owner">Report Owner</option>
-              <option value="technical">Technical Issue</option>
+              <option value="payment">Payment Issue</option>
+              <option value="booking">Booking Issue</option>
+              <option value="account">Account Settings</option>
+              <option value="other">Other Inquiry</option>
             </select>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Related Booking / Property ID</label>
+          {/* Subject Input */}
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-gray-500 ml-1 uppercase tracking-widest">Subject</label>
             <input
               type="text"
-              placeholder="Optional"
-              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              placeholder="Brief summary..."
+              value={formData.subject}
+              onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+              className="w-full border-gray-200 border-2 rounded-2xl px-4 py-3 text-sm focus:border-black outline-none transition"
+            />
+          </div>
+
+          {/* Message Textarea */}
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-gray-500 ml-1 uppercase tracking-widest">Message</label>
+            <textarea
+              rows={6}
+              placeholder="Describe your problem in detail..."
+              value={formData.message}
+              onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+              className="w-full border-gray-200 border-2 rounded-2xl px-4 py-3 text-sm focus:border-black outline-none transition resize-none"
             />
           </div>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
-          <input
-            type="text"
-            placeholder="Brief summary of the issue"
-            className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-          <textarea
-            rows={5}
-            placeholder="Describe the issue in detail"
-            className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-        </div>
-
-        {/* <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Attachments (optional)</label>
-          <input
-            type="file"
-            className="w-full text-sm"
-          />
-        </div> */}
-
-        <div className="flex justify-end">
-          <button className="px-6 py-2 rounded-lg bg-black text-white text-sm font-medium hover:bg-indigo-700 transition">
-            Submit Request
+        {/* Submit Button */}
+        <div className="flex justify-end pt-4">
+          <button 
+            onClick={handleSubmit}
+            disabled={loading}
+            className="w-full md:w-auto px-12 py-4 rounded-2xl bg-black text-white font-bold hover:bg-neutral-800 transition-all flex items-center justify-center gap-3 disabled:bg-neutral-300"
+          >
+            {loading ? (
+              <>
+                <FaSpinner className="animate-spin" />
+                Processing...
+              </>
+            ) : (
+              "Submit Ticket"
+            )}
           </button>
         </div>
       </div>
 
-      {/* Info Note */}
-      <div className="text-sm text-gray-500">
-        Reports are reviewed by our admin team. False reports may lead to account action.
+      {/* Support Info Footer */}
+      <div className="bg-gray-100 p-5 rounded-2xl border border-dashed border-gray-300">
+        <p className="text-xs text-gray-500 text-center leading-relaxed">
+          Our support team typically responds within 24-48 business hours. 
+          <br className="hidden md:block" /> 
+          You can track the status of this ticket in your dashboard.
+        </p>
       </div>
     </div>
   );
