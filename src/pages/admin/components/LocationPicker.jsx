@@ -1,21 +1,24 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { MdMyLocation, MdMap, MdLink } from "react-icons/md";
 import { Dialog } from "primereact/dialog";
-import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import { toast } from "sonner";
 
 export default function LocationPicker({ formData, onLocationChange }) {
   const [mapVisible, setMapVisible] = useState(false);
   const [mapUrl, setMapUrl] = useState("");
+  
+  // Memoize the current position to prevent unnecessary re-renders
+  const currentPosition = useMemo(() => [formData.latitude, formData.longitude], [formData.latitude, formData.longitude]);
 
-  const updateLocationDetails = async (lat, lng) => {
+  // Wrap in useCallback to prevent unnecessary re-renders
+  const updateLocationDetails = useCallback(async (lat, lng) => {
     try {
       const response = await fetch(
         `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`
       );
       const data = await response.json();
       if (data.address) {
-        // Pass the structured object back to the parent
         onLocationChange({
           latitude: lat,
           longitude: lng,
@@ -29,17 +32,20 @@ export default function LocationPicker({ formData, onLocationChange }) {
       console.error("Geocoding failed", err);
       toast.error("Failed to fetch address details");
     }
-  };
+  }, [onLocationChange]);
 
-  const getLiveLocation = () => {
-    if (!navigator.geolocation) return toast.error("Geolocation not supported");
+  const getLiveLocation = useCallback(() => {
+    if (!navigator.geolocation) {
+      toast.error("Geolocation not supported");
+      return;
+    }
     navigator.geolocation.getCurrentPosition(
       (pos) => updateLocationDetails(pos.coords.latitude, pos.coords.longitude),
       () => toast.error("Could not get location")
     );
-  };
+  }, [updateLocationDetails]);
 
-  const handleLinkPaste = () => {
+  const handleLinkPaste = useCallback(() => {
     const regex = /@(-?\d+\.\d+),(-?\d+\.\d+)/;
     const match = mapUrl.match(regex);
     if (match) {
@@ -49,25 +55,18 @@ export default function LocationPicker({ formData, onLocationChange }) {
     } else {
       toast.error("Invalid Google Maps Link. Ensure it contains @lat,lng");
     }
-  };
+  }, [mapUrl, updateLocationDetails]);
 
-  /* --- INTERNAL MAP HELPERS --- */
-  function MapEvents() {
+  // Simple Map Click Handler Component
+  const MapClickHandler = () => {
     useMapEvents({
       click(e) {
         updateLocationDetails(e.latlng.lat, e.latlng.lng);
+        setMapVisible(false);
       },
     });
     return null;
-  }
-
-  function ChangeView({ center }) {
-    const map = useMap();
-    useEffect(() => {
-      map.setView(center);
-    }, [center]);
-    return null;
-  }
+  };
 
   return (
     <div className="bg-gray-50 p-3 md:p-5 rounded-2xl border border-gray-100 space-y-4 shadow-inner">
@@ -145,22 +144,24 @@ export default function LocationPicker({ formData, onLocationChange }) {
       </div>
 
       <Dialog
-        header="Drag Marker to Property Location"
+        header="Click on Map to Select Property Location"
         visible={mapVisible}
         style={{ width: "90vw", maxWidth: "800px" }}
         onHide={() => setMapVisible(false)}
       >
         <div className="h-[450px] w-full rounded-xl overflow-hidden border">
-          <MapContainer
-            center={[formData.latitude, formData.longitude]}
-            zoom={13}
-            style={{ height: "100%" }}
-          >
-            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-            <MapEvents />
-            <ChangeView center={[formData.latitude, formData.longitude]} />
-            <Marker position={[formData.latitude, formData.longitude]} />
-          </MapContainer>
+          {mapVisible && (
+            <MapContainer
+              center={currentPosition}
+              zoom={13}
+              style={{ height: "100%" }}
+              key={JSON.stringify(currentPosition)} // Force re-render when position changes
+            >
+              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+              <MapClickHandler />
+              <Marker position={currentPosition} />
+            </MapContainer>
+          )}
         </div>
       </Dialog>
     </div>

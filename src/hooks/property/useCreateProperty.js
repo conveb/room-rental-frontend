@@ -12,7 +12,7 @@ export const useCreateProperty = () => {
 
       // 1. Append Text fields with type-safe handling
       Object.keys(values).forEach((key) => {
-        if (key !== "images" && key !== "cover_image" && key !== "amenities") {
+        if (key !== "images" && key !== "cover_image" && key !== "amenities" && key !== "instructions") {
           let val = values[key];
 
           // Format Date objects to YYYY-MM-DD
@@ -31,6 +31,11 @@ export const useCreateProperty = () => {
           }
         }
       });
+
+      // Since this is an array of objects, we must stringify it for Multipart/Form-Data
+      if (values.instructions && Array.isArray(values.instructions)) {
+        formData.append("instructions", JSON.stringify(values.instructions));
+      }
 
       // 2. Append Files
       if (values.cover_image) {

@@ -1,12 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { MdAddCircle, MdMyLocation, MdMap, MdLink, MdDelete, MdInfoOutline, MdEuro } from "react-icons/md";
+import React, { useState } from "react";
+import { MdAddCircle, MdDelete, MdInfoOutline, MdEuro } from "react-icons/md";
 import { Dropdown } from "primereact/dropdown";
 import { Dialog } from "primereact/dialog";
 import { Calendar } from "primereact/calendar";
 import { MultiSelect } from "primereact/multiselect";
-
-// --- FREE MAP IMPORTS ---
-import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -17,7 +14,9 @@ import { toast } from "sonner";
 import { useCreateProperty } from "../../../hooks/property/useCreateProperty";
 import { useLocations } from "../../../hooks/admin/constants/useLocations";
 import LocationPicker from "../components/LocationPicker";
+import InstructionModal from "../components/InstructionModal";
 
+// Fix Leaflet default icon
 let DefaultIcon = L.icon({
   iconUrl: markerIcon,
   shadowUrl: markerShadow,
@@ -28,83 +27,58 @@ L.Marker.prototype.options.icon = DefaultIcon;
 
 export default function AddProperties() {
   const [formData, setFormData] = useState({
-    title: "", description: "", property_type: "ENTIRE_HOME",
-    size_m2: "", max_people: "", furnished: true,
-    rooms: "", bathrooms: "", rent_per_month: "",
-    charges: "", booking_fee: "", security_deposit: "",
-    available_from: new Date(), minimum_stay_months: "",
+    title: "",
+    description: "",
+    property_type: "ENTIRE_HOME",
+    size_m2: "",
+    max_people: "",
+    furnished: true,
+    rooms: "",
+    bathrooms: "",
+    rent_per_month: "",
+    charges: "",
+    booking_fee: "",
+    security_deposit: "",
+    available_from: new Date(),
+    minimum_stay_months: "",
     location_id: "",
-    address: "", city: "", region: "", country: "",
-    latitude: 9.9312, longitude: 76.2673,
-    dpe_class: "A", ges_class: "A",
-    instructions: ""
+    address: "",
+    city: "",
+    region: "",
+    country: "",
+    latitude: 9.9312,
+    longitude: 76.2673,
+    dpe_class: "A",
+    ges_class: "A",
+    instructions: []
   });
-
+  
+  const [rulesVisible, setRulesVisible] = useState(false);
   const [coverImage, setCoverImage] = useState(null);
   const [images, setImages] = useState([]);
   const [selectedAmenities, setSelectedAmenities] = useState([]);
-  const [mapVisible, setMapVisible] = useState(false);
-  const [mapUrl, setMapUrl] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
   const { locations } = useLocations();
-
   const { amenities } = useAmenities();
   const { createProperty, loading: isPublishing } = useCreateProperty();
 
-  /* ---------- LOCATION LOGIC (3 OPTIONS) ---------- */
-
-  const updateLocationDetails = async (lat, lng) => {
-    try {
-      const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`);
-      const data = await response.json();
-      if (data.address) {
-        setFormData(prev => ({
-          ...prev,
-          latitude: lat,
-          longitude: lng,
-          address: data.display_name,
-          city: data.address.city || data.address.town || data.address.village || "",
-          region: data.address.state || data.address.county || "",
-          country: data.address.country || ""
-        }));
-      }
-    } catch (err) {
-      console.error("Geocoding failed", err);
-    }
-  };
-
-  // Simplified handler for the child component
+  // Simplified handler for location updates from LocationPicker
   const handleLocationUpdate = (locationData) => {
     setFormData((prev) => ({
       ...prev,
-      ...locationData, // Spreads latitude, longitude, city, etc.
+      ...locationData,
     }));
   };
 
-  const getLiveLocation = () => {
-    if (!navigator.geolocation) return toast.error("Geolocation not supported");
-    navigator.geolocation.getCurrentPosition(
-      (pos) => updateLocationDetails(pos.coords.latitude, pos.coords.longitude),
-      () => toast.error("Could not get location")
-    );
-  };
-
-  const handleLinkPaste = () => {
-    const regex = /@(-?\d+\.\d+),(-?\d+\.\d+)/;
-    const match = mapUrl.match(regex);
-    if (match) {
-      updateLocationDetails(parseFloat(match[1]), parseFloat(match[2]));
-      setMapUrl("");
-      toast.success("Coordinates imported!");
-    } else {
-      toast.error("Invalid Google Maps Link. Ensure it contains @lat,lng");
-    }
-  };
-
-  /* ---------- IMAGE HANDLERS ---------- */
-
+  // Image handlers
   const handleCoverImageSelect = (e) => {
     const file = e.target.files[0];
     if (file) {
+      // Revoke previous URL to prevent memory leaks
+      if (coverImage?.preview) {
+        URL.revokeObjectURL(coverImage.preview);
+      }
       setCoverImage({ file, preview: URL.createObjectURL(file) });
     }
   };
@@ -113,162 +87,423 @@ export default function AddProperties() {
     const files = Array.from(e.target.files);
     const remainingSlots = 5 - images.length;
     const mapped = files.slice(0, remainingSlots).map(file => ({
-      file, preview: URL.createObjectURL(file)
+      file,
+      preview: URL.createObjectURL(file)
     }));
     setImages(prev => [...prev, ...mapped]);
   };
 
-  /* ---------- SUBMISSION ---------- */
+  // Clean up object URLs on component unmount
+  React.useEffect(() => {
+    return () => {
+      if (coverImage?.preview) {
+        URL.revokeObjectURL(coverImage.preview);
+      }
+      images.forEach(img => {
+        if (img.preview) {
+          URL.revokeObjectURL(img.preview);
+        }
+      });
+    };
+  }, [coverImage, images]);
 
+  // Input change handler
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  // Form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!coverImage) return toast.error("Please upload a cover image.");
+    
+    // Prevent double submission
+    if (isSubmitting || isPublishing) {
+      return;
+    }
+    
+    // Basic validation
+    if (!coverImage) {
+      toast.error("Please upload a cover image.");
+      return;
+    }
+    
+    if (!formData.title.trim()) {
+      toast.error("Please enter a listing title.");
+      return;
+    }
+    
+    if (!formData.description.trim()) {
+      toast.error("Please enter a property description.");
+      return;
+    }
+    
+    if (!formData.location_id) {
+      toast.error("Please select a location.");
+      return;
+    }
 
-    // Prepare clean data object to pass to the hook
-    const submissionData = {
-      ...formData,
-      amenities: selectedAmenities,
-      cover_image: coverImage.file,
-      images: images.map(img => img.file),
-    };
+    setIsSubmitting(true);
 
     try {
+      // Prepare clean data object
+      const submissionData = {
+        ...formData,
+        amenities: selectedAmenities,
+        cover_image: coverImage.file,
+        images: images.map(img => img.file),
+      };
+
       await createProperty(submissionData);
+      
+      // Reset form on success (assuming createProperty handles success toast)
+      setFormData({
+        title: "",
+        description: "",
+        property_type: "ENTIRE_HOME",
+        size_m2: "",
+        max_people: "",
+        furnished: true,
+        rooms: "",
+        bathrooms: "",
+        rent_per_month: "",
+        charges: "",
+        booking_fee: "",
+        security_deposit: "",
+        available_from: new Date(),
+        minimum_stay_months: "",
+        location_id: "",
+        address: "",
+        city: "",
+        region: "",
+        country: "",
+        latitude: 9.9312,
+        longitude: 76.2673,
+        dpe_class: "A",
+        ges_class: "A",
+        instructions: []
+      });
+      
+      setCoverImage(null);
+      setImages([]);
+      setSelectedAmenities([]);
+      
     } catch (err) {
-      console.error(err);
+      console.error("Submission error:", err);
+      toast.error(err.message || "Failed to create property. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  /* --- MAP HELPERS --- */
-  function MapEvents() {
-    useMapEvents({ click(e) { updateLocationDetails(e.latlng.lat, e.latlng.lng); } });
-    return null;
-  }
-  function ChangeView({ center }) {
-    const map = useMap();
-    useEffect(() => { map.setView(center); }, [center]);
-    return null;
-  }
+  // Remove single image
+  const removeImage = (index) => {
+    const updatedImages = [...images];
+    URL.revokeObjectURL(updatedImages[index].preview);
+    updatedImages.splice(index, 1);
+    setImages(updatedImages);
+  };
 
   return (
-    
-    <div className="text-xs md:text-sm  md:p-6  mx-auto">
+    <div className="text-xs md:text-sm md:p-6 mx-auto">
       <div className="flex justify-between items-center mb-2 md:mb-6">
         <h1 className="text-lg md:text-2xl font-bold text-gray-800">Add New Property</h1>
       </div>
 
       <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-2 gap-10 p-2 bg-white rounded-xl">
-
         {/* LEFT COLUMN: IMAGES & LOCATION */}
         <div className="space-y-6">
+          {/* Image Upload Section */}
           <div className="grid grid-cols-2 gap-4">
+            {/* Cover Image */}
             <div className="w-full">
               {!coverImage ? (
                 <label className="flex flex-col items-center justify-center border-2 border-dashed rounded-xl h-40 cursor-pointer hover:bg-blue-50 transition border-blue-200 bg-blue-50/20">
-                  <input type="file" accept="image/*" onChange={handleCoverImageSelect} className="hidden" />
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    onChange={handleCoverImageSelect} 
+                    className="hidden" 
+                    required
+                  />
                   <MdAddCircle className="text-2xl text-blue-500 mb-1" />
-                  <span className="font-bold text-gray-600">Cover Image</span>
+                  <span className="font-bold text-gray-600">Cover Image *</span>
+                  <span className="text-xs text-gray-400 mt-1">Required</span>
                 </label>
               ) : (
                 <div className="relative h-40 rounded-xl overflow-hidden border">
-                  <img src={coverImage.preview} className="w-full h-full object-cover" alt="Cover" />
-                  <button type="button" onClick={() => setCoverImage(null)} className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full"><MdDelete /></button>
+                  <img 
+                    src={coverImage.preview} 
+                    className="w-full h-full object-cover" 
+                    alt="Cover" 
+                  />
+                  <button 
+                    type="button" 
+                    onClick={() => {
+                      URL.revokeObjectURL(coverImage.preview);
+                      setCoverImage(null);
+                    }} 
+                    className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600 transition"
+                  >
+                    <MdDelete />
+                  </button>
                 </div>
               )}
             </div>
+            
+            {/* Gallery Images */}
             <div className="w-full">
-              <label className={`flex flex-col items-center justify-center border-2 border-dashed rounded-xl h-40 transition ${images.length >= 5 ? 'bg-gray-100' : 'cursor-pointer hover:bg-gray-50'}`}>
-                <input type="file" multiple onChange={handleImageSelect} className="hidden" disabled={images.length >= 5} />
-                <MdAddCircle className="text-2xl text-gray-400 mb-1" />
+              <label className={`flex flex-col items-center justify-center border-2 border-dashed rounded-xl h-40 transition ${images.length >= 5 ? 'bg-gray-100 cursor-not-allowed' : 'cursor-pointer hover:bg-gray-50'}`}>
+                <input 
+                  type="file" 
+                  multiple 
+                  onChange={handleImageSelect} 
+                  className="hidden" 
+                  disabled={images.length >= 5} 
+                  accept="image/*"
+                />
+                <MdAddCircle className={`text-2xl mb-1 ${images.length >= 5 ? 'text-gray-300' : 'text-gray-400'}`} />
                 <span className="font-bold text-gray-600">Gallery ({images.length}/5)</span>
+                {images.length >= 5 && (
+                  <span className="text-xs text-gray-400 mt-1">Maximum reached</span>
+                )}
               </label>
             </div>
           </div>
 
-          <LocationPicker 
-             formData={formData} 
-             onLocationChange={handleLocationUpdate} 
-           />
+          {/* Display selected gallery images */}
+          {images.length > 0 && (
+            <div className="grid grid-cols-3 gap-2">
+              {images.map((img, index) => (
+                <div key={index} className="relative h-24 rounded-lg overflow-hidden border">
+                  <img 
+                    src={img.preview} 
+                    className="w-full h-full object-cover" 
+                    alt={`Gallery ${index + 1}`} 
+                  />
+                  <button 
+                    type="button" 
+                    onClick={() => removeImage(index)}
+                    className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full text-xs hover:bg-red-600 transition"
+                  >
+                    <MdDelete />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Location Picker */}
+          <LocationPicker
+            formData={formData}
+            onLocationChange={handleLocationUpdate}
+          />
         </div>
 
         {/* RIGHT COLUMN: PROPERTY INFO */}
         <div className="space-y-4">
-          <input name="title" placeholder="Listing Title" value={formData.title} onChange={handleInputChange} className="w-full border p-4 rounded-xl text-sm shadow-sm outline-none" required />
-          <textarea
-            name="description"
-            placeholder="Property Description (e.g. Beautiful garden, near shops...)"
-            value={formData.description}
-            onChange={handleInputChange}
-            className="w-full border p-4 rounded-xl text-sm shadow-sm outline-none"
-            rows={4}
-            required
-          />
-
-          <div className="flex flex-col items-end gap-1">
-            <label className="text-[10px] font-bold text-gray-400 mr-1 uppercase">Select Location ID</label>
-            <Dropdown
-              value={formData.location_id}
-              options={locations || []}
-              optionLabel="location_name"    // Shows "Aix en Provence" in the list
-              optionValue="id"               // Passes "26c3eed9-aa85-47bf-acda-a0223a83b9cd" to formData
-              onChange={(e) => setFormData({ ...formData, location_id: e.value })}
-              placeholder="Select a Location"
-              filter                         // Allows you to type "Aix" to find it quickly
-              className="w-full md:w-80 shadow-sm text-xs"
-              loading={!locations}
+          {/* Basic Information */}
+          <div className="space-y-1">
+            <label className="text-[10px] font-bold text-gray-400 ml-1 uppercase">Listing Title *</label>
+            <input 
+              name="title" 
+              placeholder="Beautiful 3-bedroom apartment in city center" 
+              value={formData.title} 
+              onChange={handleInputChange} 
+              className="w-full border p-4 rounded-xl text-sm shadow-sm outline-none focus:border-blue-500 transition" 
+              required 
             />
           </div>
-          <Calendar
-            value={formData.available_from}
-            onChange={(e) => setFormData({ ...formData, available_from: e.value })}
-            dateFormat="yy-mm-dd" // Displays as 2024-05-20
-            showIcon
-            placeholder="Select Date"
-            className="w-full"
-            inputClassName="p-2.5 border rounded-lg" // Matches your other inputs
-          />
 
+          <div className="space-y-1">
+            <label className="text-[10px] font-bold text-gray-400 ml-1 uppercase">Description *</label>
+            <textarea
+              name="description"
+              placeholder="Describe your property in detail (amenities, nearby attractions, features...)"
+              value={formData.description}
+              onChange={handleInputChange}
+              className="w-full border p-4 rounded-xl text-sm shadow-sm outline-none focus:border-blue-500 transition"
+              rows={4}
+              required
+            />
+          </div>
+
+          {/* Location ID and Availability */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <label className="text-[10px] font-bold text-gray-400 ml-1 uppercase">Location ID *</label>
+              <Dropdown
+                value={formData.location_id}
+                options={locations || []}
+                optionLabel="location_name"
+                optionValue="id"
+                onChange={(e) => setFormData({ ...formData, location_id: e.value })}
+                placeholder="Select a Location"
+                filter
+                className="w-full shadow-sm text-xs border border-gray-200"
+                loading={!locations}
+                required
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-[10px] font-bold text-gray-400 ml-1 uppercase">Available From</label>
+              <Calendar
+                value={formData.available_from}
+                onChange={(e) => setFormData({ ...formData, available_from: e.value })}
+                dateFormat="yy-mm-dd"
+                showIcon
+                placeholder="Select Date"
+                className="w-full"
+                inputClassName="p-2.5 border rounded-lg w-full"
+              />
+            </div>
+          </div>
+
+          {/* Property Type and Occupancy */}
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1">
               <label className="text-[10px] font-bold text-gray-400 ml-1 uppercase">Property Type</label>
-              <Dropdown value={formData.property_type} options={['ENTIRE_HOME', 'APARTMENT', 'STUDIO']} onChange={(e) => setFormData({ ...formData, property_type: e.value })} className="w-full" />
+              <Dropdown 
+                value={formData.property_type} 
+                options={['ENTIRE_HOME', 'APARTMENT', 'STUDIO']} 
+                onChange={(e) => setFormData({ ...formData, property_type: e.value })} 
+                className="w-full border border-gray-200" 
+              />
             </div>
             <div className="space-y-1">
-              <label className="text-[10px] font-bold text-gray-400 ml-1 uppercase">Max Occupancy</label>
-              <input type="number" name="max_people" value={formData.max_people} onChange={handleInputChange} placeholder="e.g. 4" className="w-full border p-2.5 rounded-lg" />
+              <label className="text-[10px] font-bold text-gray-400 ml-1 uppercase">Max Occupancy *</label>
+              <input 
+                type="number" 
+                name="max_people" 
+                value={formData.max_people} 
+                onChange={handleInputChange} 
+                placeholder="e.g. 4" 
+                className="w-full border p-2.5 rounded-lg outline-none focus:border-blue-500 transition" 
+                min="1"
+                required
+              />
             </div>
           </div>
 
+          {/* Pricing Section */}
           <div className="bg-blue-50/30 p-4 rounded-xl border border-blue-100">
-            <div className="flex items-center gap-2 mb-3 text-blue-800 font-bold text-xs"><MdEuro /> PRICING & DEPOSITS</div>
+            <div className="flex items-center gap-2 mb-3 text-blue-800 font-bold text-xs">
+              <MdEuro /> PRICING & DEPOSITS
+            </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              <input name="rent_per_month" value={formData.rent_per_month} onChange={handleInputChange} placeholder="Rent/Mo" className="border-b bg-transparent font-bold py-1 outline-none" />
-              <input name="charges" value={formData.charges} onChange={handleInputChange} placeholder="Charges" className="border-b bg-transparent py-1 outline-none" />
-              <input name="security_deposit" value={formData.security_deposit} onChange={handleInputChange} placeholder="Security" className="border-b bg-transparent py-1 outline-none" />
-              <input name="booking_fee" value={formData.booking_fee} onChange={handleInputChange} placeholder="Booking" className="border-b bg-transparent py-1 outline-none" />
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-gray-400 ml-1 uppercase">Rent/Mo *</label>
+                <input 
+                  name="rent_per_month" 
+                  value={formData.rent_per_month} 
+                  onChange={handleInputChange} 
+                  placeholder="€" 
+                  className="border-b bg-transparent font-bold py-1 outline-none w-full focus:border-blue-500 transition" 
+                  required
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-gray-400 ml-1 uppercase">Charges</label>
+                <input 
+                  name="charges" 
+                  value={formData.charges} 
+                  onChange={handleInputChange} 
+                  placeholder="€" 
+                  className="border-b bg-transparent py-1 outline-none w-full focus:border-blue-500 transition" 
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-gray-400 ml-1 uppercase">Security</label>
+                <input 
+                  name="security_deposit" 
+                  value={formData.security_deposit} 
+                  onChange={handleInputChange} 
+                  placeholder="€" 
+                  className="border-b bg-transparent py-1 outline-none w-full focus:border-blue-500 transition" 
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-gray-400 ml-1 uppercase">Booking</label>
+                <input 
+                  name="booking_fee" 
+                  value={formData.booking_fee} 
+                  onChange={handleInputChange} 
+                  placeholder="€" 
+                  className="border-b bg-transparent py-1 outline-none w-full focus:border-blue-500 transition" 
+                />
+              </div>
             </div>
           </div>
 
+          {/* Property Details */}
           <div className="grid grid-cols-3 gap-3">
-            <input name="size_m2" placeholder="m²" value={formData.size_m2} onChange={handleInputChange} className="border p-3 rounded-lg" />
-            <input name="rooms" placeholder="Rooms" value={formData.rooms} onChange={handleInputChange} className="border p-3 rounded-lg" />
-            <input name="bathrooms" placeholder="Baths" value={formData.bathrooms} onChange={handleInputChange} className="border p-3 rounded-lg" />
-          </div>
-
-          <div className="bg-orange-50/30 p-4 rounded-xl border border-orange-100">
-            <div className="flex items-center gap-2 mb-3 text-orange-800 font-bold text-xs"><MdInfoOutline /> PERFORMANCE CLASSES</div>
-            <div className="grid grid-cols-2 gap-4">
-              <Dropdown value={formData.dpe_class} options={['A', 'B', 'C', 'D', 'E', 'F', 'G']} onChange={(e) => setFormData({ ...formData, dpe_class: e.value })} className="w-full" />
-              <Dropdown value={formData.ges_class} options={['A', 'B', 'C', 'D', 'E', 'F', 'G']} onChange={(e) => setFormData({ ...formData, ges_class: e.value })} className="w-full" />
+            <div className="space-y-1">
+              <label className="text-[10px] font-bold text-gray-400 ml-1 uppercase">Size (m²) *</label>
+              <input 
+                name="size_m2" 
+                placeholder="m²" 
+                value={formData.size_m2} 
+                onChange={handleInputChange} 
+                className="border p-3 rounded-lg w-full outline-none focus:border-blue-500 transition" 
+                min="1"
+                required
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-[10px] font-bold text-gray-400 ml-1 uppercase">Rooms *</label>
+              <input 
+                name="rooms" 
+                placeholder="Rooms" 
+                value={formData.rooms} 
+                onChange={handleInputChange} 
+                className="border p-3 rounded-lg w-full outline-none focus:border-blue-500 transition" 
+                min="0"
+                required
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-[10px] font-bold text-gray-400 ml-1 uppercase">Bathrooms *</label>
+              <input 
+                name="bathrooms" 
+                placeholder="Baths" 
+                value={formData.bathrooms} 
+                onChange={handleInputChange} 
+                className="border p-3 rounded-lg w-full outline-none focus:border-blue-500 transition" 
+                min="0"
+                required
+              />
             </div>
           </div>
 
-          {/* AMENITIES SELECTION */}
+          {/* Energy Performance */}
+          <div className="bg-orange-50/30 p-4 rounded-xl border border-orange-100">
+            <div className="flex items-center gap-2 mb-3 text-orange-800 font-bold text-xs">
+              <MdInfoOutline /> PERFORMANCE CLASSES
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-gray-400 ml-1 uppercase">DPE Class</label>
+                <Dropdown 
+                  value={formData.dpe_class} 
+                  options={['A', 'B', 'C', 'D', 'E', 'F', 'G']} 
+                  onChange={(e) => setFormData({ ...formData, dpe_class: e.value })} 
+                  className="w-full border border-gray-200" 
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-gray-400 ml-1 uppercase">GES Class</label>
+                <Dropdown 
+                  value={formData.ges_class} 
+                  options={['A', 'B', 'C', 'D', 'E', 'F', 'G']} 
+                  onChange={(e) => setFormData({ ...formData, ges_class: e.value })} 
+                  className="w-full border border-gray-200" 
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Amenities Selection */}
           <div className="space-y-1">
             <label className="text-[10px] font-bold text-gray-400 ml-1 uppercase">
               Property Amenities
@@ -282,37 +517,71 @@ export default function AddProperties() {
               placeholder="Select Amenities"
               display="chip"
               filter
-              maxSelectedLabels={100} 
-              selectedItemsLabel="{0} items"
-  
-
+              maxSelectedLabels={3}
+              selectedItemsLabel="{0} items selected"
               className="w-full rounded-xl shadow-sm text-xs border border-gray-200"
               panelClassName="text-xs"
               style={{ minHeight: '44px' }}
             />
           </div>
 
-          <div className="space-y-1">
-            <label className="text-[10px] font-bold text-gray-400 ml-1 uppercase">House Rules</label>
-            <textarea name="instruction" value={formData.instructions} onChange={handleInputChange} rows={3} placeholder="Key pickup, WiFi codes..." className="w-full border p-3 rounded-xl" />
+          {/* House Rules & Instructions */}
+          <div className="space-y-2">
+            <label className="text-[10px] font-bold text-gray-400 ml-1 uppercase">
+              House Rules & Instructions
+            </label>
+            <div
+              onClick={() => setRulesVisible(true)}
+              className="w-full border-2 border-dashed p-4 rounded-xl cursor-pointer hover:bg-gray-50 transition-all flex flex-col items-center justify-center gap-2"
+            >
+              {formData.instructions.length > 0 ? (
+                <>
+                  <span className="font-bold text-blue-600">
+                    {formData.instructions.length} Rule{formData.instructions.length !== 1 ? 's' : ''} Added
+                  </span>
+                  <span className="text-xs text-gray-500">Click to edit rules</span>
+                </>
+              ) : (
+                <>
+                  <MdAddCircle className="text-xl text-gray-400" />
+                  <span className="text-xs text-gray-500">Add instructions, WiFi, or Smoking rules</span>
+                </>
+              )}
+            </div>
+
+            <InstructionModal
+              visible={rulesVisible}
+              onHide={() => setRulesVisible(false)}
+              rules={formData.instructions}
+              setRules={(newRules) => {
+                setFormData(prev => ({
+                  ...prev,
+                  instructions: newRules
+                }));
+              }}
+            />
           </div>
 
-          <button type="submit" disabled={isPublishing} className="w-full bg-black text-white py-4 rounded-2xl font-bold uppercase shadow-xl hover:bg-gray-900 transition-all disabled:opacity-50">
-            {isPublishing ? "Publishing Listing..." : "Publish Property"}
+          {/* Submit Button */}
+          <button 
+            type="submit" 
+            disabled={isSubmitting || isPublishing} 
+            className="w-full bg-black text-white py-4 rounded-2xl font-bold uppercase shadow-xl hover:bg-gray-900 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isSubmitting || isPublishing ? (
+              <span className="flex items-center justify-center gap-2">
+                <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Publishing Listing...
+              </span>
+            ) : (
+              "Publish Property"
+            )}
           </button>
         </div>
       </form>
-
-      <Dialog header="Drag Marker to Property Location" visible={mapVisible} style={{ width: '90vw', maxWidth: '800px' }} onHide={() => setMapVisible(false)}>
-        <div className="h-[450px] w-full rounded-xl overflow-hidden border">
-          <MapContainer center={[formData.latitude, formData.longitude]} zoom={13} style={{ height: "100%" }}>
-            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-            <MapEvents />
-            <ChangeView center={[formData.latitude, formData.longitude]} />
-            <Marker position={[formData.latitude, formData.longitude]} />
-          </MapContainer>
-        </div>
-      </Dialog>
     </div>
   );
 }
