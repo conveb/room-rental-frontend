@@ -25,7 +25,6 @@ const addFeedback = async ({ comment, rating }) => {
       rating,
     });
 
-    console.log("Feedback response:", res);
 
     await fetchFeedbacks();
   } catch (err) {

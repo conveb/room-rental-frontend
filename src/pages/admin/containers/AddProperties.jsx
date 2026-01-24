@@ -16,6 +16,7 @@ import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import { toast } from "sonner";
 import { useCreateProperty } from "../../../hooks/property/useCreateProperty";
 import { useLocations } from "../../../hooks/admin/constants/useLocations";
+import LocationPicker from "../components/LocationPicker";
 
 let DefaultIcon = L.icon({
   iconUrl: markerIcon,
@@ -69,6 +70,14 @@ export default function AddProperties() {
     } catch (err) {
       console.error("Geocoding failed", err);
     }
+  };
+
+  // Simplified handler for the child component
+  const handleLocationUpdate = (locationData) => {
+    setFormData((prev) => ({
+      ...prev,
+      ...locationData, // Spreads latitude, longitude, city, etc.
+    }));
   };
 
   const getLiveLocation = () => {
@@ -181,39 +190,10 @@ export default function AddProperties() {
             </div>
           </div>
 
-          <div className="bg-gray-50 p-3 md:p-5 rounded-2xl border border-gray-100 space-y-4 shadow-inner">
-            <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest">Location Selection (3 Options)</h3>
-
-            <div className="grid grid-cols-1 gap-2 w-full">
-              <button type="button" onClick={getLiveLocation} className="flex items-center gap-3 bg-white border p-3 rounded-xl hover:shadow-md transition">
-                <MdMyLocation size={25} className="text-blue-500" /> Use My Current GPS
-              </button>
-              <button type="button" onClick={() => setMapVisible(true)} className="flex items-center gap-3 bg-white border p-3 rounded-xl hover:shadow-md transition">
-                <MdMap size={25} className="text-green-500" /> Pick on Interactive Map
-              </button>
-              <div className="bg-white border p-3 rounded-xl space-y-2">
-                <div className="flex items-center gap-3">
-                  <MdLink size={25} className="text-purple-500" /> <span className="font-medium">Google Maps URL</span>
-                </div>
-                <div className="flex gap-2 w-full">
-                  <input
-                    className="flex-1 min-w-0 bg-gray-50 p-2 rounded text-xs outline-none"
-                    placeholder="Paste link with @lat,lng..."
-                    value={mapUrl}
-                    onChange={(e) => setMapUrl(e.target.value)}
-                  />
-                  <button type="button" onClick={handleLinkPaste} className="shrink-0 bg-black text-white px-4 py-1 rounded-lg text-xs">Import</button>
-                </div>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-3 gap-3 mt-4">
-              <input name="country" value={formData.country} onChange={handleInputChange} className="border p-2 rounded-lg" placeholder="Country" />
-              <input name="region" value={formData.region} onChange={handleInputChange} className="border p-2 rounded-lg" placeholder="Region" />
-              <input name="city" value={formData.city} onChange={handleInputChange} className="border p-2 rounded-lg" placeholder="City" />
-              <textarea name="address" value={formData.address} onChange={handleInputChange} className="col-span-3 border p-2 rounded-lg" rows={2} placeholder="Full Address" />
-            </div>
-          </div>
+          <LocationPicker 
+             formData={formData} 
+             onLocationChange={handleLocationUpdate} 
+           />
         </div>
 
         {/* RIGHT COLUMN: PROPERTY INFO */}

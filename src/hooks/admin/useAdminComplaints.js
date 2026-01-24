@@ -1,43 +1,64 @@
 import { useState, useEffect } from "react";
-import { getAllComplaintsApi } from "../../services/allAPI";
+import { getAllComplaintsApi, getComplaintDetailAdminApi, updateComplaintStatusApi } from "../../services/allAPI";
 
 export const useAdminComplaints = () => {
-    const [entries, setEntries] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+  const [entries, setEntries] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [detailLoading, setDetailLoading] = useState(false);
+  const [selectedDetail, setSelectedDetail] = useState(null);
+  const [error, setError] = useState(null);
 
-    const fetchComplaints = async () => {
-        try {
-            setLoading(true);
-            const response = await getAllComplaintsApi();
-            if (response.status >= 200 && response.status < 300) {
-                // Map the backend data to match your UI's expected property names
-                const formattedData = response.data.map(item => ({
-                    id: item.id,
-                    type: "COMPLAINT", 
-                    reportedUser: item.user_details?.full_name || "Unknown User",
-                    role: "User", 
-                    reason: item.subject,
-                    description: item.message,
-                    status: item.status?.toUpperCase() || "PENDING",
-                    created_at: item.created_at,
-                    admin_reply: item.admin_reply,
-                    reporter: item.user_details?.email // Using email as reporter info
-                }));
-                setEntries(formattedData);
-            } else {
-                throw new Error("Failed to fetch complaints");
-            }
-        } catch (err) {
-            setError(err.message);
-        } finally {
-            setLoading(false);
-        }
-    };
+  const fetchComplaints = async () => {
+    try {
+      setLoading(true);
+      const response = await getAllComplaintsApi();
+      if (response.status >= 200 && response.status < 300) {
+        setEntries(response.data);
+      }
+    } catch (err) {
+      setError("Failed to load complaints.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    useEffect(() => {
-        fetchComplaints();
-    }, []);
+  const fetchComplaintDetail = async (id) => {
+    try {
+      setDetailLoading(true);
+      const response = await getComplaintDetailAdminApi(id);
+      if (response.status >= 200 && response.status < 300) {
+        setSelectedDetail(response.data);
+      }
+    } finally {
+      setDetailLoading(false);
+    }
+  };
 
-    return { entries, loading, error, refresh: fetchComplaints };
+  const updateComplaint = async (id, data) => {
+    try {
+      setDetailLoading(true);
+      const response = await updateComplaintStatusApi(id, data);
+      if (response.status >= 200 && response.status < 300) {
+        // Refresh the list and detail view
+        await fetchComplaints();
+        await fetchComplaintDetail(id);
+        return { success: true };
+      }
+    } catch (err) {
+      return { success: false, error: err.message };
+    } finally {
+      setDetailLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchComplaints();
+  }, []);
+
+  return { 
+    entries, loading, detailLoading, 
+    selectedDetail, setSelectedDetail, 
+    fetchComplaintDetail, updateComplaint,
+    error, refresh: fetchComplaints 
+  };
 };

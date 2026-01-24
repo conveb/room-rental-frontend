@@ -15,7 +15,6 @@ const fetchData = async () => {
     setLoading(true);
     const result = await apiCall(); 
     
-    console.log("Full API Response:", result); // <-- ADD THIS
 
     if (result && (result.status >= 200 && result.status < 300)) {
       setData(result.data);

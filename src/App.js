@@ -41,7 +41,7 @@ import { AddLocations } from "./pages/admin/containers/AddLocations";
 import { AddAmenities } from "./pages/admin/containers/AddAmenities";
 import AdminAudits from "./pages/admin/AdminAudits";
 import AdminMyProperty from "./pages/admin/containers/AdminMyProperty";
-import AdminReportsAndComplaints from "./pages/admin/AdminReports";
+import AdminReportsAndComplaints from "./pages/admin/AdminReportsAndComplaints";
 import AdminSupportAndFeedback from "./pages/admin/AdminSupportAndFeedback";
 import AdminManageConstants from "./pages/admin/AdminManageConstants";
 import ViewBookings from "./pages/admin/containers/ViewBookings";

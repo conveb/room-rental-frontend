@@ -22,6 +22,7 @@ import { useBlockUser } from "../../hooks/users/useBlockUser";
 import StudentDetailsModal from "./components/StudentDetailsModal";
 import { useBookings } from "../../hooks/bookings/useBookings";
 import { Characters } from '../users/account/characterCollection';
+import { toast } from "sonner";
 export default function AdminDashboard() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("overview");
@@ -66,7 +67,7 @@ export default function AdminDashboard() {
     try {
       setProperties(listProperties); // ✅ NO .data
     } catch (err) {
-      console.error(err);
+      toast.error(err);
     }
   };
 
@@ -79,7 +80,7 @@ export default function AdminDashboard() {
       await deleteLocationsApi(id);
       fetchProperties();
     } catch (err) {
-      console.error(err);
+      toast.error(err);
     }
   };
 
@@ -88,7 +89,7 @@ export default function AdminDashboard() {
       await approvePropertyAPI(id);
       fetchProperties();
     } catch (err) {
-      console.error(err);
+      toast.error(err);
     }
   };
   const { blockUser, blocking } = useBlockUser();
@@ -99,7 +100,6 @@ export default function AdminDashboard() {
   const [reason, setReason] = useState("");
 
   const { bookings, loading: bookingsLoading, error } = useBookings();
-
   // 1. Helper for status styles
   const getStatusStyle = (status) => {
     switch (status?.toLowerCase()) {
@@ -160,38 +160,78 @@ export default function AdminDashboard() {
 
         {/* DESKTOP VIEW (Table) - Hidden on small screens */}
         <div className="hidden md:block overflow-x-auto">
-          <table className="w-full text-sm text-left">
-            <thead className="bg-gray-50 text-gray-500 uppercase text-[11px] font-bold tracking-wider">
-              <tr>
-                <th className="p-4">User</th>
-                <th className="p-4">Property</th>
-                <th className="p-4">Date</th>
-                <th className="p-4">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {recentData.length > 0 ? (
-                recentData.map((booking) => (
-                  <tr key={booking.id} className="hover:bg-gray-50/50 transition-colors">
-                    <td className="p-4 font-medium text-gray-700">{booking.user_name || "Unknown User"}</td>
-                    <td className="p-4 text-gray-600 truncate max-w-[200px]">{booking.property_title}</td>
-                    <td className="p-4 text-gray-500">
-                      {new Date(booking.created_at).toLocaleDateString()}
-                    </td>
-                    <td className="p-4">
-                      <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold uppercase ${getStatusStyle(booking.status)}`}>
-                        {booking.status}
-                      </span>
-                    </td>
-                  </tr>
-                ))
-              ) : (
+          <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
+            <table className="w-full text-left border-collapse">
+              {/* Ensure your Table Header matches the new 5-column layout */}
+              <thead className="bg-gray-50 border-b">
                 <tr>
-                  <td colSpan="4" className="p-8 text-center text-gray-400">No recent bookings found</td>
+                  <th className="p-4 text-xs font-bold text-gray-500 uppercase">Ref No</th>
+                  <th className="p-4 text-xs font-bold text-gray-500 uppercase">Property</th>
+                  <th className="p-4 text-xs font-bold text-gray-500 uppercase">Amount</th>
+                  <th className="p-4 text-xs font-bold text-gray-500 uppercase">Date</th>
+                  <th className="p-4 text-xs font-bold text-gray-500 uppercase">Status</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {recentData.length > 0 ? (
+                  recentData.slice(0, 6).map((booking) => (
+                    <tr key={booking.id} className="hover:bg-gray-50/50 transition-colors border-b last:border-0">
+                      <td className="p-4 font-medium text-gray-700">
+                        <div className="flex flex-col">
+                          <span className="text-sm">{booking.reference_no}</span>
+                          <span className="text-[10px] text-gray-400 font-normal uppercase">ID: {booking.id.slice(0, 8)}</span>
+                        </div>
+                      </td>
+
+                      <td className="p-4 text-gray-600 truncate max-w-[180px]">
+                        {booking.property_title}
+                      </td>
+
+                      <td className="p-4 text-gray-800 font-semibold">
+                        €{parseFloat(booking.total_rent_amount).toLocaleString()}
+                      </td>
+
+                      <td className="p-4 text-gray-500 text-sm">
+                        {new Date(booking.created_at).toLocaleDateString(undefined, {
+                          day: '2-digit',
+                          month: 'short',
+                          year: 'numeric'
+                        })}
+                      </td>
+
+                      <td className="p-4">
+                        <div className="flex flex-col items-start gap-1">
+                          <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${getStatusStyle(booking.status)}`}>
+                            {booking.status}
+                          </span>
+                          <span className={`text-[9px] font-bold ml-1 ${booking.payment_status === 'UNPAID' ? 'text-red-500' : 'text-green-500'}`}>
+                            {booking.payment_status}
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="5" className="p-10 text-center text-gray-400">No bookings available</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+
+            {/* VIEW ALL BUTTON SECTION */}
+            {recentData.length > 6 && (
+              <div className="p-3 border-t bg-gray-50/50 flex justify-center">
+                <button
+                  onClick={() => {/* Navigate to full bookings page */ }}
+                  className="text-xs font-bold text-blue-600 hover:text-blue-800 transition-colors flex items-center gap-2"
+                >
+                  VIEW ALL BOOKINGS
+                  <i className="pi pi-arrow-right text-[10px]"></i>
+                </button>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* MOBILE VIEW (Stacked Cards) - Hidden on medium+ screens */}
@@ -200,17 +240,42 @@ export default function AdminDashboard() {
             <>
               {recentData.length > 0 ? (
                 recentData.map((booking) => (
-                  <div key={booking.id} className="p-4 active:bg-gray-50">
+                  <div key={booking.id} className="p-4 active:bg-gray-50 border-b border-gray-100 last:border-0 hover:bg-gray-50/50 transition-colors">
                     <div className="flex justify-between items-start mb-1">
-                      <p className="font-semibold text-gray-800">{booking.user_name || "Guest"}</p>
-                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${getStatusStyle(booking.status)}`}>
-                        {booking.status}
-                      </span>
+                      <div>
+                        <p className="font-semibold text-gray-800">
+                          {booking.reference_no}
+                        </p>
+                        <p className="text-xs text-blue-600 font-medium">
+                          {booking.property_title}
+                        </p>
+                      </div>
+                      <div className="flex flex-col items-end gap-1">
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${getStatusStyle(booking.status)}`}>
+                          {booking.status}
+                        </span>
+                        <span className={`text-[9px] font-bold ${booking.payment_status === 'UNPAID' ? 'text-red-500' : 'text-green-500'}`}>
+                          {booking.payment_status}
+                        </span>
+                      </div>
                     </div>
-                    <p className="text-sm text-gray-600 mb-2">{booking.property_title}</p>
-                    <p className="text-xs text-gray-400">
-                      {new Date(booking.created_at).toLocaleDateString(undefined, { dateStyle: 'medium' })}
-                    </p>
+
+                    <div className="flex justify-between items-end mt-3">
+                      <div className="space-y-1">
+                        <p className="text-[10px] text-gray-400 uppercase tracking-tighter">Stay Period</p>
+                        <p className="text-xs text-gray-600 font-medium">
+                          {new Date(booking.start_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} - {new Date(booking.end_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm font-bold text-gray-900">
+                          €{parseFloat(booking.total_rent_amount).toLocaleString()}
+                        </p>
+                        <p className="text-[10px] text-gray-400">
+                          Booked: {new Date(booking.created_at).toLocaleDateString(undefined, { dateStyle: 'medium' })}
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 ))
               ) : (
@@ -253,10 +318,9 @@ export default function AdminDashboard() {
         <p>No users found</p>
       ) : (
         filteredUsers.map(u => {
-          
+
           const character = Characters.find((c) => String(c.id) === String(u.avatar_id));
-          console.log(u.avatar_id)
-       
+
           return (
             <div
               key={u.id}

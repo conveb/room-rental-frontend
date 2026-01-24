@@ -55,6 +55,7 @@ export const getAllBookings= ()=> commonAPI('get','/api/v1/admin/bookings')
 export const getAllComplaintsApi= ()=> commonAPI('get','/api/v1/admin/complaints/') 
 ///admin/complaints/{{complaint_id}}/
 export const getComplaintDetailAdminApi= (id) => commonAPI('get', `/api/v1/admin/complaints/${id}/`);
+export const updateComplaintStatusApi = (id, data) => commonAPI("patch", `/api/v1/admin/complaints/${id}/update/`, data);
 
 // create_property_amenity <-----------------------------------
 // create_property_instruction
@@ -69,8 +70,10 @@ export const getComplaintDetailAdminApi= (id) => commonAPI('get', `/api/v1/admin
 // List_favourites
 // Admin_update_status
 
-// Admin_view_reported_land_owners
-// Admin_view_reported_properties
+// Admin_view_reported_land_owners /admin/reported-landowners/
+export const getReportedRoomownersApi= ()=> commonAPI('get','/api/v1/admin/reported-landowners/') 
+export const getReportedPropertiesApi= ()=> commonAPI('get','/api/v1/admin/reported-properties/') 
+// Admin_view_reported_properties /admin/reported-properties/
 
 // Admin_users_status_update
 // Land_owner_details_view

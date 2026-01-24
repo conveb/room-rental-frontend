@@ -21,7 +21,6 @@ export default function AdminSupportAndFeedback() {
     updating,
     updateSupportStatus,
   } = useSupportAndFeedback();
-  console.log(feedbacks)
 
   const [activeTab, setActiveTab] = useState("support");
 
