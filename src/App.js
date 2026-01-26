@@ -55,6 +55,7 @@ import Contact from "./pages/public/Contact";
 import BlockedPage from "./pages/public/BlockedPage";
 import StudentFullDetails from "./pages/admin/containers/StudentFullDetails";
 import RoomownerFullDetails from "./pages/admin/containers/RoomownerFullDetails";
+import EditPropertyPage from "./pages/admin/containers/EditPropertyPage";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -93,8 +94,9 @@ function App() {
           <Route path="manage_constants" element={<AdminManageConstants />} />
           <Route path="notifications" element={<NotificationPage />} />
           {/* <Route path="requests" element={<AdminRequests />} /> */}
-          <Route path="admin_properties" element={<AdminMyProperty />} />
-          <Route path="property/add_property" element={<AdminAddProperty />} />
+          {/* <Route path="admin_properties" element={<AdminMyProperty />} /> */}
+          <Route path="property/add_property" element={<AdminAddProperty roleUrl='admin'/>} />
+          <Route path="property/my-property/edit-property/:id" element={<EditPropertyPage />} />
           <Route path="property/add_country" element={<AddCountries />} />
           <Route path="property/add_location" element={<AddLocations />} />
           <Route path="property/add_amenities" element={<AddAmenities />} />
@@ -112,7 +114,8 @@ function App() {
             {/* <Route path="properties" element={<PropertiesList />} /> */}
             <Route path="stats" element={<Stats />} />
             <Route path="account" element={<RoomOwnerAccount />} />
-            <Route path="create_property" element={<CreateProperty />} />
+            <Route path="create_property" element={<CreateProperty roleUrl='admin'/>} />
+            <Route path="property/my-property/edit-property" element={<EditPropertyPage />} />
           </Route>
         {/* </Route> */}
 

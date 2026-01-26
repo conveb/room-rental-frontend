@@ -4,8 +4,11 @@ import { Dropdown } from "primereact/dropdown";
 import { useAmenities } from "../../../hooks/admin/constants/useAmenities";
 import useMyProperties from "../../../hooks/property/useMyProperties";
 import ImgSkeleton from '../../../Assets/pngs/img_skeleton.png'
+import { useNavigate } from "react-router-dom";
 
-export default function MyProperties() {
+export default function MyProperties({role}) {
+  console.log(role);
+  const navigate = useNavigate();
   const { properties, loading, error, deleteProperty, updateProperty, actionLoading } = useMyProperties();
   const { amenities, loading: amenitiesLoading } = useAmenities();
   const [editingProperty, setEditingProperty] = useState(null);
@@ -113,9 +116,9 @@ export default function MyProperties() {
             {/* Right: Info Section */}
             <div className="flex flex-col justify-between flex-grow min-w-0">
               <div className="space-y-1 md:space-y-2">
-                  <h3 className="font-bold text-gray-800 text-lg md:text-xl truncate">
-                    {property.title}
-                  </h3>
+                <h3 className="font-bold text-gray-800 text-lg md:text-xl truncate">
+                  {property.title}
+                </h3>
 
                 <p className="text-gray-500 text-xs md:text-sm">
                   {property.city}, {property.country}
@@ -126,16 +129,16 @@ export default function MyProperties() {
                   <span className="text-gray-300">|</span>
                   <span className="text-xs">{property.size_m2} sq m</span>
                 </div>
-                  <p className="font-bold text-blue-600 text-base md:text-xl whitespace-nowrap">
-                    €{property.rent_per_month}
-                  </p>
+                <p className="font-bold text-blue-600 text-base md:text-xl whitespace-nowrap">
+                  €{property.rent_per_month}
+                </p>
               </div>
 
               {/* Actions Section */}
               <div className="flex gap-2 pt-4 mt-auto">
                 <button
                   className="flex-1 sm:flex-none bg-gray-900 text-white text-xs font-semibold py-2 px-4 rounded-lg hover:bg-black transition-colors"
-                  onClick={() => openEditModal(property)}
+                  onClick={() => navigate(`/auth/${role}/property/my-property/edit-property/${property.id}`)}
                 >
                   Edit Property
                 </button>
@@ -153,13 +156,12 @@ export default function MyProperties() {
       </div>
 
       {/* EDIT MODAL */}
-      {editingProperty && (
+      {/* {editingProperty && (
         <div className="fixed inset-0 bg-black/50 flex justify-center items-start pt-20 z-50">
           <div className="bg-white rounded-xl p-6 w-full max-w-3xl relative overflow-y-auto max-h-[80vh]">
             <h2 className="text-lg font-semibold mb-4">Edit Property</h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Left: Images */}
               <div className="space-y-4">
                 {selectedIndex !== null && images[selectedIndex] && (
                   <div className="w-full h-52 md:h-64 border rounded-xl overflow-hidden">
@@ -193,7 +195,6 @@ export default function MyProperties() {
                 </div>
               </div>
 
-              {/* Right: Form */}
               <div className="space-y-4 flex flex-col">
                 <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Title" className="border p-3 rounded-lg" />
                 <input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Address" className="border p-3 rounded-lg" />
@@ -243,7 +244,7 @@ export default function MyProperties() {
 
           </div>
         </div>
-      )}
+      )} */}
 
     </div>
   );

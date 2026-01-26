@@ -9,7 +9,7 @@ import { Helmet } from "react-helmet";
 import MyProperties from "./containers/MyProperties";
 
 
-export default function AddProperty() {
+export default function AddProperty({roleUrl}) {
    
  const [activeTab, setActiveTab] = useState("list");
  return(
@@ -40,7 +40,7 @@ export default function AddProperty() {
 
       <div>
         {activeTab === "add" && <AddProperties />}
-        {activeTab === "list" && <MyProperties />}
+        {activeTab === "list" && <MyProperties role={roleUrl}/>}
       </div>
     </div>
     )

@@ -23,6 +23,9 @@ export const getMyBookingsApi= ()=>commonAPI('get','/api/v1/bookings/my')
 export const createSupportApi= (data)=>commonAPI('post','/api/v1/support/create/',data) 
 export const ReportPropertyApi = (id, data) => {return commonAPI('post', `/api/v1/report-property/${id}/`, data);};
 export const ReportRoomOwnerApi = (id, data) => {return commonAPI('post', `/api/v1/report-landowner/${id}/`, data);};
+export const AddFavouritesApi= (data)=>commonAPI('post','/api/v1/favourites/add/',data) 
+export const GetFavouritesApi= ()=>commonAPI('get','/api/v1/favourites/') 
+export const RemoveFavouritesApi= (id)=>commonAPI('delete',`/api/v1/favourites/${id}/remove/`) 
 //landowner
 export const viewMyPropertyApi= ()=>commonAPI('get','/api/v1/properties/my/') 
 export const updatePropertyApi = (propertyId, data) => commonAPI("patch", `/api/v1/properties/${propertyId}/update/`, data);
@@ -43,7 +46,7 @@ export const getLogsAuditApi= ()=>commonAPI('get','/api/v1/audit-logs/')
 export const getReportedLandownersApi= ()=>commonAPI('get','/api/v1/admin/reported-landowners/') 
 export const listAmenitiesApi= ()=>commonAPI('get','/api/v1/amenities') 
 export const createAmenities= (data)=>commonAPI('post','/api/v1/amenities/',data) 
-export const deleteAmenityApi = (amenityId) => commonAPI("delete", `/api/v1/amenities/${amenityId}`);
+export const deleteAmenityApi = (amenityId) => commonAPI("delete", `/api/v1/amenities/${amenityId}/`);
 export const getAllSupportApi= ()=>commonAPI('get','/api/v1/admin/support/') 
 export const updateStatusApi = (id, data) => commonAPI("patch", `/api/v1/admin/support/${id}/update/`, data);
 export const getAllFeedbackApi= ()=>commonAPI('get','/api/v1/feedback') 
@@ -54,36 +57,30 @@ export const getComplaintDetailAdminApi= (id) => commonAPI('get', `/api/v1/admin
 export const updateComplaintStatusApi = (id, data) => commonAPI("patch", `/api/v1/admin/complaints/${id}/update/`, data);
 export const getReportedRoomownersApi= ()=> commonAPI('get','/api/v1/admin/reported-landowners/') 
 export const getReportedPropertiesApi= ()=> commonAPI('get','/api/v1/admin/reported-properties/') 
+export const createAmenitiesByRoomOwnerApi= (id,data)=>commonAPI('post',`/api/v1/properties/${id}/amenities/add/`,data) 
+export const DeleteAmenitiesByRoomOwnerApi= (propId,propAmenityId)=>commonAPI('delete',`/api/v1/properties/${propId}/amenities/${propAmenityId}/delete/`) 
+export const getPropInstructionApi= (propId)=> commonAPI('get',`/api/v1/properties/${propId}/instructions/`)
+export const createPropInstructionApi= (propId,data)=>commonAPI('post',`/api/v1/properties/${propId}/instructions/add/`,data) 
+export const updatePropInstructionApi = (propId, instId, data) => commonAPI("patch", `/api/v1/properties/${propId}/instructions/${instId}/update/`, data);
+export const DeletePropInstructionApi= (propId,instId)=>commonAPI('delete',`/api/v1/properties/${propId}/instructions/${instId}/delete/`) 
+export const createPropImageApi= (propId,data)=>commonAPI('post',`/api/v1/property-images/${propId}/create/`,data) 
+export const getPropImageApi= (propId)=> commonAPI('get',`/api/v1/properties/${propId}/images/`)
+export const DeletePropImageApi= (propId,propImageId)=>commonAPI('delete',`/api/v1/properties/${propId}/images/${propImageId}/delete/`) 
+export const getAllCountriesApi= ()=>commonAPI('get','/api/v1/countries/') 
+export const createCountryApi= (data)=>commonAPI('post',`/api/v1/countries/create/`,data) 
+export const updateCountryApi = (countryId, data) => commonAPI("patch", `/api/v1/countries/${countryId}/update/`, data);
+export const deleteCountryApi = (countryId) => commonAPI("delete", `/api/v1/countries/${countryId}/delete/`);
 
-// /favourites/add/
-export const AddFavouritesApi= (data)=>commonAPI('post','/api/v1/favourites/add/',data) 
-export const GetFavouritesApi= ()=>commonAPI('get','/api/v1/favourites/') 
-export const RemoveFavouritesApi= (id)=>commonAPI('delete',`/api/v1/favourites/${id}/remove/`) 
+// 65
 
 
 // verify_passport
 
-// create_property_amenity 
-// delete_property_amenity
-// list_property_instruction
-// create_property_instruction
-// update_property_instruction
-// delete_property_instruction
-// create_property_images
-// List_property_images
-// delete_property_images
 
 // Admin_update_status
-// Add_to_favourites
-// List_favourites
-
-
-
-// Admin_users_status_update
-// Land_owner_details_view
-// student_detail_view
 
 // list_permissions
+
 // list_groups
 // Add_groups
 // Group_detail_view

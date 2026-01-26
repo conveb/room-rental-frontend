@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { listAmenitiesApi, createAmenities, deleteAmenityApi } from "../../../services/allAPI";
+import { listAmenitiesApi, createAmenities, createAmenitiesByRoomOwnerApi, deleteAmenityApi, DeleteAmenitiesByRoomOwnerApi } from "../../../services/allAPI";
 
 export const useAmenities = () => {
   const [amenities, setAmenities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [adding, setAdding] = useState(false);
+  const [linking, setLinking] = useState(false);
 
   const fetchAmenities = async () => {
     try {
@@ -35,6 +36,41 @@ export const useAmenities = () => {
     }
   };
 
+  // New function to link amenities to a specific property
+  const linkAmenityToProperty = async (propertyId, amenityIds) => {
+  setLinking(true);
+  try {
+    const promises = amenityIds.map(uuid => 
+      createAmenitiesByRoomOwnerApi(propertyId, { amenity: uuid })
+    );
+    
+    const responses = await Promise.all(promises);
+    
+    // Check where your data lives. 
+    // If commonAPI returns the whole axios response, it's res.data
+    return responses.map(res => res.data); 
+  } catch (err) {
+    console.error("API Error Details:", err.response?.data);
+    throw err;
+  } finally {
+    setLinking(false);
+  }
+};
+
+const unlinkAmenity = async (propertyId, propAmenityId) => {
+    try {
+      await DeleteAmenitiesByRoomOwnerApi(propertyId, propAmenityId);
+      return true;
+    } catch (err) {
+      console.error("Unlink Error:", err);
+      throw err;
+    }
+  };
+
+  useEffect(() => {
+    fetchAmenities();
+  }, []);
+
   const deleteAmenity = async (id) => {
     await deleteAmenityApi(id);
     setAmenities((prev) => prev.filter((a) => a.id !== id));
@@ -49,7 +85,10 @@ export const useAmenities = () => {
     error,
     adding,
     addAmenity,
+    linking,
+    linkAmenityToProperty,
     deleteAmenity,
+    unlinkAmenity,
     refetch: fetchAmenities,
   };
 };
