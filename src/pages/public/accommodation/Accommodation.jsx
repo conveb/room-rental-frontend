@@ -1,12 +1,17 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { FiFilter } from "react-icons/fi";
+import { Link, useNavigate } from "react-router-dom";
+import { FiFilter, FiHeart } from "react-icons/fi";
 import { useProperties } from "../../../hooks/property/useProperties";
-import { FaSearch } from "react-icons/fa";
+import { FaHeart, FaSearch } from "react-icons/fa";
 import ImgSkeleton from '../../../Assets/pngs/img_skeleton.png'
 import AccommodationSkeleton from "../../skeleton/AccommodationSkeleton";
+import { useFavorites } from "../../../hooks/users/useFavorites";
+import { useAuth } from "../../../context/AuthContext";
+import { toast } from "sonner";
 
-const Accommodation = ({baseRoute}) => {
+const Accommodation = ({ baseRoute }) => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const {
     loading,
     error,
@@ -17,6 +22,26 @@ const Accommodation = ({baseRoute}) => {
 
   const [showFilters, setShowFilters] = useState(false);
 
+  // CHANGE: Handle the heart click without navigating to the details page
+const { isSaved, addToFavorites, removeFromFavorites, favorites } = useFavorites();
+
+const handleFavoriteClick = (e, property) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!user) {
+        navigate("/signin");
+        return;
+    }
+
+    if (isSaved(property.id)) {
+        removeFromFavorites(property.id); // Logic now handles finding the ID
+        toast.success("Removed from saved!");
+    } else {
+        addToFavorites(property.id);
+        toast.success("Added to saved!");
+    }
+};
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       applyFilters();
@@ -163,13 +188,26 @@ const Accommodation = ({baseRoute}) => {
             <div
               className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition flex flex-col h-full" // 2. Make card a flex container
             >
-              <img
-                src={property.cover_image}
-                alt={property.title}
-                onError={(e) => { e.target.onerror = null; e.target.src = ImgSkeleton; }}
-                className="w-full h-60 object-cover"
-              />
+              <div className="relative">
 
+                <img
+                  src={property.cover_image}
+                  alt={property.title}
+                  onError={(e) => { e.target.onerror = null; e.target.src = ImgSkeleton; }}
+                  className="w-full h-60 object-cover"
+                />
+                {/* CHANGE: Add Wishlist Heart Button */}
+                <button
+                  onClick={(e) => handleFavoriteClick(e, property)}
+                  className="absolute top-3 right-3 p-2 rounded-full bg-white/80 backdrop-blur-sm shadow-md hover:bg-white transition-all z-10"
+                >
+                  {isSaved(property.id) ? (
+                    <FaHeart className="text-red-500 animate-pulse" size={18} />
+                  ) : (
+                    <FiHeart className="text-gray-600 hover:text-red-500" size={18} />
+                  )}
+                </button>
+              </div>
               {/* 3. Add flex-1 here so this section expands to push the price to the bottom */}
               <div className="p-3 md:p-4 flex flex-col flex-1">
                 <h2 className="text-lg font-semibold line-clamp-1"> {/* Added line-clamp to keep titles consistent */}
@@ -194,12 +232,14 @@ const Accommodation = ({baseRoute}) => {
         ))}
       </div>
 
-      {!loading && filteredProperties.length === 0 && (
-        <p className="text-center text-gray-500 mt-10">
-          No properties match your filters.
-        </p>
-      )}
-    </div>
+      {
+        !loading && filteredProperties.length === 0 && (
+          <p className="text-center text-gray-500 mt-10">
+            No properties match your filters.
+          </p>
+        )
+      }
+    </div >
   );
 };
 

@@ -25,8 +25,7 @@ const titleMap = {
 const navItems = [
   { to: "/auth/admin", label: "Dashboard", icon: <HiMiniHome /> },
   { to: "/auth/admin/audits", label: "Audits", icon: <HiOutlineDocumentSearch /> },
-  { to: "/auth/admin/property/add_property", label: "Add", icon: <LuHousePlus /> },
-  // { to: "/auth/admin/requests", label: "Requests", icon: <FaRegCommentDots /> },
+  { to: "/auth/admin/property/add_property", label: "Properties", icon: <LuHousePlus /> },
   { to: "/auth/admin/reports&complaints", label: "Issues", icon: <TbReport /> },
   { to: "/auth/admin/support&feedback", label: "Support", icon: <LuHandshake /> },
 ];

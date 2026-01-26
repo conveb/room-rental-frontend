@@ -3,6 +3,12 @@ import { useParams, useNavigate } from "react-router-dom";
 import { usePropertyDetails } from "../../../hooks/property/usePropertyDetails";
 import ImgSkeleton from '../../../Assets/pngs/img_skeleton.png'
 import AccommodationDetailsSkeleton from "../../skeleton/AccommodationDetailsSkeleton";
+import { MdOutlineReportGmailerrorred } from "react-icons/md";
+import { IoIosShareAlt } from "react-icons/io";
+import { FiHeart } from "react-icons/fi";
+import { useReport } from "../../../hooks/users/useReport";
+import { toast } from "sonner";
+import { FaArrowLeft } from "react-icons/fa";
 
 const AccommodationDetails = () => {
   const { id } = useParams();
@@ -11,6 +17,53 @@ const AccommodationDetails = () => {
 
   const [activeImage, setActiveImage] = useState(null);
   const [openStack, setOpenStack] = useState(false);
+  const [reportType, setReportType] = useState(null);
+  const [newReport, setNewReport] = useState({ title: "", property: "", description: "" });
+  const [serverError, setServerError] = useState(null);
+  const { submitReport, reportLoading } = useReport();
+
+
+  const handleAddReport = async (type) => {
+    const result = await submitReport(type, id, newReport.description);
+
+    if (result.success) {
+      setReportType(null);
+      setNewReport({ description: "" });
+      setServerError(null);
+      toast.success(`Thank you! Your ${type} report has been submitted.`);
+    } else {
+      // Set the error message to display inside the modal
+      setServerError(result.error);
+    }
+  };
+
+  const closeModal = () => {
+    setReportType(null);
+    setNewReport({ description: "" });
+    setServerError(null);
+  };
+
+  const handleShare = async () => {
+    const shareData = {
+      title: "Check this out!",
+      text: "I found something interesting to share with you.",
+      url: window.location.href, // Or a specific link
+    };
+
+    try {
+      // Check if the browser supports the Web Share API
+      if (navigator.share) {
+        await navigator.share(shareData);
+        console.log("Shared successfully");
+      } else {
+        // Fallback: Copy to clipboard or show a custom modal
+        alert("Sharing is not supported on this browser. Link copied to clipboard!");
+        navigator.clipboard.writeText(window.location.href);
+      }
+    } catch (err) {
+      console.log(`Error: ${err}`);
+    }
+  };
 
   if (loading) return <AccommodationDetailsSkeleton />;
   if (error || !property) return <p className="text-center mt-32 text-red-500">Property not found</p>;
@@ -20,30 +73,49 @@ const AccommodationDetails = () => {
   const mainImage = activeImage || images[0];
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      {/* <header className="border-b bg-black">
-        <div className="max-w-6xl mx-auto px-4 py-12" />
-      </header> */}
+    <div className="">
+
 
       {/* Main */}
-      <main className="max-w-6xl mx-auto px-4 py-8">
-        {/* Breadcrumb */}
-        {/* <div className="text-xs text-gray-500 mb-4">
-          Home / {property.country} / {property.city} /{" "}
-          <span className="text-gray-700 font-medium">{property.title}</span>
-        </div> */}
+      <main className="max-w-6xl mx-auto px-4 ">
+        <div className="flex items-center gap-2 md:gap-5 my-2 md:my-5">
+
+        <button
+          onClick={() => navigate(-1)}
+          className="h-9 w-9 rounded-full flex items-center justify-center
+          hover:bg-neutral-200 transition text-2xl "
+          >
+          <FaArrowLeft />
+        </button>
+          <h2 className="text-sm md:text-3xl font-semibold">{property.property_type.replace("_", " ")} in {property.city}</h2>
+          </div>
+
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
           {/* Images */}
           <section className="relative">
-            <div className="aspect-[4/3] rounded-2xl overflow-hidden bg-gray-200">
+            <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-gray-200">
               <img
                 src={mainImage}
                 alt={property.title}
                 onError={(e) => { e.target.onerror = null; e.target.src = ImgSkeleton; }}
-                className="h-full w-full object-contain"
+                className="h-full w-full object-cover"
               />
+              <div className="absolute top-2 md:top-4 right-0 left-0 flex justify-between items-center px-4">
+                <span className="flex  text-xs gap-1 text-white bg-black/50 px-3 py-1 rounded-full">
+                  <p> Available from : </p> <p> {property.available_from}</p>
+                </span>
+                <div>
+
+                  <button className=" bg-white/30 text-white rounded-full p-2 shadow-md">
+                    <FiHeart size={18} />
+                  </button>
+                  <button className=" bg-white/30 text-white rounded-full p-2 shadow-md ml-3" onClick={handleShare}>
+                    <IoIosShareAlt size={18} />
+
+                  </button>
+                </div>
+              </div>
             </div>
 
             {/* Mobile Image Stack */}
@@ -83,12 +155,72 @@ const AccommodationDetails = () => {
           </section>
 
           {/* Details */}
-          <section className="space-y-6">
+          <section className="space-y-3 md:space-y-6">
             {/* Title & Description */}
             <div>
-              <h1 className="text-2xl md:text-3xl font-semibold">{property.property_type.replace("_", " ")} in {property.city}</h1>
+              <div className="flex justify-between">
+
+                
+                <h1 className="text-2xl md:text-3xl font-semibold">{property.title}</h1>
+                <button onClick={() => setReportType('property')}>
+                  <MdOutlineReportGmailerrorred size={25} />
+                </button>
+                {reportType && (
+                  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 px-5 text-left">
+                    <div className="bg-white rounded-3xl w-full max-w-lg p-6 space-y-4 shadow-2xl">
+                      <h2 className="flex items-center gap-3 text-xl font-semibold text-gray-900">
+                       <MdOutlineReportGmailerrorred size={25} /> Report this {reportType === 'property' ? 'Property' : 'Landowner'} 
+                      </h2>
+
+                      {/* ERROR MESSAGE ALERT BOX */}
+                      {serverError && (
+                        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm flex items-center gap-2">
+                          <span className="font-bold">!</span> {serverError}
+                        </div>
+                      )}
+
+                      <div className="flex items-center gap-4 bg-stone-50 p-2 rounded-2xl border border-stone-300 ">
+                        <img src={mainImage} alt="cover-image" className="w-16 h-16 rounded-xl"/>
+                        <div>
+                          <p className=" text-xs md:text-md text-gray-700">{property.title}</p>
+                          <p className=" text-xs md:text-sm text-gray-700">{property.property_type.replace("_", " ")} in {property.city}</p>
+                          <p className="font-mono text-xs md:text-sm text-stone-400">{id}</p>
+                        </div>
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="text-sm font-semibold text-gray-700 ml-1">Reason</label>
+                        <textarea
+                          disabled={reportLoading || serverError} // Disable if already reported
+                          value={newReport.description}
+                          onChange={(e) => setNewReport({ ...newReport, description: e.target.value })}
+                          className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm h-36 outline-none transition-all disabled:opacity-50"
+                          placeholder="Describe your issue..."
+                        />
+                      </div>
+
+                      <div className="flex justify-end gap-3 pt-2">
+                        <button onClick={closeModal} className="px-6 py-2.5 rounded-xl border border-gray-200">
+                          Cancel
+                        </button>
+                        <button
+                          type="button"
+                          // DISABLE button if loading, if text is empty, OR if serverError exists
+                          disabled={reportLoading || !newReport.description.trim() || !!serverError}
+                          onClick={() => handleAddReport(reportType)}
+                          className="px-6 py-2.5 rounded-xl bg-black text-white disabled:bg-gray-300 disabled:cursor-not-allowed"
+                        >
+                          {reportLoading ? "Submitting..." : "Submit Report"}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
               <p className="mt-2 text-sm text-gray-600">{property.description}</p>
             </div>
+
+
 
             {/* Price & Booking */}
             <div className="rounded-2xl border bg-white p-3 md:p-5 shadow-sm space-y-4">
@@ -97,9 +229,7 @@ const AccommodationDetails = () => {
                   <span className="text-xl md:text-3xl font-semibold">€{property.rent_per_month}</span>
                   <span className="text-sm text-gray-500"> / month</span>
                 </div>
-                <span className="flex flex-col text-xs bg-green-50 text-green-600 px-2 py-1 rounded-full">
-                 <p> Available from :</p> <p>{property.available_from}</p>
-                </span>
+
               </div>
 
               {/* Property Stats */}
@@ -119,9 +249,9 @@ const AccommodationDetails = () => {
 
               {/* Action Buttons */}
               <div className="sticky bottom-2 p-3 border rounded-xl bg-white">
-              <button onClick={() => navigate("/auth/user/payment", { state: { property } })} className=" w-full bg-black text-white py-2.5 rounded-lg">
-                Request booking
-              </button>
+                <button onClick={() => navigate("/auth/user/payment", { state: { property } })} className=" w-full bg-black text-white py-2.5 rounded-lg">
+                  Request booking
+                </button>
               </div>
               {/* <button className="w-full border py-2.5 rounded-lg">
                 Chat with landlord
@@ -145,7 +275,7 @@ const AccommodationDetails = () => {
               {/* Map placeholder */}
               <div className="mt-4">
                 <h2 className="text-sm font-semibold mb-2">Map</h2>
-                
+
 
                 <div className="mt-2 h-48 w-full rounded-lg overflow-hidden border">
                   <iframe
@@ -170,8 +300,8 @@ const AccommodationDetails = () => {
 
           </section>
         </div>
-      </main>
-    </div>
+      </main >
+    </div >
   );
 };
 

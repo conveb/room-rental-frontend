@@ -2,7 +2,6 @@ import { useState } from "react";
 import {
   sendOtpAPI,
   verifyOtpAPI,
-  resendOtpAPI,
 } from "../../services/allAPI";
 
 export const useEmailVerification = () => {
@@ -44,7 +43,7 @@ export const useEmailVerification = () => {
   // RESEND OTP
   const resendOtp = async ({ email, purpose }) => {
     try {
-      const res = await verifyOtpAPI({ email, purpose });
+      const res = await sendOtpAPI({ email, purpose });
       console.log(res.data.message);
       return res;
     } catch (err) {

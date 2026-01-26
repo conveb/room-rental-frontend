@@ -9,7 +9,6 @@ export const forgotPasswordApi = (payload) =>commonAPI("post", "/api/v1/auth/for
 export const sendOtpAPI = (payload) => commonAPI("post", "/api/v1/auth/email/", payload);
 export const verifyOtpAPI = (payload) => commonAPI("post", "/api/v1/auth/verify/", payload);
 export const signupAPI = (payload) => commonAPI("post", "/api/v1/auth/register/", payload);
-export const resendOtpAPI = (payload) => commonAPI("post", "/api/v1/auth/resend-otp/", payload);
 export const AuthAPI = () => commonAPI("get", "/api/v1/auth/me");
 export const LogoutAPI = () => commonAPI("post", "/api/v1/logout/");
 export const googleAuthAPI= (data)=>commonAPI('post','/api/v1/auth/google/',data)
@@ -22,6 +21,8 @@ export const changeUserPasswordAPI = (payload) => commonAPI("post", "/api/v1/me/
 export const deleteUserProfileAPI = () => commonAPI("delete", "/api/v1/me/delete-account/");
 export const getMyBookingsApi= ()=>commonAPI('get','/api/v1/bookings/my') 
 export const createSupportApi= (data)=>commonAPI('post','/api/v1/support/create/',data) 
+export const ReportPropertyApi = (id, data) => {return commonAPI('post', `/api/v1/report-property/${id}/`, data);};
+export const ReportRoomOwnerApi = (id, data) => {return commonAPI('post', `/api/v1/report-landowner/${id}/`, data);};
 //landowner
 export const viewMyPropertyApi= ()=>commonAPI('get','/api/v1/properties/my/') 
 export const updatePropertyApi = (propertyId, data) => commonAPI("patch", `/api/v1/properties/${propertyId}/update/`, data);
@@ -48,32 +49,35 @@ export const updateStatusApi = (id, data) => commonAPI("patch", `/api/v1/admin/s
 export const getAllFeedbackApi= ()=>commonAPI('get','/api/v1/feedback') 
 export const sendFeedbackApi= (data)=>commonAPI('post','/api/v1/feedback/create/',data) 
 export const getAllBookings= ()=> commonAPI('get','/api/v1/admin/bookings') 
-
-// verify_passport
-// Admin_complaint_detail_view
-///admin/complaints/
 export const getAllComplaintsApi= ()=> commonAPI('get','/api/v1/admin/complaints/') 
-///admin/complaints/{{complaint_id}}/
 export const getComplaintDetailAdminApi= (id) => commonAPI('get', `/api/v1/admin/complaints/${id}/`);
 export const updateComplaintStatusApi = (id, data) => commonAPI("patch", `/api/v1/admin/complaints/${id}/update/`, data);
+export const getReportedRoomownersApi= ()=> commonAPI('get','/api/v1/admin/reported-landowners/') 
+export const getReportedPropertiesApi= ()=> commonAPI('get','/api/v1/admin/reported-properties/') 
 
-// create_property_amenity <-----------------------------------
-// create_property_instruction
+// /favourites/add/
+export const AddFavouritesApi= (data)=>commonAPI('post','/api/v1/favourites/add/',data) 
+export const GetFavouritesApi= ()=>commonAPI('get','/api/v1/favourites/') 
+export const RemoveFavouritesApi= (id)=>commonAPI('delete',`/api/v1/favourites/${id}/remove/`) 
+
+
+// verify_passport
+
+// create_property_amenity 
 // delete_property_amenity
 // list_property_instruction
+// create_property_instruction
 // update_property_instruction
 // delete_property_instruction
 // create_property_images
 // List_property_images
 // delete_property_images
+
+// Admin_update_status
 // Add_to_favourites
 // List_favourites
-// Admin_update_status
 
-// Admin_view_reported_land_owners /admin/reported-landowners/
-export const getReportedRoomownersApi= ()=> commonAPI('get','/api/v1/admin/reported-landowners/') 
-export const getReportedPropertiesApi= ()=> commonAPI('get','/api/v1/admin/reported-properties/') 
-// Admin_view_reported_properties /admin/reported-properties/
+
 
 // Admin_users_status_update
 // Land_owner_details_view
@@ -86,7 +90,18 @@ export const getReportedPropertiesApi= ()=> commonAPI('get','/api/v1/admin/repor
 // Group_update
 // Group_delete
 
-// Payment History (user payments)
+// ===========================================
+
+// Complete Bookings
+// My bookings
+// create bookings
+// booking detail
+// cancel bookings
+// confirm/reject booking
+// all booking
+// list bookings by owner
+
+// Payment history
 // create payment
 // razorpay webhook
 // download invoice
@@ -94,10 +109,3 @@ export const getReportedPropertiesApi= ()=> commonAPI('get','/api/v1/admin/repor
 // add payout account
 // payment create
 // paypal order
-
-// Add_payout_provider <--------------------------------------- Admin
-// delete_payout_provider <------------------------------------ Admin
-// update_payout_provider <------------------------------------ Admin
-// detail_view_payout_provider <------------------------------- Admin
-// List_payout_provider <-------------------------------------- Admin
-// Country_detail_view <--------------------------------------- Admin

@@ -30,7 +30,7 @@ export default function Header() {
     "/workingonit",
     "/notifications",
   ];
-    const BlackTextPages = [
+  const BlackTextPages = [
     "/list-room"
   ];
 
@@ -49,14 +49,14 @@ export default function Header() {
 
   return (
     <nav
-      className={`fixed left-0 right-0 z-30 w-full px-2 md:px-0 
-        transition-all duration-300 ${isWhiteRoute ? "text-black" : "text-white"}  ${scrolled ? "text-white":"text-black"}
+      className={` z-30 w-full px-2 md:px-0 
+        transition-all duration-300 ${isWhiteRoute ? "text-black" : "text-white"}  ${scrolled ? "text-white" : "text-black"}
         ${isBlackRoute || scrolled
           ? "bg-black  shadow-lg py-2 md:py-3"
           : "bg-transparent  py-2 md:py-3"
         }
       `}
-    >
+      >
       <div className="max-w-6xl mx-auto flex items-center justify-between">
 
         {/* Logo */}
@@ -80,9 +80,9 @@ export default function Header() {
 
           <li className="bg-black text-white  rounded-full border border-stone-700">
             <Link to={user ? getAccountRoute(role) : "/signin"}>
-            <button className="p-3">
-              {user ? <FaRegUser /> : "Sign In"}
-            </button>
+              <button className="p-3">
+                {user ? <FaRegUser /> : "Sign In"}
+              </button>
             </Link>
           </li>
 

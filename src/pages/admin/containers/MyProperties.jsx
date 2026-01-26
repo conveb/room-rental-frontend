@@ -86,7 +86,7 @@ export default function MyProperties() {
 
       {loading && <p>Loading properties...</p>}
       {error && <p className="text-red-500">{error}</p>}
-      <div className="grid grid-cols-1 md:grid-cols-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
 
         {properties.map(property => (
           <div key={property.id} className="flex flex-col sm:flex-row border border-gray-100 p-3 sm:p-4 rounded-2xl gap-4 bg-white shadow-sm hover:shadow-md transition-all">

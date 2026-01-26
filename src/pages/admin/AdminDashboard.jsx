@@ -370,6 +370,8 @@ export default function AdminDashboard() {
       {showDetails && selectedUser && (
         <StudentDetailsModal
           id={selectedUser.id}
+          avatar_id={selectedUser.avatar_id}
+          role={selectedUser.role}
           onClose={() => {
             setShowDetails(false);
             setSelectedUser(null);

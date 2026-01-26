@@ -41,7 +41,7 @@ const SignIn = () => {
         <BacktoHome />
       </div>
 
-      <div className="w-full max-w-5xl mx-auto flex overflow-hidden shadow-xl rounded-2xl">
+      <div className="w-full max-w-5xl mx-auto flex overflow-hidden ">
         {/* LEFT PANEL */}
         <div className="hidden md:flex w-1/2 relative">
           <img

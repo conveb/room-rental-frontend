@@ -52,6 +52,9 @@ import { useState } from "react";
 import AboutPage from "./pages/public/About";
 import ListYourRoom from "./pages/public/ListYourRoom";
 import Contact from "./pages/public/Contact";
+import BlockedPage from "./pages/public/BlockedPage";
+import StudentFullDetails from "./pages/admin/containers/StudentFullDetails";
+import RoomownerFullDetails from "./pages/admin/containers/RoomownerFullDetails";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -77,6 +80,7 @@ function App() {
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/accommodation" element={<Accommodation baseRoute="/"/>} />
           <Route path="/accommodation-details/:id" element={<AccommodationDetails />} />
+          <Route path="/account-suspended" element={<BlockedPage />} />
         </Route>
 
         {/* <Route element={<AdminRoute />}> */}
@@ -96,6 +100,8 @@ function App() {
           <Route path="property/add_amenities" element={<AddAmenities />} />
           <Route path="reports&complaints" element={<AdminReportsAndComplaints />} />
           <Route path="support&feedback" element={<AdminSupportAndFeedback />} />
+          <Route path="student/:id" element={<StudentFullDetails />} />
+          <Route path="roomowner/:id" element={<RoomownerFullDetails />} />
         </Route>
 
         {/* <Route element={<LandOwnerRoute />}> */}
