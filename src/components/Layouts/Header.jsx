@@ -49,7 +49,7 @@ export default function Header() {
 
   return (
     <nav
-      className={` z-30 w-full px-2 md:px-0 
+      className={`fixed top-0 left-0 right-0 z-30 w-full px-2 md:px-0 
         transition-all duration-300 ${isWhiteRoute ? "text-black" : "text-white"}  ${scrolled ? "text-white" : "text-black"}
         ${isBlackRoute || scrolled
           ? "bg-black  shadow-lg py-2 md:py-3"
