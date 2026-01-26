@@ -52,8 +52,8 @@ const StudentFullDetails = () => {
         </div>
       </div>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-4 mt-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <main className="max-w-7xl w-full mx-auto px-0 sm:px-2 lg:px-4 mt-3 md:mt-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-8">
           
           {/* LEFT COLUMN: PROFILE CARD */}
           <div className="lg:col-span-1 space-y-6">
@@ -67,7 +67,7 @@ const StudentFullDetails = () => {
                   </div>
                 )}
               </div>
-              <h1 className="text-2xl font-black text-gray-900">{student_profile?.full_name}</h1>
+              <h1 className="text-2xl  text-gray-900">{student_profile?.full_name}</h1>
               <p className="text-gray-500 font-medium mb-6">{email}</p>
               
               <div className="w-full pt-6 border-t border-gray-50 space-y-4">
@@ -93,23 +93,23 @@ const StudentFullDetails = () => {
           <div className="lg:col-span-2 space-y-6">
             
             {/* STATS OVERVIEW */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-3 sm:grid-cols-3 gap-2 md:gap-4">
               <StatBox label="Total Favourites" value={favourites?.length || 0} color="text-red-500" />
               <StatBox label="Bookings" value={data.bookings?.length || 0} color="text-blue-500" />
               <StatBox label="Support Tickets" value={data.support_tickets?.length || 0} color="text-purple-500" />
             </div>
 
             {/* FAVOURITES LIST */}
-            <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-100">
+            <div className="bg-white rounded-xl p-4 md:p-8 shadow-sm border border-gray-100">
               <div className="flex items-center justify-between mb-8">
-                <h3 className="text-xl font-black text-gray-900 flex items-center gap-3">
+                <h3 className="text-xl  text-gray-900 flex items-center gap-3">
                   <MdFavorite className="text-red-500 text-2xl" /> 
                   Favourite Properties
                 </h3>
               </div>
 
               {favourites?.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-2 md:grid-cols-2 gap-3 md:gap-6">
                   {favourites.map((fav) => (
                     <div key={fav.id} className="group cursor-pointer">
                       <div className="relative overflow-hidden rounded-xl h-48 mb-4">
@@ -118,15 +118,15 @@ const StudentFullDetails = () => {
                           alt={fav.property.title}
                           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
                         />
-                        <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-xl text-[10px] font-black uppercase">
+                        <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-xl text-[10px]  uppercase">
                           {fav.property.property_type.replace('_', ' ')}
                         </div>
                       </div>
-                      <h4 className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors">{fav.property.title}</h4>
+                      <h4 className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors text-sm md:text-md">{fav.property.title}</h4>
                       <div className="flex items-center gap-1 text-gray-500 text-xs mt-1">
                         <MdLocationOn /> {fav.property.city}, {fav.property.region}
                       </div>
-                      <div className="mt-2 text-lg font-black text-gray-900">
+                      <div className="mt-2 text-lg  text-gray-900">
                         €{fav.property.rent_per_month}<span className="text-xs text-gray-400 font-medium">/month</span>
                       </div>
                     </div>
@@ -154,15 +154,15 @@ const InfoRow = ({ icon, label, value }) => (
   <div className="flex items-start gap-3">
     <div className="mt-1 text-gray-400 text-lg">{icon}</div>
     <div className="text-left">
-      <p className="text-[10px] uppercase font-black text-gray-400 tracking-wider">{label}</p>
+      <p className="text-[10px] uppercase  text-gray-400 tracking-wider">{label}</p>
       <p className="text-sm font-bold text-gray-700 break-all">{value}</p>
     </div>
   </div>
 );
 
 const StatBox = ({ label, value, color }) => (
-  <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm text-center">
-    <p className={`text-3xl font-black mb-1 ${color}`}>{value}</p>
+  <div className="bg-white p-3 md:p-6 rounded-xl border border-gray-100 shadow-sm text-center ">
+    <p className={`text-3xl special-font mb-1 ${color}`}>{value}</p>
     <p className="text-[10px] uppercase font-bold text-gray-400 tracking-widest">{label}</p>
   </div>
 );

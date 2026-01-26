@@ -8,9 +8,11 @@ import { IoIosShareAlt } from "react-icons/io";
 import { FiHeart } from "react-icons/fi";
 import { useReport } from "../../../hooks/users/useReport";
 import { toast } from "sonner";
-import { FaArrowLeft } from "react-icons/fa";
-
+import { FaArrowLeft, FaHeart } from "react-icons/fa";
+import { useAuth } from "../../../context/AuthContext";
+import { useFavorites } from "../../../hooks/users/useFavorites";
 const AccommodationDetails = () => {
+  const { user } = useAuth();
   const { id } = useParams();
   const navigate = useNavigate();
   const { property, loading, error } = usePropertyDetails(id);
@@ -22,7 +24,25 @@ const AccommodationDetails = () => {
   const [serverError, setServerError] = useState(null);
   const { submitReport, reportLoading } = useReport();
 
+  const { isSaved, addToFavorites, removeFromFavorites, favorites } = useFavorites();
 
+  const handleFavoriteClick = (e, property) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!user) {
+      navigate("/signin");
+      return;
+    }
+
+    if (isSaved(property.id)) {
+      removeFromFavorites(property.id); // Logic now handles finding the ID
+      toast.success("Removed from saved!");
+    } else {
+      addToFavorites(property.id);
+      toast.success("Added to saved!");
+    }
+  };
   const handleAddReport = async (type) => {
     const result = await submitReport(type, id, newReport.description);
 
@@ -80,15 +100,15 @@ const AccommodationDetails = () => {
       <main className="max-w-6xl mx-auto px-4 ">
         <div className="flex items-center gap-2 md:gap-5 my-2 md:my-5">
 
-        <button
-          onClick={() => navigate(-1)}
-          className="h-9 w-9 rounded-full flex items-center justify-center
+          <button
+            onClick={() => navigate(-1)}
+            className="h-9 w-9 rounded-full flex items-center justify-center
           hover:bg-neutral-200 transition text-2xl "
           >
-          <FaArrowLeft />
-        </button>
+            <FaArrowLeft />
+          </button>
           <h2 className="text-sm md:text-3xl font-semibold">{property.property_type.replace("_", " ")} in {property.city}</h2>
-          </div>
+        </div>
 
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
@@ -107,10 +127,17 @@ const AccommodationDetails = () => {
                 </span>
                 <div>
 
-                  <button className=" bg-white/30 text-white rounded-full p-2 shadow-md">
-                    <FiHeart size={18} />
+                  <button
+                    onClick={(e) => handleFavoriteClick(e, property)}
+                    className=" p-2 rounded-full bg-white/80 backdrop-blur-sm shadow-md hover:bg-white transition-all z-10"
+                  >
+                    {isSaved(property.id) ? (
+                      <FaHeart className="text-red-500 animate-pulse" size={18} />
+                    ) : (
+                      <FiHeart className="text-gray-600 hover:text-red-500" size={18} />
+                    )}
                   </button>
-                  <button className=" bg-white/30 text-white rounded-full p-2 shadow-md ml-3" onClick={handleShare}>
+                  <button className=" bg-white/80 text-gray-600 rounded-full p-2 shadow-md ml-3" onClick={handleShare}>
                     <IoIosShareAlt size={18} />
 
                   </button>
@@ -160,7 +187,7 @@ const AccommodationDetails = () => {
             <div>
               <div className="flex justify-between">
 
-                
+
                 <h1 className="text-2xl md:text-3xl font-semibold">{property.title}</h1>
                 <button onClick={() => setReportType('property')}>
                   <MdOutlineReportGmailerrorred size={25} />
@@ -169,7 +196,7 @@ const AccommodationDetails = () => {
                   <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 px-5 text-left">
                     <div className="bg-white rounded-3xl w-full max-w-lg p-6 space-y-4 shadow-2xl">
                       <h2 className="flex items-center gap-3 text-xl font-semibold text-gray-900">
-                       <MdOutlineReportGmailerrorred size={25} /> Report this {reportType === 'property' ? 'Property' : 'Landowner'} 
+                        <MdOutlineReportGmailerrorred size={25} /> Report this {reportType === 'property' ? 'Property' : 'Landowner'}
                       </h2>
 
                       {/* ERROR MESSAGE ALERT BOX */}
@@ -180,7 +207,7 @@ const AccommodationDetails = () => {
                       )}
 
                       <div className="flex items-center gap-4 bg-stone-50 p-2 rounded-2xl border border-stone-300 ">
-                        <img src={mainImage} alt="cover-image" className="w-16 h-16 rounded-xl"/>
+                        <img src={mainImage} alt="cover-image" className="w-16 h-16 rounded-xl" />
                         <div>
                           <p className=" text-xs md:text-md text-gray-700">{property.title}</p>
                           <p className=" text-xs md:text-sm text-gray-700">{property.property_type.replace("_", " ")} in {property.city}</p>
