@@ -7,6 +7,7 @@ import {
   MdEdit, MdCheck, MdClose 
 } from "react-icons/md";
 import { useCountries } from "../../../hooks/admin/constants/useCountries";
+import { AddCountriesSkeleton } from "../../skeleton/AddCountriesSkeleton";
 
 export function AddCountries() {
   const { countries, addCountry, updateCountry, removeCountry, loading } = useCountries();
@@ -51,6 +52,10 @@ export function AddCountries() {
     await updateCountry(id, editForm);
     setEditingId(null);
   };
+
+  if (loading && countries.length === 0) {
+    return <AddCountriesSkeleton />;
+  }
 
   return (
     <div className="space-y-6 w-full">

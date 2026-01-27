@@ -70,8 +70,12 @@ export const getAllCountriesApi= ()=>commonAPI('get','/api/v1/countries/')
 export const createCountryApi= (data)=>commonAPI('post',`/api/v1/countries/create/`,data) 
 export const updateCountryApi = (countryId, data) => commonAPI("patch", `/api/v1/countries/${countryId}/update/`, data);
 export const deleteCountryApi = (countryId) => commonAPI("delete", `/api/v1/countries/${countryId}/delete/`);
+export const createPayoutProviderApi= (data)=>commonAPI('post',`/api/v1/payout-providers/`,data) 
+export const updatePayoutProviderApi = (id, data) => commonAPI("patch", `/api/v1/payout-providers/${id}/`, data);
+export const getPayoutProvidersApi= ()=>commonAPI('get',`/api/v1/payout-providers/`) 
+export const deletePayoutProviderApi = (id) => commonAPI("delete", `/api/v1/payout-providers/${id}/`);
 
-// 65
+// 69
 
 
 // verify_passport
@@ -85,7 +89,14 @@ export const deleteCountryApi = (countryId) => commonAPI("delete", `/api/v1/coun
 // Add_groups
 // Group_detail_view
 // Group_update
-// Group_delete
+// Group_delete`
+
+export const getCountryPayoutProvidersApi= ()=>commonAPI('get',`/api/v1/country-payout-providers`) 
+export const getCountryPayoutProviderDetailsApi= (id) => commonAPI('get', `/api/v1/country-payout-providers/${id}/`);
+export const createCountryPayoutProviderApi= (data)=>commonAPI('post',`/api/v1/country-payout-providers/`,data) 
+export const updateCountryPayoutProviderApi = (id, data) => commonAPI("patch", `/api/v1/country-payout-providers/${id}/`, data);
+export const deleteCountryPayoutProviderApi = (id) => commonAPI("delete", `/api/v1/country-payout-providers/${id}/`);
+
 
 // ===========================================
 

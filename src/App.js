@@ -56,6 +56,7 @@ import BlockedPage from "./pages/public/BlockedPage";
 import StudentFullDetails from "./pages/admin/containers/StudentFullDetails";
 import RoomownerFullDetails from "./pages/admin/containers/RoomownerFullDetails";
 import EditPropertyPage from "./pages/admin/containers/EditPropertyPage";
+import { PayoutSettings } from "./pages/constants/PayoutSettings";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -102,6 +103,7 @@ function App() {
           <Route path="property/add_amenities" element={<AddAmenities />} />
           <Route path="reports&complaints" element={<AdminReportsAndComplaints />} />
           <Route path="support&feedback" element={<AdminSupportAndFeedback />} />
+          <Route path="payment-providers" element={<PayoutSettings />} />
           <Route path="student/:id" element={<StudentFullDetails />} />
           <Route path="roomowner/:id" element={<RoomownerFullDetails />} />
         </Route>

@@ -25,6 +25,7 @@ import { Characters } from '../users/account/characterCollection';
 import { toast } from "sonner";
 import NoBookings from "../skeleton/NoBookings";
 import { FiCalendar } from "react-icons/fi";
+import { RiSecurePaymentFill } from "react-icons/ri";
 export default function AdminDashboard() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("overview");
@@ -102,7 +103,7 @@ export default function AdminDashboard() {
   const [reason, setReason] = useState("");
 
   const { bookings, loading: bookingsLoading, error } = useBookings();
-  // 1. Helper for status styles
+  
   const getStatusStyle = (status) => {
     switch (status?.toLowerCase()) {
       case "paid":
@@ -137,12 +138,23 @@ export default function AdminDashboard() {
       </div>
       <Link to={'/auth/admin/manage_constants'} >
         <div className="flex gap-3 md:gap-5 items-center bg-white rounded-2xl p-2 md:p-4 my-3">
-          <div className="bg-teal-200 p-3 md:p-5 rounded-xl">
+          <div className="bg-teal-300 p-3 md:p-5 rounded-xl">
             <MdImportantDevices size={25} />
           </div>
           <div className="">
             <p>Manage Constants</p>
             <p className="text-xs text-stone-400">Add Country , Add Locations , Add Amenities , Groups and Permissions</p>
+          </div>
+        </div>
+      </Link>
+      <Link to={'/auth/admin/payment-providers'} >
+        <div className="flex gap-3 md:gap-5 items-center bg-white rounded-2xl p-2 md:p-4 my-3">
+          <div className="bg-lime-300 p-3 md:p-5 rounded-xl">
+            <RiSecurePaymentFill  size={25} />
+          </div>
+          <div className="">
+            <p>Payout Providers</p>
+            <p className="text-xs text-stone-400">Easily change payout providers here.</p>
           </div>
         </div>
       </Link>
@@ -232,9 +244,7 @@ export default function AdminDashboard() {
                     </td>
                   </tr>
                 )}
-                {/* <div className="flex justify-center w-full bg-red-200">
-                   <NoBookings />
-                   </div> */}
+                
               </tbody>
             </table>
 
