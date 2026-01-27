@@ -43,26 +43,10 @@ const SignIn = () => {
 
       <div className="w-full max-w-5xl mx-auto flex overflow-hidden ">
         {/* LEFT PANEL */}
-        <div className="hidden md:flex w-1/2 relative">
-          <img
-            src="https://images.pexels.com/photos/210205/pexels-photo-210205.jpeg?auto=compress&cs=tinysrgb&w=1200"
-            alt="Student housing"
-            className="absolute inset-0 w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-black/40" />
-          <div className="relative z-10 p-8 flex flex-col justify-between w-full">
-            <div className="flex items-center gap-2">
-              <div className="h-8 w-8 rounded-xl bg-white flex items-center justify-center">🏠</div>
-              <span className="text-white font-semibold text-sm">Alive Paris</span>
-            </div>
-            <h2 className="text-white text-3xl font-semibold leading-snug">
-              Find your perfect student room near campus.
-            </h2>
-          </div>
-        </div>
+        
 
         {/* RIGHT PANEL */}
-        <div className="w-full md:w-1/2 flex items-center justify-center bg-white">
+        <div className="w-full  flex items-center justify-center bg-white">
           <div className="w-full max-w-md px-6 py-10">
             <div className="mb-8">
               <h1 className="text-2xl font-semibold text-gray-900">Sign in</h1>

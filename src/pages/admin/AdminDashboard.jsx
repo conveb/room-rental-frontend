@@ -23,6 +23,8 @@ import StudentDetailsModal from "./components/StudentDetailsModal";
 import { useBookings } from "../../hooks/bookings/useBookings";
 import { Characters } from '../users/account/characterCollection';
 import { toast } from "sonner";
+import NoBookings from "../skeleton/NoBookings";
+import { FiCalendar } from "react-icons/fi";
 export default function AdminDashboard() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("overview");
@@ -116,11 +118,12 @@ export default function AdminDashboard() {
     }
   };
 
-  // 2. Sort by date (descending) and take the first 6
+
   const recentData = [...bookings]
     .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
     .slice(0, 6);
-  // ---------------- Render ----------------
+
+
   const renderOverview = () => (
     <div className="space-y-4">
       <h2 className="text-xl font-semibold">Overview</h2>
@@ -150,12 +153,15 @@ export default function AdminDashboard() {
         {/* HEADER */}
         <div className="p-4 border-b flex justify-between items-center bg-white">
           <h3 className="text-lg font-semibold text-gray-800">Recent Bookings</h3>
-          <Link
-            to="/auth/admin/view_bookings"
-            className="text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors"
-          >
-            View All
-          </Link>
+          {
+            recentData && recentData.length > 0 && (
+              <Link
+                to="/auth/admin/view_bookings"
+                className="text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors"
+              >
+                View All
+              </Link>
+            )}
         </div>
 
         {/* DESKTOP VIEW (Table) - Hidden on small screens */}
@@ -163,17 +169,21 @@ export default function AdminDashboard() {
           <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
             <table className="w-full text-left border-collapse">
               {/* Ensure your Table Header matches the new 5-column layout */}
-              <thead className="bg-gray-50 border-b">
-                <tr>
-                  <th className="p-4 text-xs font-bold text-gray-500 uppercase">Ref No</th>
-                  <th className="p-4 text-xs font-bold text-gray-500 uppercase">Property</th>
-                  <th className="p-4 text-xs font-bold text-gray-500 uppercase">Amount</th>
-                  <th className="p-4 text-xs font-bold text-gray-500 uppercase">Date</th>
-                  <th className="p-4 text-xs font-bold text-gray-500 uppercase">Status</th>
-                </tr>
-              </thead>
+              {
+                recentData && recentData.length > 0 && (
+
+                  <thead className="bg-gray-50 border-b">
+                    <tr>
+                      <th className="p-4 text-xs font-bold text-gray-500 uppercase">Ref No</th>
+                      <th className="p-4 text-xs font-bold text-gray-500 uppercase">Property</th>
+                      <th className="p-4 text-xs font-bold text-gray-500 uppercase">Amount</th>
+                      <th className="p-4 text-xs font-bold text-gray-500 uppercase">Date</th>
+                      <th className="p-4 text-xs font-bold text-gray-500 uppercase">Status</th>
+                    </tr>
+                  </thead>
+                )}
               <tbody>
-                {recentData.length > 0 ? (
+                {recentData && recentData.length > 0 &&
                   recentData.slice(0, 6).map((booking) => (
                     <tr key={booking.id} className="hover:bg-gray-50/50 transition-colors border-b last:border-0">
                       <td className="p-4 font-medium text-gray-700">
@@ -211,11 +221,20 @@ export default function AdminDashboard() {
                       </td>
                     </tr>
                   ))
-                ) : (
+                }
+
+                {(!recentData || recentData.length === 0) && (
                   <tr>
-                    <td colSpan="5" className="p-10 text-center text-gray-400">No bookings available</td>
+                    <td colSpan="5" className="p-5 w-full">
+                      <div className="flex flex-col items-center justify-center text-center">
+                        <NoBookings />
+                      </div>
+                    </td>
                   </tr>
                 )}
+                {/* <div className="flex justify-center w-full bg-red-200">
+                   <NoBookings />
+                   </div> */}
               </tbody>
             </table>
 

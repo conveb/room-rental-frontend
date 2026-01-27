@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useSignup } from "../../../hooks/auth/useSignup";
 import { useEmailVerification } from "../../../hooks/auth/useEmailVerification";
 import BacktoHome from "../../../components/btns/BacktoHome";
+import { toast } from "sonner";
 
 const OTP_LENGTH = 6;
 
@@ -13,6 +14,7 @@ const SignUp = () => {
   const stepperRef = useRef(null);
   const inputsRef = useRef([]);
   const navigate = useNavigate();
+  const [isTimerActive, setIsTimerActive] = useState(false);
 
   const { sendOtp, verifyOtp, resendOtp, loading, error } =
     useEmailVerification();
@@ -54,8 +56,16 @@ const SignUp = () => {
         email: form.email,
         purpose: "ONBOARDING",
       });
+
+      setIsTimerActive(true);
+      setCounter(60);
+      setDisableResend(true);
+
       stepperRef.current.nextCallback();
-    } catch {}
+    } catch (e) {
+      console.error("Error sending OTP:", e);
+      toast.error(e?.message || "Failed to send OTP. Please try again.");
+    }
   };
 
   /* ---------------- OTP INPUT ---------------- */
@@ -83,12 +93,18 @@ const SignUp = () => {
 
   /* ---------------- VERIFY + REGISTER ---------------- */
   const handleVerifyOtp = async () => {
+    if (!form.full_name || !form.email || !form.privacy_policy) {
+      toast.error("Please complete the registration details first.");
+      stepperRef.current.prevCallback();
+      return;
+    }
     try {
       await verifyOtp({
         email: form.email,
         otp: otp.join(""),
         purpose: "ONBOARDING",
       });
+
 
       if (!form.privacy_policy)
         throw new Error("Privacy policy required");
@@ -115,13 +131,14 @@ const SignUp = () => {
 
   /* ---------------- RESEND OTP TIMER ---------------- */
   useEffect(() => {
-    if (counter === 0) {
-      setDisableResend(false);
+    if (!isTimerActive || counter === 0) {
+      if (counter === 0) setDisableResend(false);
       return;
     }
+
     const timer = setTimeout(() => setCounter(counter - 1), 1000);
     return () => clearTimeout(timer);
-  }, [counter]);
+  }, [counter, isTimerActive]);
 
   const handleResend = async () => {
     await resendOtp({ email: form.email, purpose: "ONBOARDING" });
@@ -131,9 +148,9 @@ const SignUp = () => {
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center px-4 sm:px-6 py-10">
-       <div className="absolute top-4 right-5">
-              <BacktoHome />
-            </div>
+      <div className="absolute top-4 right-5">
+        <BacktoHome />
+      </div>
       {/* Header */}
       <div className="w-full max-w-md text-center ">
         <h1 className="text-2xl font-semibold text-gray-800">
@@ -146,7 +163,7 @@ const SignUp = () => {
 
       {/* Card */}
       <div className="w-full max-w-md p-2 sm:p-8">
-        <Stepper ref={stepperRef}>
+        <Stepper ref={stepperRef} linear>
           {/* STEP 1 */}
           <StepperPanel header="Details">
             <div className="space-y-4 mt-4">
@@ -156,10 +173,9 @@ const SignUp = () => {
                   <button
                     key={type}
                     type="button"
-                    className={`flex-1 py-3 rounded-2xl text-sm md:text-md ${
-                      form.account_type === type
-                        ? "bg-black text-white" : "bg-gray-100"
-                    }`}
+                    className={`flex-1 py-3 rounded-2xl text-sm md:text-md ${form.account_type === type
+                      ? "bg-black text-white" : "bg-gray-100"
+                      }`}
                     onClick={() =>
                       setForm({ ...form, account_type: type })
                     }
@@ -231,7 +247,7 @@ const SignUp = () => {
                 </span>
               </div>
 
-              <label className="flex items-start gap-2 text-xs text-gray-600">
+              <label className={`flex items-start gap-2 text-xs transition-colors ${!form.privacy_policy ? 'text-red-500' : 'text-gray-600'}`}>
                 <input
                   type="checkbox"
                   name="privacy_policy"
@@ -240,7 +256,7 @@ const SignUp = () => {
                   className="mt-1"
                 />
                 <span>
-                  I agree to the Terms of Service and Privacy Policy
+                  I agree to the Terms of Service and Privacy Policy <span className="text-red-500">*</span>
                 </span>
               </label>
 
@@ -252,8 +268,8 @@ const SignUp = () => {
 
               <button
                 onClick={handleCreateAccount}
-                disabled={loading}
-                className="w-full bg-black text-white py-2.5 rounded-lg text-sm font-medium disabled:bg-gray-300"
+                disabled={loading || !form.privacy_policy}
+                className="w-full bg-black text-white py-2.5 rounded-lg text-sm font-medium disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
               >
                 {loading ? "Sending OTP..." : "Next"}
               </button>
