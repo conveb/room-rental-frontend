@@ -57,6 +57,9 @@ import StudentFullDetails from "./pages/admin/containers/StudentFullDetails";
 import RoomownerFullDetails from "./pages/admin/containers/RoomownerFullDetails";
 import EditPropertyPage from "./pages/admin/containers/EditPropertyPage";
 import { PayoutSettings } from "./pages/constants/PayoutSettings";
+import PayoutPage from "./pages/landlord/PayoutSettings";
+import OwnerBookings from "./pages/landlord/OwnerBookings";
+import BookingDetails from "./pages/admin/containers/BookingDetails";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -65,7 +68,7 @@ function App() {
     <>
       {loading && <SplashScreen onFinish={() => setLoading(false)} />}
 
-        <Toaster position="top-center"/>
+      <Toaster position="top-center" />
       <Routes>
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/signin" element={<SignIn />} />
@@ -80,7 +83,7 @@ function App() {
           <Route path="/workingonit" element={<WorkingOnIt />} />
           <Route path="/student/1" element={<UserProfilePage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/accommodation" element={<Accommodation baseRoute="/"/>} />
+          <Route path="/accommodation" element={<Accommodation baseRoute="/" />} />
           <Route path="/accommodation-details/:id" element={<AccommodationDetails />} />
           <Route path="/account-suspended" element={<BlockedPage />} />
         </Route>
@@ -96,11 +99,12 @@ function App() {
           <Route path="notifications" element={<NotificationPage />} />
           {/* <Route path="requests" element={<AdminRequests />} /> */}
           {/* <Route path="admin_properties" element={<AdminMyProperty />} /> */}
-          <Route path="property/add_property" element={<AdminAddProperty roleUrl='admin'/>} />
+          <Route path="property/add_property" element={<AdminAddProperty roleUrl='admin' />} />
           <Route path="property/my-property/edit-property/:id" element={<EditPropertyPage />} />
           <Route path="property/add_country" element={<AddCountries />} />
           <Route path="property/add_location" element={<AddLocations />} />
           <Route path="property/add_amenities" element={<AddAmenities />} />
+          <Route path="bookings/booking-details/:id" element={<BookingDetails />} />
           <Route path="reports&complaints" element={<AdminReportsAndComplaints />} />
           <Route path="support&feedback" element={<AdminSupportAndFeedback />} />
           <Route path="payment-providers" element={<PayoutSettings />} />
@@ -109,36 +113,38 @@ function App() {
         </Route>
 
         {/* <Route element={<LandOwnerRoute />}> */}
-          <Route path="/auth/landowner" element={<Layout />}>
-            <Route index element={<LandownerDashboard />} />
-            <Route path="notifications" element={<NotificationPage />} />
-            <Route path="support" element={<RoomOwnerSupport />} />
-            {/* <Route path="properties" element={<PropertiesList />} /> */}
-            <Route path="stats" element={<Stats />} />
-            <Route path="account" element={<RoomOwnerAccount />} />
-            <Route path="create_property" element={<CreateProperty roleUrl='admin'/>} />
-            <Route path="property/my-property/edit-property" element={<EditPropertyPage />} />
-          </Route>
+        <Route path="/auth/landowner" element={<Layout />}>
+          <Route index element={<LandownerDashboard />} />
+          <Route path="notifications" element={<NotificationPage />} />
+          <Route path="support" element={<RoomOwnerSupport />} />
+          {/* <Route path="properties" element={<PropertiesList />} /> */}
+          <Route path="stats" element={<Stats />} />
+          <Route path="account" element={<RoomOwnerAccount />} />
+          <Route path="create_property" element={<CreateProperty roleUrl='admin' />} />
+          <Route path="property/my-property/edit-property" element={<EditPropertyPage />} />
+          <Route path="payout-account" element={<PayoutPage />} />
+          <Route path="bookings" element={<OwnerBookings />} />
+        </Route>
         {/* </Route> */}
 
         {/* <Route element={<PrivateRoute />}> */}
-          <Route path="/auth/user" element={<UserLayout />}>
-            <Route index path="accommodation" element={<Accommodation baseRoute="/auth/user/"/>} />
-            <Route path="/auth/user/accommodation-details/:id" element={<AccommodationDetails />} />
-            <Route path="account" element={<UserAccount />} />
-            <Route path="feedbacks" element={<UserFeedback />} />
-            <Route path="bookings" element={<UserBookings />} />
-            <Route path="payments" element={<UserPayments />} />
-            <Route path="saved" element={<UserSaved />} />
-            <Route path="support" element={<UserSupport />} />
-            <Route path="payment" element={<PaymentPage />} />
-            <Route path="complaints" element={<UserComplaints />} />
-            <Route path="send_feedback" element={<UserFeedback />} />
-            <Route path="report_landowner" element={<UserReportLandowner />} />
-            <Route path="report_property" element={<UserReportProperty />} />
-            <Route path="confirmation" element={<ConfirmationPage />} />
-            <Route path="notifications" element={<NotificationPage />} />
-          </Route>
+        <Route path="/auth/user" element={<UserLayout />}>
+          <Route index path="accommodation" element={<Accommodation baseRoute="/auth/user/" />} />
+          <Route path="/auth/user/accommodation-details/:id" element={<AccommodationDetails />} />
+          <Route path="account" element={<UserAccount />} />
+          <Route path="feedbacks" element={<UserFeedback />} />
+          <Route path="bookings" element={<UserBookings />} />
+          <Route path="payments" element={<UserPayments />} />
+          <Route path="saved" element={<UserSaved />} />
+          <Route path="support" element={<UserSupport />} />
+          <Route path="payment" element={<PaymentPage />} />
+          <Route path="complaints" element={<UserComplaints />} />
+          <Route path="send_feedback" element={<UserFeedback />} />
+          <Route path="report_landowner" element={<UserReportLandowner />} />
+          <Route path="report_property" element={<UserReportProperty />} />
+          <Route path="confirmation" element={<ConfirmationPage />} />
+          <Route path="notifications" element={<NotificationPage />} />
+        </Route>
         {/* </Route> */}
 
       </Routes>

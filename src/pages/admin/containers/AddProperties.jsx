@@ -37,7 +37,7 @@ export default function AddProperties() {
     bathrooms: "",
     rent_per_month: "",
     charges: "",
-    booking_fee: "",
+    // booking_fee: "",
     security_deposit: "",
     available_from: new Date(),
     minimum_stay_months: "",
@@ -168,7 +168,7 @@ export default function AddProperties() {
         bathrooms: "",
         rent_per_month: "",
         charges: "",
-        booking_fee: "",
+        // booking_fee: "",
         security_deposit: "",
         available_from: new Date(),
         minimum_stay_months: "",
@@ -391,7 +391,7 @@ export default function AddProperties() {
             <div className="flex items-center gap-2 mb-3 text-blue-800 font-bold text-xs">
               <MdEuro /> PRICING & DEPOSITS
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               <div className="space-y-1">
                 <label className="text-[10px] font-bold text-gray-400 ml-1 uppercase">Rent/Mo *</label>
                 <input 
@@ -423,16 +423,7 @@ export default function AddProperties() {
                   className="border-b bg-transparent py-1 outline-none w-full focus:border-blue-500 transition" 
                 />
               </div>
-              <div className="space-y-1">
-                <label className="text-[10px] font-bold text-gray-400 ml-1 uppercase">Booking</label>
-                <input 
-                  name="booking_fee" 
-                  value={formData.booking_fee} 
-                  onChange={handleInputChange} 
-                  placeholder="€" 
-                  className="border-b bg-transparent py-1 outline-none w-full focus:border-blue-500 transition" 
-                />
-              </div>
+              
             </div>
           </div>
 

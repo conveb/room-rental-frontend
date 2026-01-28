@@ -31,6 +31,14 @@ export function ProvidersTab() {
     if (success) setEditingId(null);
   };
 
+  const generateCode = (name) => {
+    return name
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, '_')     // Replace spaces with underscores
+      .replace(/[^\w-]+/g, ''); // Remove special characters
+  };
+
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
       <div className="flex items-center justify-between">
@@ -44,15 +52,23 @@ export function ProvidersTab() {
           <input
             placeholder="Provider Name (e.g., PayPal)"
             value={form.name}
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
+            onChange={(e) => {
+              const newName = e.target.value;
+              setForm({
+                ...form,
+                name: newName,
+                // Automatically generate the code as you type the name
+                code: generateCode(newName)
+              });
+            }}
             className="w-full border border-gray-200 pl-12 pr-4 py-3.5 rounded-2xl text-sm focus:border-blue-400 transition-all bg-white outline-none"
           />
         </div>
         <input
-          placeholder="Code (e.g., paypal)"
+          placeholder="Code"
           value={form.code}
-          onChange={(e) => setForm({ ...form, code: e.target.value.toLowerCase().replace(/\s/g, "") })}
-          className="w-full md:w-48 border border-gray-200 px-4 py-3.5 rounded-2xl text-sm focus:border-blue-400 transition-all bg-white outline-none"
+          readOnly // This prevents manual typos
+          className="w-full md:w-48 border border-gray-100 px-4 py-3.5 rounded-2xl text-sm bg-gray-50 text-gray-500 cursor-not-allowed outline-none"
         />
         <button
           onClick={handleAdd}
@@ -79,8 +95,8 @@ export function ProvidersTab() {
                     src={`https://www.google.com/s2/favicons?sz=128&domain=${p.name.toLowerCase().replace(/\s/g, "")}.com`}
                     alt={p.name}
                     className="w-7 h-7 object-contain"
-                    onError={(e) => { 
-                      e.target.style.display = 'none'; 
+                    onError={(e) => {
+                      e.target.style.display = 'none';
                       const fallback = e.target.parentElement.querySelector('.fallback-icon');
                       if (fallback) fallback.style.display = 'block';
                     }}
@@ -93,15 +109,15 @@ export function ProvidersTab() {
                 <div className="flex-1 min-w-0">
                   {editingId === p.id ? (
                     <div className="flex flex-col gap-1">
-                      <input 
-                        className="text-sm border rounded px-2 py-1 w-full" 
-                        value={editForm.name} 
-                        onChange={(e) => setEditForm({ ...editForm, name: e.target.value })} 
+                      <input
+                        className="text-sm border rounded px-2 py-1 w-full"
+                        value={editForm.name}
+                        onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
                       />
-                      <input 
-                        className="text-[10px] border rounded px-2 py-1 w-full" 
-                        value={editForm.code} 
-                        onChange={(e) => setEditForm({ ...editForm, code: e.target.value })} 
+                      <input
+                        className="text-[10px] border rounded px-2 py-1 w-full"
+                        value={editForm.code}
+                        onChange={(e) => setEditForm({ ...editForm, code: e.target.value })}
                       />
                     </div>
                   ) : (
@@ -115,15 +131,15 @@ export function ProvidersTab() {
                 <div className="flex gap-1">
                   {editingId === p.id ? (
                     <>
-                      <button 
-                        onClick={() => handleUpdate(p.id)} 
+                      <button
+                        onClick={() => handleUpdate(p.id)}
                         disabled={actionLoading}
                         className="text-green-500 hover:bg-green-50 p-1.5 rounded-full disabled:opacity-50"
                       >
                         <MdCheck size={20} />
                       </button>
-                      <button 
-                        onClick={() => setEditingId(null)} 
+                      <button
+                        onClick={() => setEditingId(null)}
                         className="text-gray-400 hover:bg-gray-50 p-1.5 rounded-full"
                       >
                         <MdClose size={20} />
@@ -131,14 +147,14 @@ export function ProvidersTab() {
                     </>
                   ) : (
                     <>
-                      <button 
-                        onClick={() => startEditing(p)} 
+                      <button
+                        onClick={() => startEditing(p)}
                         className="text-gray-300 hover:text-blue-500 p-1.5 hover:bg-gray-50 rounded-full"
                       >
                         <MdEdit size={18} />
                       </button>
-                      <button 
-                        onClick={() => removeProvider(p.id)} 
+                      <button
+                        onClick={() => removeProvider(p.id)}
                         disabled={actionLoading}
                         className="text-gray-300 hover:text-red-500 p-1.5 hover:bg-red-50 rounded-full disabled:opacity-50"
                       >

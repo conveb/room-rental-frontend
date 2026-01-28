@@ -1,26 +1,80 @@
-import { useEffect, useState } from "react";
-import { getAllBookings } from "../../services/allAPI";
+// hooks/bookings/useBooking.js
+import { useState } from "react";
+import { toast } from "sonner";
+import { CancelBookingApi, createBookingApi, getBookingDetailsApi } from "../../services/allAPI";
 
-export const useBookings = () => {
-  const [bookings, setBookings] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+export const useBooking = () => {
+  const [bookingLoading, setBookingLoading] = useState(false);
+  const [bookingDetails, setBookingDetails] = useState(null);
 
-  const fetchBookings = async () => {
+  // Fetch specific booking details
+  const fetchBookingDetails = async (id) => {
+    setBookingLoading(true);
     try {
-      setLoading(true);
-      const response = await getAllBookings();
-      setBookings(response.data || []);
+      const response = await getBookingDetailsApi(id);
+      if (response.status === 200) {
+        setBookingDetails(response.data);
+        return response.data;
+      }
     } catch (err) {
-      setError("Failed to fetch bookings");
+      toast.error("Failed to load booking details.");
     } finally {
-      setLoading(false);
+      setBookingLoading(false);
     }
   };
 
-  useEffect(() => {
-    fetchBookings();
-  }, []);
+  const requestBooking = async (propertyId, bookingData) => {
+    setBookingLoading(true);
+    try {
+      const response = await createBookingApi(propertyId, bookingData);
 
-  return { bookings, loading, error };
+      if (response.status === 200 || response.status === 201) {
+        toast.success("Booking request sent!");
+        return { success: true, data: response.data };
+      }
+
+      // Django REST usually returns errors in response.data (e.g., { "start_date": ["error..."] })
+      // This helper extracts the first error it finds
+      const errorData = response.data;
+      const firstError = errorData ? Object.values(errorData)[0] : "Booking failed";
+      throw new Error(Array.isArray(firstError) ? firstError[0] : firstError);
+
+    } catch (err) {
+      // If it's a 400 error, 'err.message' will now show the specific field error
+      toast.error(err.message || "An unexpected error occurred");
+      return { success: false };
+    } finally {
+      setBookingLoading(false);
+    }
+  };
+
+  const cancelBooking = async (bookingId) => {
+    setBookingLoading(true);
+    try {
+      // Try 'cancelled' (lowercase) which is the standard choice key
+      const response = await CancelBookingApi(bookingId, { status: "cancelled" });
+
+      if (response.status === 200 || response.status === 204) {
+        toast.success("Booking request cancelled.");
+        return { success: true };
+      }
+
+      // Extract the specific error array if it fails again
+      const errorMsg = response.data?.status?.[0] || "Could not cancel booking";
+      throw new Error(errorMsg);
+    } catch (err) {
+      toast.error(err.message);
+      return { success: false };
+    } finally {
+      setBookingLoading(false);
+    }
+  };
+
+  return {
+    requestBooking,
+    cancelBooking,
+    fetchBookingDetails,
+    bookingDetails,
+    bookingLoading
+  };
 };

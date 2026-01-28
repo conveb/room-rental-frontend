@@ -25,6 +25,7 @@ const titleMap = {
 const navItems = [
   { to: "/auth/landowner", label: "Dashboard", icon: <HiMiniHome /> },
   { to: "/auth/landowner/account", label: "Account", icon: <FaUserGear /> },
+  { to: "/auth/landowner/bookings", label: "Bookings", icon: <FaUserGear /> },
   { to: "/auth/landowner/create_property", label: "Properties", icon: <FaDoorOpen /> },
   { to: "/auth/landowner/stats", label: "Payments", icon: <FaMoneyCheckDollar /> },
 ];

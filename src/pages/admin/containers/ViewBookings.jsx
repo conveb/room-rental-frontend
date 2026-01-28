@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
-import { useBookings } from "../../../hooks/bookings/useBookings";
-import { useNavigate } from "react-router-dom";
+import { useAllBookings } from "../../../hooks/bookings/useAllBookings";
+import { Link, useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa6";
 
 // --- PrimeReact Imports ---
@@ -9,7 +9,7 @@ import "primereact/resources/themes/lara-light-cyan/theme.css"; // Choose your t
 import "primereact/resources/primereact.min.css";
 
 export default function ViewBookings() {
-    const { bookings, loading, error } = useBookings();
+    const { bookings, loading, error } = useAllBookings();
     const navigate = useNavigate();
 
     // PrimeReact Calendar works best with Date objects or null
@@ -128,7 +128,10 @@ export default function ViewBookings() {
                                 };
 
                                 return (
-                                    <tr key={booking.id} className="border-t hover:bg-gray-50 transition">
+                                    <>
+                                    <tr key={booking.id} 
+                                    onClick={() => navigate(`/auth/admin/bookings/booking-details/${booking.id}`)}
+                                    className="border-t hover:bg-gray-50 transition">
                                         <td className="px-4 py-3 font-medium">{booking.reference_no}</td>
                                         <td className="px-4 py-3">{booking.property_title}</td>
                                         <td className="px-4 py-3">{booking.start_date}</td>
@@ -151,6 +154,7 @@ export default function ViewBookings() {
                                             {new Date(booking.created_at).toLocaleDateString()}
                                         </td>
                                     </tr>
+                        </>
                                 );
                             })
                         )}
@@ -172,7 +176,9 @@ export default function ViewBookings() {
                     };
 
                     return (
-                        <div key={booking.id} className="bg-white rounded-xl shadow p-2 border border-gray-100">
+                        <div key={booking.id}
+                        onClick={() => navigate(`/auth/admin/bookings/booking-details/${booking.id}`)}
+                        className="bg-white rounded-xl shadow p-2 border border-gray-100">
                             <div className="flex justify-between items-center mb-2">
                                 <span className="text-xs font-bold text-stone-400 uppercase">#{booking.reference_no}</span>
                                 <p className="text-xs mt-1 text-stone-400">{new Date(booking.created_at).toLocaleDateString()}</p>

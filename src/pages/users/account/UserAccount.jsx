@@ -67,7 +67,7 @@ export default function UserAccount() {
   const handleSaveProfile = async () => {
     const payload = {
       full_name: editValues.full_name,
-      email: editValues.email,
+      // email: editValues.email,
       phone: editValues.phone,
       avatar_id: selectedAvatar,
     };
@@ -238,14 +238,14 @@ export default function UserAccount() {
                 className="w-full rounded-xl border px-4 py-4 text-xs md:text-sm disabled:bg-neutral-50"
               />
 
-              <label className="text-xs text-neutral-500">Email</label>
+              <label className="text-xs text-neutral-500">Email (Cannot be changed)</label>
               <input
-                disabled={!isEditing}
-                value={editValues.email || ""}
+                disabled={true}
+                value={user.email || ""}
                 onChange={(e) =>
                   setEditValues({ ...editValues, email: e.target.value })
                 }
-                className="w-full rounded-xl border px-4 py-4 text-xs md:text-sm disabled:bg-neutral-50"
+                className="w-full no-drop rounded-xl border px-4 py-4 text-xs md:text-sm disabled:bg-neutral-50"
               />
 
               <label className="text-xs text-neutral-500">Phone</label>

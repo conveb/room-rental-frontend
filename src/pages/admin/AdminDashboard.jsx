@@ -20,7 +20,7 @@ import ImgSkeleton from '../../Assets/pngs/img_skeleton.png'
 import { getAvatarColor } from "./getAvatarColor";
 import { useBlockUser } from "../../hooks/users/useBlockUser";
 import StudentDetailsModal from "./components/StudentDetailsModal";
-import { useBookings } from "../../hooks/bookings/useBookings";
+import { useAllBookings } from "../../hooks/bookings/useAllBookings";
 import { Characters } from '../users/account/characterCollection';
 import { toast } from "sonner";
 import NoBookings from "../skeleton/NoBookings";
@@ -102,7 +102,7 @@ export default function AdminDashboard() {
   const [selectedUser, setSelectedUser] = useState(null);
   const [reason, setReason] = useState("");
 
-  const { bookings, loading: bookingsLoading, error } = useBookings();
+  const { bookings, loading: bookingsLoading, error } = useAllBookings();
   
   const getStatusStyle = (status) => {
     switch (status?.toLowerCase()) {
@@ -137,7 +137,7 @@ export default function AdminDashboard() {
         <Card title="Bookings" value={bookings.length} icon={MdOutlineLibraryBooks} color={'bg-orange-200'} />
       </div>
       <Link to={'/auth/admin/manage_constants'} >
-        <div className="flex gap-3 md:gap-5 items-center bg-white rounded-2xl p-2 md:p-4 my-3">
+        <div className="flex gap-3 md:gap-5 items-center bg-white rounded-2xl p-2 md:p-3 my-3 shadow">
           <div className="bg-teal-300 p-3 md:p-5 rounded-xl">
             <MdImportantDevices size={25} />
           </div>
@@ -148,7 +148,7 @@ export default function AdminDashboard() {
         </div>
       </Link>
       <Link to={'/auth/admin/payment-providers'} >
-        <div className="flex gap-3 md:gap-5 items-center bg-white rounded-2xl p-2 md:p-4 my-3">
+        <div className="flex gap-3 md:gap-5 items-center bg-white rounded-2xl p-2 md:p-3 my-3 shadow">
           <div className="bg-lime-300 p-3 md:p-5 rounded-xl">
             <RiSecurePaymentFill  size={25} />
           </div>

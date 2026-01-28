@@ -99,7 +99,7 @@ export function CountryRulesTab() {
       </div>
 
       {/* LIST OF RULES */}
-      <div className="grid gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {cpLoading ? (
           <div className="py-12 flex items-center justify-center">
             <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
@@ -144,7 +144,7 @@ export function CountryRulesTab() {
                           <MdLanguage size={20} className="text-emerald-500" />
                         </div>
                         <div className="flex ">
-                          <div className="text-sm font-bold text-gray-900">
+                          <div className="text-sm md:text-lg font-bold text-gray-900">
                             {country?.name || getCountryName(cp.country_id || cp.country)}
                           </div>
                         </div>
@@ -176,7 +176,7 @@ export function CountryRulesTab() {
                             <MdCreditCard size={20} className="text-gray-400" />
                           )}
                         </div>
-                        <div className="text-md font-bold text-gray-900">
+                        <div className="text-sm md:text-lg font-bold text-gray-900">
                           {provider?.name || getProviderName(cp.provider_id || cp.provider)}
                         </div>
                       </div>

@@ -13,6 +13,8 @@ import { AiOutlineLogout } from "react-icons/ai";
 import { HiOutlineDocumentText } from "react-icons/hi";
 import UserProfileSkeleton from "../../skeleton/UserProfileSkeleton";
 import { toast } from "sonner";
+import { usePayoutAccount } from "../../../hooks/payout_providers/usePayoutAccount";
+import PayoutModal from "./PayoutModal";
 
 export default function RoomOwnerAccount() {
   const navigate = useNavigate();
@@ -45,7 +47,9 @@ export default function RoomOwnerAccount() {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
-  
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { addAccount, account, loading: payoutLoading } = usePayoutAccount();
+
 
   useEffect(() => {
     if (user) {
@@ -77,15 +81,15 @@ export default function RoomOwnerAccount() {
     navigate("/");
   };
 
-    const handleDeleteAccount = async () => {
-      const result = await deleteUserProfile();
-      if (result.success) {
-        toast.success("Account deleted successfully.");
-        navigate("/");
-      } else if (result.message) {
-        toast.error(result.message);
-      }
-    };
+  const handleDeleteAccount = async () => {
+    const result = await deleteUserProfile();
+    if (result.success) {
+      toast.success("Account deleted successfully.");
+      navigate("/");
+    } else if (result.message) {
+      toast.error(result.message);
+    }
+  };
 
   if (loading) return <UserProfileSkeleton />;
   if (error) return <div className="mt-32 text-center text-red-500">{error}</div>;
@@ -173,9 +177,16 @@ export default function RoomOwnerAccount() {
 
             <ActionBtn
               icon={<MdOutlineAccountBalance size={22} />}
-              label="Payout Settings"
+              label={account ? "Edit Payout Account" : "Add Payout Account"}
               color="bg-blue-100"
-              link="/auth/owner/payouts"
+              // Removing the 'link' prop so it uses the 'onClick' logic
+              onClick={() => setIsModalOpen(true)}
+            />
+            <PayoutModal
+              isOpen={isModalOpen}
+              onClose={() => setIsModalOpen(false)}
+              onSubmit={addAccount}
+              initialValue={account?.account_identifier || ""}
             />
 
             <ActionBtn
@@ -319,32 +330,32 @@ export default function RoomOwnerAccount() {
               onClick={() => setDeleteModal(true)}
             />
             {deleteModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-                  <div className="bg-white rounded-2xl w-full max-w-md p-6 space-y-4">
-                    <h2 className="text-lg font-semibold text-red-600">Delete Account</h2>
-                    <p>Are you sure you want to delete your account? This action cannot be undone.</p>
-                    <div className="flex justify-end gap-3 pt-2">
-                      <button
-                        onClick={() => setDeleteModal(false)}
-                        className="px-4 py-2 rounded-xl border text-sm"
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        onClick={async () => handleDeleteAccount()}
-                        className="px-4 py-2 rounded-xl bg-red-500 text-white text-sm"
-                      >
-                        Delete
-                      </button>
-                    </div>
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+                <div className="bg-white rounded-2xl w-full max-w-md p-6 space-y-4">
+                  <h2 className="text-lg font-semibold text-red-600">Delete Account</h2>
+                  <p>Are you sure you want to delete your account? This action cannot be undone.</p>
+                  <div className="flex justify-end gap-3 pt-2">
+                    <button
+                      onClick={() => setDeleteModal(false)}
+                      className="px-4 py-2 rounded-xl border text-sm"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={async () => handleDeleteAccount()}
+                      className="px-4 py-2 rounded-xl bg-red-500 text-white text-sm"
+                    >
+                      Delete
+                    </button>
                   </div>
                 </div>
-              )}
+              </div>
+            )}
           </div>
         </div>
       </div>
 
-    
+
     </div>
   );
 }

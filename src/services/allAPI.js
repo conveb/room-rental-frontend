@@ -1,7 +1,7 @@
 import { commonAPI } from "./commonAPI";
 
 
-//public
+//public 10
 export const signinAPI = async (data) => { return await commonAPI("post", "/api/v1/login/", data);};
 export const getAllPropertiesAPI = async () => { return await commonAPI("get", "/api/v1/properties");};
 export const getPropertyByIdAPI = (propertyId) => { return commonAPI("get",`/api/v1/properties/${propertyId}/`);};
@@ -12,7 +12,7 @@ export const signupAPI = (payload) => commonAPI("post", "/api/v1/auth/register/"
 export const AuthAPI = () => commonAPI("get", "/api/v1/auth/me");
 export const LogoutAPI = () => commonAPI("post", "/api/v1/logout/");
 export const googleAuthAPI= (data)=>commonAPI('post','/api/v1/auth/google/',data)
-//student
+//student 13
 export const createComplaint= (data)=> commonAPI('post','/api/v1/complaints/create/',data)
 export const getMyComplaints= ()=> commonAPI('get','/api/v1/complaints/my/') 
 export const getComplaintDetailsApi= (id) => commonAPI('get', `/api/v1/complaints/${id}/`);
@@ -26,12 +26,12 @@ export const ReportRoomOwnerApi = (id, data) => {return commonAPI('post', `/api/
 export const AddFavouritesApi= (data)=>commonAPI('post','/api/v1/favourites/add/',data) 
 export const GetFavouritesApi= ()=>commonAPI('get','/api/v1/favourites/') 
 export const RemoveFavouritesApi= (id)=>commonAPI('delete',`/api/v1/favourites/${id}/remove/`) 
-//landowner
+//landowner 4
 export const viewMyPropertyApi= ()=>commonAPI('get','/api/v1/properties/my/') 
 export const updatePropertyApi = (propertyId, data) => commonAPI("patch", `/api/v1/properties/${propertyId}/update/`, data);
 export const createPropertyApi= (data)=>commonAPI('post','/api/v1/properties/create/',data) 
 export const deletePropertyApi = (propertyId) => commonAPI("delete", `/api/v1/properties/${propertyId}/delete/`);
-//admin
+//admin 47
 export const getAllUsersAPI = ()=>commonAPI('get','/api/v1/admin/users') 
 export const getUserProfileAPI = () => commonAPI("get", "/api/v1/me/profile");
 export const getUserCompleteDetailsAPI = (id) => commonAPI("get", `/api/v1/admin/users/students/${id}/detail`);
@@ -49,8 +49,11 @@ export const createAmenities= (data)=>commonAPI('post','/api/v1/amenities/',data
 export const deleteAmenityApi = (amenityId) => commonAPI("delete", `/api/v1/amenities/${amenityId}/`);
 export const getAllSupportApi= ()=>commonAPI('get','/api/v1/admin/support/') 
 export const updateStatusApi = (id, data) => commonAPI("patch", `/api/v1/admin/support/${id}/update/`, data);
+
 export const getAllFeedbackApi= ()=>commonAPI('get','/api/v1/feedback') 
 export const sendFeedbackApi= (data)=>commonAPI('post','/api/v1/feedback/create/',data) 
+export const DeleteFeedbackApi= (id)=>commonAPI('delete',`/api/v1/feedback/${id}/delete/`)
+
 export const getAllBookings= ()=> commonAPI('get','/api/v1/admin/bookings') 
 export const getAllComplaintsApi= ()=> commonAPI('get','/api/v1/admin/complaints/') 
 export const getComplaintDetailAdminApi= (id) => commonAPI('get', `/api/v1/admin/complaints/${id}/`);
@@ -74,9 +77,29 @@ export const createPayoutProviderApi= (data)=>commonAPI('post',`/api/v1/payout-p
 export const updatePayoutProviderApi = (id, data) => commonAPI("patch", `/api/v1/payout-providers/${id}/`, data);
 export const getPayoutProvidersApi= ()=>commonAPI('get',`/api/v1/payout-providers/`) 
 export const deletePayoutProviderApi = (id) => commonAPI("delete", `/api/v1/payout-providers/${id}/`);
+export const getCountryPayoutProvidersApi= ()=>commonAPI('get',`/api/v1/country-payout-providers`) 
+export const getCountryPayoutProviderDetailsApi= (id) => commonAPI('get', `/api/v1/country-payout-providers/${id}/`);
+export const createCountryPayoutProviderApi= (data)=>commonAPI('post',`/api/v1/country-payout-providers/`,data) 
+export const updateCountryPayoutProviderApi = (id, data) => commonAPI("patch", `/api/v1/country-payout-providers/${id}/`, data);
+export const deleteCountryPayoutProviderApi = (id) => commonAPI("delete", `/api/v1/country-payout-providers/${id}/`);
 
-// 69
+// 74
 
+export const getBookingDetailsApi= (id) => commonAPI('get', `/api/v1/bookings/${id}/`);
+export const createBookingApi= (id,data)=>commonAPI('post',`/api/v1/bookings/${id}/create/`,data) 
+export const ConfirmOrRejectBookingApi = (id) => commonAPI("put", `/api/v1/bookings/${id}/status/`);
+
+export const CompleteBookingApi = (id) => commonAPI("patch", `/api/v1/bookings/${id}/complete/`);
+export const CancelBookingApi = (id, data) => commonAPI("patch", `/api/v1/bookings/${id}/cancel/`, data);
+// /api/v1/owner/bookings/ 
+export const getOwnerBookingsApi= () => commonAPI('get', `/api/v1/owner/bookings/`);
+
+
+export const getPayoutAccountApi= () => commonAPI('get', `/api/v1/payout-accounts/`);
+export const addPayoutAccountApi= (data) => commonAPI('post', `/api/v1/payout-accounts/`, data);
+
+// /api/v1/payments/create/
+export const createPaymentApi= (data)=>commonAPI('post',`/api/v1/payments/create/`, data) 
 
 // verify_passport
 
@@ -91,11 +114,6 @@ export const deletePayoutProviderApi = (id) => commonAPI("delete", `/api/v1/payo
 // Group_update
 // Group_delete`
 
-export const getCountryPayoutProvidersApi= ()=>commonAPI('get',`/api/v1/country-payout-providers`) 
-export const getCountryPayoutProviderDetailsApi= (id) => commonAPI('get', `/api/v1/country-payout-providers/${id}/`);
-export const createCountryPayoutProviderApi= (data)=>commonAPI('post',`/api/v1/country-payout-providers/`,data) 
-export const updateCountryPayoutProviderApi = (id, data) => commonAPI("patch", `/api/v1/country-payout-providers/${id}/`, data);
-export const deleteCountryPayoutProviderApi = (id) => commonAPI("delete", `/api/v1/country-payout-providers/${id}/`);
 
 
 // ===========================================

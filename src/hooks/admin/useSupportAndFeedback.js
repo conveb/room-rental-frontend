@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
-import { getAllFeedbackApi, getAllSupportApi, updateStatusApi } from "../../services/allAPI";
+import { DeleteFeedbackApi, getAllFeedbackApi, getAllSupportApi, updateStatusApi } from "../../services/allAPI";
+import { toast } from "sonner";
 
 
 export function useSupportAndFeedback() {
@@ -30,6 +31,20 @@ export function useSupportAndFeedback() {
     }
   };
 
+  const deleteFeedback = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this feedback?")) return;
+    try {
+      setUpdating(true);
+      await DeleteFeedbackApi(id);
+      toast.success("Feedback deleted successfully");
+      await fetchFeedbacks(); // Refresh list
+    } catch (err) {
+      toast.error("Failed to delete feedback");
+    } finally {
+      setUpdating(false);
+    }
+  };
+
   /* ---------------- FEEDBACK ---------------- */
   const fetchFeedbacks = useCallback(async () => {
     try {
@@ -51,15 +66,11 @@ export function useSupportAndFeedback() {
   }, [fetchSupports, fetchFeedbacks]);
 
   return {
-    /* support */
     supports,
     updateSupportStatus,
     updating,
-
-    /* feedback */
     feedbacks,
-
-    /* common */
+    deleteFeedback,
     loading,
     error,
     refetchSupports: fetchSupports,

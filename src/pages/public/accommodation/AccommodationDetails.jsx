@@ -11,6 +11,16 @@ import { toast } from "sonner";
 import { FaArrowLeft, FaHeart } from "react-icons/fa";
 import { useAuth } from "../../../context/AuthContext";
 import { useFavorites } from "../../../hooks/users/useFavorites";
+import { useBooking } from "../../../hooks/bookings/useBookings";
+import { CancelBookingApi } from "../../../services/allAPI";
+
+const addMonths = (dateStr, months) => {
+  const date = new Date(dateStr);
+  date.setMonth(date.getMonth() + parseInt(months || 1));
+  return date.toISOString().split('T')[0];
+};
+
+
 const AccommodationDetails = () => {
   const { user } = useAuth();
   const { id } = useParams();
@@ -25,6 +35,76 @@ const AccommodationDetails = () => {
   const { submitReport, reportLoading } = useReport();
 
   const { isSaved, addToFavorites, removeFromFavorites, favorites } = useFavorites();
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+  const [bookingData, setBookingData] = useState({
+    start_date: "",
+    end_date: "",
+    tenant_message: ""
+  });
+  const { requestBooking, bookingLoading, cancelBooking } = useBooking();
+  const [activeBookingId, setActiveBookingId] = useState(null);
+
+  const getEarliestStartDate = () => {
+    const today = new Date().toISOString().split('T')[0]; // 2026-01-28
+    const availableFrom = property.available_from;
+
+    // If available_from is in the past, return today. 
+    // If available_from is in the future, return available_from.
+    return availableFrom > today ? availableFrom : today;
+  };
+  const openBookingModal = () => {
+    if (!user) {
+      navigate("/signin");
+      return;
+    }
+
+    const validStart = getEarliestStartDate();
+
+    setBookingData({
+      start_date: validStart,
+      // Ensure the end date is also moved forward to maintain the 1-month minimum
+      end_date: addMonths(validStart, property.minimum_stay_months),
+      tenant_message: ""
+    });
+    setIsBookingModalOpen(true);
+  };
+  const handleConfirmBooking = async () => {
+  if (!bookingData.start_date || !bookingData.end_date) {
+    toast.error("Please select both dates.");
+    return;
+  }
+
+  const data = new FormData();
+  data.append("start_date", bookingData.start_date);
+  data.append("end_date", bookingData.end_date);
+  if (bookingData.tenant_message) {
+    data.append("tenant_message", bookingData.tenant_message);
+  }
+
+  const result = await requestBooking(id, data);
+
+  if (result.success) {
+    setIsBookingModalOpen(false);
+    // 1. Store the ID to transform the button
+    setActiveBookingId(result.data.id); 
+    
+    // Optional: Only navigate if you want them to pay immediately, 
+    // otherwise stay here to show the Cancel button
+    // navigate("/auth/user/payment", {
+    //   state: { property, bookingId: result.data.id }
+    // });
+  }
+};
+
+  const handleCancel = async () => {
+    if (!activeBookingId) return;
+
+    // Use the hook's cancelBooking which handles the status: "Cancelled" payload
+    const result = await cancelBooking(activeBookingId);
+    if (result.success) {
+      setActiveBookingId(null); // Revert button back to "Request booking"
+    }
+  };
 
   const handleFavoriteClick = (e, property) => {
     e.preventDefault();
@@ -276,9 +356,95 @@ const AccommodationDetails = () => {
 
               {/* Action Buttons */}
               <div className="sticky bottom-2 p-3 border rounded-xl bg-white">
-                <button onClick={() => navigate("/auth/user/payment", { state: { property } })} className=" w-full bg-black text-white py-2.5 rounded-lg">
-                  Request booking
-                </button>
+                {activeBookingId ? (
+                  // Transform to Cancel button after request is sent
+                  <button
+                    onClick={handleCancel}
+                    disabled={bookingLoading}
+                    className="w-full bg-red-600 text-white py-2.5 rounded-lg font-semibold hover:bg-red-700 transition-colors"
+                  >
+                    {bookingLoading ? "Cancelling..." : "Cancel Booking Request"}
+                  </button>
+                ) : (
+                  // Default Request button
+                  <button
+                    onClick={openBookingModal}
+                    className="w-full bg-black text-white py-2.5 rounded-lg font-semibold hover:bg-neutral-800 transition-colors"
+                  >
+                    Request booking
+                  </button>
+                )}
+
+                {isBookingModalOpen && (
+                  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+                    <div className="bg-white rounded-3xl w-full max-w-md p-6 space-y-4 shadow-2xl text-left">
+                      <h2 className="text-xl font-bold text-gray-900">Booking Request</h2>
+
+                      <div className="p-3 bg-blue-50 rounded-xl text-xs text-blue-800">
+                        <p>• Available from: <strong>{property.available_from}</strong></p>
+                        <p>• Minimum stay: <strong>{property.minimum_stay_months} months</strong></p>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="text-xs font-semibold text-gray-700">Start Date</label>
+                          <input
+                            type="date"
+                            // Disables all dates before the valid start date
+                            min={getEarliestStartDate()}
+                            value={bookingData.start_date}
+                            className="w-full border border-gray-200 rounded-xl p-2.5 text-sm"
+                            onChange={(e) => {
+                              const newStart = e.target.value;
+                              setBookingData({
+                                ...bookingData,
+                                start_date: newStart,
+                                // Optional: Auto-update end date when start date changes
+                                end_date: addMonths(newStart, property.minimum_stay_months)
+                              });
+                            }}
+                          />
+                        </div>
+                        <div>
+                          <label className="text-xs font-semibold">End Date</label>
+                          <input
+                            type="date"
+                            min={addMonths(bookingData.start_date, 1)} // Must be at least 1 month from start
+                            value={bookingData.end_date}
+                            className="w-full border rounded-xl p-2 text-sm"
+                            onChange={(e) => setBookingData({ ...bookingData, end_date: e.target.value })}
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="text-xs font-semibold text-gray-700">Message to Room Owner (Optional)</label>
+                        <textarea
+                          placeholder="Tell the landlord about yourself..."
+                          className="w-full border border-gray-200 rounded-xl p-3 text-sm h-24 focus:ring-2 focus:ring-black outline-none"
+                          value={bookingData.tenant_message}
+                          onChange={(e) => setBookingData({ ...bookingData, tenant_message: e.target.value })}
+                        />
+                      </div>
+
+                      <div className="flex gap-3 pt-2">
+                        <button
+                          onClick={() => setIsBookingModalOpen(false)}
+                          className="flex-1 py-3 border border-gray-200 rounded-xl font-medium hover:bg-gray-50 transition"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          onClick={handleConfirmBooking}
+                          disabled={bookingLoading}
+                          className="flex-1 py-3 bg-black text-white rounded-xl font-medium disabled:bg-gray-400 transition"
+                        >
+                          {bookingLoading ? "Sending..." : "Confirm & Pay"}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
               {/* <button className="w-full border py-2.5 rounded-lg">
                 Chat with landlord
