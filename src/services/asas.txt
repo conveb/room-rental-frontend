@@ -9,7 +9,6 @@ https://rental-homes-france.onrender.com/api/v1/audit-logs/id/ get single
 
 
 https://rental-homes-france.onrender.com/api/v1/bookings/id/complete/ 
-https://rental-homes-france.onrender.com/api/v1/bookings/id/cancel/ 
 https://rental-homes-france.onrender.com/api/v1/admin/bookings/id/ 
 
 https://rental-homes-france.onrender.com/api/v1/countries/id/ 
@@ -20,11 +19,6 @@ https://rental-homes-france.onrender.com/api/v1/feedback/id/delete/
 
 https://rental-homes-france.onrender.com/api/v1/admin/auth/permissions/ 
 
-https://rental-homes-france.onrender.com/api/v1/admin/auth/groups/ 
-https://rental-homes-france.onrender.com/api/v1/admin/auth/groups/create/ 
-https://rental-homes-france.onrender.com/api/v1/admin/auth/groups/id/ 
-https://rental-homes-france.onrender.com/api/v1/admin/auth/groups/id/update/ 
-https://rental-homes-france.onrender.com/api/v1/admin/auth/groups/id/delete/ 
 
 https://rental-homes-france.onrender.com/api/v1/overview-counts/ 
 

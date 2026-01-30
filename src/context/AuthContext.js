@@ -7,6 +7,10 @@ import React, {
 } from "react";
 import { AuthAPI, LogoutAPI } from "../services/allAPI";
 import { useNavigate } from "react-router-dom";
+import {
+  setRefreshToken,
+  clearRefreshToken
+} from "../services/commonAPI";
 
 const AuthContext = createContext(null);
 
@@ -18,51 +22,84 @@ export const AuthProvider = ({ children }) => {
   const fetchCurrentUser = useCallback(async () => {
     try {
       const res = await AuthAPI();
-      setUser(res?.data ?? null);
-    } catch {
+      const userData = res?.data ?? null;
+      setUser(userData);
+      
+      // Debug log to see what AuthAPI returns
+      console.log('AuthAPI response:', userData);
+      
+      return userData;
+    } catch (error) {
+      console.error("Failed to fetch user:", error);
       setUser(null);
+      clearRefreshToken();
+      return null;
     } finally {
       setLoading(false);
     }
   }, []);
 
+  // Initial fetch on mount
   useEffect(() => {
     fetchCurrentUser();
   }, [fetchCurrentUser]);
 
-  // const login = (response) => {
-  //   setUser(response?.user ?? null);
-  // };
-  const login = async () => {
+  const login = async (loginResponseData) => {
     setLoading(true);
-    await fetchCurrentUser();
+    
+    // Extract and store refresh token if present in login response
+    // Check different possible field names
+    const refreshToken = 
+      loginResponseData?.refresh ||
+      loginResponseData?.refresh_token ||
+      loginResponseData?.refreshToken ||
+      loginResponseData?.tokens?.refresh;
+    
+    if (refreshToken) {
+      setRefreshToken(refreshToken);
+      console.log("Refresh token stored from login response");
+    } else {
+      console.warn("No refresh token found in login response");
+    }
+    
+    // Set user data directly from login response (don't call fetchCurrentUser again)
+    // The user data might be at loginResponseData.user or loginResponseData itself
+    const userData = loginResponseData?.user || loginResponseData;
+    if (userData) {
+      setUser(userData);
+      console.log("User set from login response:", userData);
+    }
+    
+    setLoading(false);
   };
 
   const logout = async () => {
     try {
       await LogoutAPI();
     } catch (e) {
-      console.error("Logout failed", e);
+      console.error("Logout API failed", e);
     } finally {
       setUser(null);
+      clearRefreshToken();
       navigate("/");
     }
   };
 
-  // AUTO REFRESH: call fetchCurrentUser every 14 minutes only if user is logged in
+  // Auto refresh user data every 14 minutes (or 7 if you prefer)
   useEffect(() => {
-    if (!user) return; // skip if not logged in
+    if (!user) return;
 
     const interval = setInterval(async () => {
       try {
+        console.log("Auto-refreshing user data...");
         await fetchCurrentUser();
-        console.log("Token refreshed");
       } catch (err) {
-        console.error("Token refresh failed", err);
+        console.error("Auto-refresh failed", err);
         setUser(null);
+        clearRefreshToken();
         navigate("/");
       }
-    }, 14 * 60 * 1000); 
+    }, 14 * 60 * 1000); // 14 minutes
 
     return () => clearInterval(interval);
   }, [user, fetchCurrentUser, navigate]);
@@ -75,11 +112,11 @@ export const AuthProvider = ({ children }) => {
         login,
         logout,
         isAuthenticated: Boolean(user),
-        role: user?.role_name ?? null,
+        role: user?.role || user?.role_name || null,
       }}
     >
       {children}
-    </AuthContext.Provider> 
+    </AuthContext.Provider>
   );
 };
 

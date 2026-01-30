@@ -98,9 +98,15 @@ const AccommodationDetails = () => {
   };
 
   const handleCancel = async () => {
-    if (!bookingDetails?.id) return;
+    // Use bookingDetails from the hook which was populated by fetchPropertyBooking
+    if (!bookingDetails?.id) {
+      toast.error("No active booking found to cancel.");
+      return;
+    }
+
     const result = await cancelBooking(bookingDetails.id);
-    // hook handles clearing bookingDetails on success
+    // No need to manually set state here, the hook's 'setBookingDetails(null)' 
+    // will trigger a re-render and show the "Request booking" button again.
   };
 
   const handlePay = () => {
@@ -191,7 +197,6 @@ const AccommodationDetails = () => {
             <FaArrowLeft />
           </button>
           <h2 className="text-sm md:text-3xl font-semibold">{property.property_type.replace("_", " ")} in {property.city}</h2>
-          <p>{property.id}</p>
         </div>
 
 
@@ -360,19 +365,20 @@ const AccommodationDetails = () => {
 
               {/* Action Buttons */}
               <div className="sticky bottom-2 p-3 border rounded-xl bg-white">
-                {bookingDetails ? (
-                  <>
-                    {/* SHOW PAY BUTTON ONLY IF CONFIRMED AND UNPAID */}
+                {/* Change this line in your layout */}
+                {(bookingDetails && bookingDetails.status !== "CANCELLED") ? (
+                  <div className="flex flex-col gap-2">
+                    {/* 1. PAY BUTTON: Only if CONFIRMED */}
                     {bookingDetails.status === "CONFIRMED" && bookingDetails.payment_status === "UNPAID" && (
                       <button
                         onClick={handlePay}
-                        className="w-full bg-green-600 text-white py-2.5 rounded-lg font-semibold hover:bg-green-700 transition-colors"
+                        className="w-full bg-green-600 text-white py-2.5 rounded-lg font-bold hover:bg-green-700 transition-all shadow-md"
                       >
                         Pay Now (€{bookingDetails.total_rent_amount})
                       </button>
                     )}
 
-                    {/* CANCEL BUTTON (Visible for PENDING or CONFIRMED) */}
+                    {/* 2. CANCEL BUTTON: Only shows if PENDING or CONFIRMED */}
                     <button
                       onClick={handleCancel}
                       disabled={bookingLoading}
@@ -380,13 +386,9 @@ const AccommodationDetails = () => {
                     >
                       {bookingLoading ? "Processing..." : "Cancel Booking Request"}
                     </button>
-
-                    <p className="text-[10px] text-center text-gray-400 italic">
-                      Current Status: {bookingDetails.status}
-                    </p>
-                  </>
+                  </div>
                 ) : (
-                  /* DEFAULT REQUEST BUTTON */
+                  /* 3. REQUEST BUTTON: Shows if no booking OR if the booking was cancelled */
                   <button
                     onClick={openBookingModal}
                     className="w-full bg-black text-white py-2.5 rounded-lg font-semibold hover:bg-neutral-800 transition-colors"

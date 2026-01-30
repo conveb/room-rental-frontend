@@ -1,5 +1,23 @@
 import axios from "axios";
 
+// PURE IN-MEMORY storage (no localStorage)
+let refreshToken = null;
+
+export const setRefreshToken = (token) => {
+  refreshToken = token;
+  console.log("Refresh token set in memory");
+};
+
+export const clearRefreshToken = () => {
+  refreshToken = null;
+  console.log("Refresh token cleared from memory");
+};
+
+export const getRefreshToken = () => {
+  return refreshToken;
+};
+
+
 const api = axios.create({
   baseURL: "https://rental-homes-france.onrender.com",
   withCredentials: true,
@@ -17,14 +35,19 @@ api.interceptors.response.use(
 
     if (
       error.response?.status === 401 &&
-      !originalRequest._retry
+      !originalRequest._retry &&
+      refreshToken !== null
     ) {
+        console.log("Attempting token refresh...");
       originalRequest._retry = true;
 
       try {
-        await api.post("/api/v1/login/refresh/");
+          await api.post("/api/v1/login/refresh/");
+        console.log("Token refresh successful");
         return api(originalRequest);
       } catch (refreshError) {
+        console.log("Token refresh failed, clearing token");
+        clearRefreshToken();
         return Promise.reject(refreshError);
       }
     }

@@ -8,13 +8,22 @@ export const useBooking = () => {
   const [bookingDetails, setBookingDetails] = useState(null);
 
 
+  // hooks/bookings/useBooking.js
+
   const fetchPropertyBooking = async (propId) => {
     setBookingLoading(true);
     try {
       const response = await getPropertyBasedBookingApi(propId);
       if (response.status === 200) {
-        // Since it returns an array, get the first one if it exists
         const booking = response.data[0] || null;
+
+        // If the found booking is already cancelled, treat it as null 
+        // so the "Request Booking" button shows up
+        if (booking && booking.status === "CANCELLED") {
+          setBookingDetails(null);
+          return null;
+        }
+
         setBookingDetails(booking);
         return booking;
       }
@@ -24,7 +33,6 @@ export const useBooking = () => {
       setBookingLoading(false);
     }
   };
-
   // Fetch specific booking details
   const fetchBookingDetails = async (id) => {
     setBookingLoading(true);
@@ -42,47 +50,56 @@ export const useBooking = () => {
     }
   };
 
-  const requestBooking = async (propertyId, bookingData) => {
-    setBookingLoading(true);
-    try {
-      const response = await createBookingApi(propertyId, bookingData);
+// hooks/bookings/useBooking.js
 
-      if (response.status === 200 || response.status === 201) {
-        toast.success("Booking request sent!");
-        return { success: true, data: response.data };
-      }
+const requestBooking = async (propertyId, bookingData) => {
+  setBookingLoading(true);
+  try {
+    const response = await createBookingApi(propertyId, bookingData);
 
-      // Django REST usually returns errors in response.data (e.g., { "start_date": ["error..."] })
-      // This helper extracts the first error it finds
-      const errorData = response.data;
-      const firstError = errorData ? Object.values(errorData)[0] : "Booking failed";
-      throw new Error(Array.isArray(firstError) ? firstError[0] : firstError);
-
-    } catch (err) {
-      // If it's a 400 error, 'err.message' will now show the specific field error
-      toast.error(err.message || "An unexpected error occurred");
-      return { success: false };
-    } finally {
-      setBookingLoading(false);
+    if (response.status === 200 || response.status === 201) {
+      toast.success("Booking request sent!");
+      
+      // THIS IS THE KEY: Update the local state with the new booking object
+      // This will trigger the UI to switch from "Request" to "Cancel" immediately
+      setBookingDetails(response.data); 
+      
+      return { success: true, data: response.data };
     }
-  };
+
+    const errorData = response.data;
+    const firstError = errorData ? Object.values(errorData)[0] : "Booking failed";
+    throw new Error(Array.isArray(firstError) ? firstError[0] : firstError);
+
+  } catch (err) {
+    toast.error(err.message || "An unexpected error occurred");
+    return { success: false };
+  } finally {
+    setBookingLoading(false);
+  }
+};
+
 
   const cancelBooking = async (bookingId) => {
     setBookingLoading(true);
     try {
-      // Try 'cancelled' (lowercase) which is the standard choice key
-      const response = await CancelBookingApi(bookingId, { status: "cancelled" });
+      // Note: Ensure CancelBookingApi is using 'patch' in your allAPI.js
+      // Also using uppercase "CANCELLED" as per standard Django conventions
+      const response = await CancelBookingApi(bookingId, { status: "CANCELLED" });
 
-      if (response.status === 200 || response.status === 204) {
+      if (response.status === 200 || response.status === 201 || response.status === 204) {
         toast.success("Booking request cancelled.");
+        setBookingDetails(null); // This clears the state and resets the button in UI
         return { success: true };
       }
 
-      // Extract the specific error array if it fails again
-      const errorMsg = response.data?.status?.[0] || "Could not cancel booking";
+      // Extracting specific error message from DRF (Django Rest Framework)
+      const errorMsg = response.data?.status?.[0] || response.data?.detail || "Could not cancel booking";
       throw new Error(errorMsg);
     } catch (err) {
-      toast.error(err.message);
+      // If your commonAPI throws on 400, catch it here
+      const message = err.response?.data?.status?.[0] || err.message;
+      toast.error(message);
       return { success: false };
     } finally {
       setBookingLoading(false);

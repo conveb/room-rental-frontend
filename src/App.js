@@ -60,6 +60,7 @@ import { PayoutSettings } from "./pages/constants/PayoutSettings";
 import PayoutPage from "./pages/landlord/PayoutSettings";
 import OwnerBookings from "./pages/landlord/OwnerBookings";
 import BookingDetails from "./pages/admin/containers/BookingDetails";
+import AdminGroupsAndPermissions from "./pages/admin/AdminGroupsAndPermissions";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -104,6 +105,7 @@ function App() {
           <Route path="property/add_country" element={<AddCountries />} />
           <Route path="property/add_location" element={<AddLocations />} />
           <Route path="property/add_amenities" element={<AddAmenities />} />
+          <Route path="groups&permissions" element={<AdminGroupsAndPermissions />} />
           <Route path="bookings/booking-details/:id" element={<BookingDetails />} />
           <Route path="reports&complaints" element={<AdminReportsAndComplaints />} />
           <Route path="support&feedback" element={<AdminSupportAndFeedback />} />

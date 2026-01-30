@@ -130,10 +130,12 @@ export const getPropertyBasedBookingApi= (propId)=> commonAPI('get',`/api/v1/boo
 // list_permissions
 
 // list_groups
-// Add_groups
-// Group_detail_view
-// Group_update
-// Group_delete`
+// https://rental-homes-france.onrender.com/api/v1/admin/auth/groups/
+export const getAllGroupsApi= () => commonAPI('get', `/api/v1/admin/auth/groups/`);
+export const createGroupsApi= (data)=>commonAPI('post',`/api/v1/admin/auth/groups/create/`, data);
+export const getGroupDetailsApi= (id) => commonAPI('get', `/api/v1/admin/auth/groups/${id}/`);
+export const updateGroupApi = (id, data) => commonAPI("patch", `/api/v1/admin/auth/groups/${id}/update/`, data);
+export const deleteGroupApi = (id) => commonAPI("delete", `/api/v1/admin/auth/groups/${id}/delete/`);
 
 
 

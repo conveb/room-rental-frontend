@@ -9,7 +9,7 @@ import {
 import { PiStudent } from "react-icons/pi";
 import { FaPersonShelter } from "react-icons/fa6";
 import { IoIosPeople } from "react-icons/io";
-import { MdOutlineLibraryBooks } from "react-icons/md";
+import { MdOutlineGroups3, MdOutlineLibraryBooks } from "react-icons/md";
 import { MdImportantDevices } from "react-icons/md";
 import SkeletonAdmin from "../skeleton/skeletonAdmin";
 import { useAdminUsers } from "../../hooks/admin/useAdminUsers";
@@ -130,7 +130,7 @@ export default function AdminDashboard() {
       <h2 className="text-xl font-semibold">Overview</h2>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
         <Card title="Students" value={studentsCount} icon={PiStudent} color={'bg-sky-200'} />
         <Card title="Landowners" value={landOwnersCount} icon={FaPersonShelter} color={'bg-emerald-200'} />
         <Card title="Total Users" value={totalUsers} icon={IoIosPeople} color={'bg-purple-200'} />
@@ -143,7 +143,18 @@ export default function AdminDashboard() {
           </div>
           <div className="">
             <p>Manage Constants</p>
-            <p className="text-xs text-stone-400">Add Country , Add Locations , Add Amenities , Groups and Permissions</p>
+            <p className="text-xs text-stone-400">Add Country , Add Locations , Add Amenities </p>
+          </div>
+        </div>
+      </Link>
+      <Link to={'/auth/admin/groups&permissions'} >
+        <div className="flex gap-3 md:gap-5 items-center bg-white rounded-2xl p-2 md:p-3 my-3 shadow">
+          <div className="bg-red-300 p-3 md:p-5 rounded-xl">
+            <MdOutlineGroups3  size={25} />
+          </div>
+          <div className="">
+            <p>Groups & Permissions</p>
+            <p className="text-xs text-stone-400">Handle Groups and Permissions here.</p>
           </div>
         </div>
       </Link>
@@ -552,9 +563,9 @@ export default function AdminDashboard() {
         <meta name="keywords" content="react, seo, helmet" />
       </Helmet>
       <div className="min-h-screen  md:p-6">
-        <div className="max-w-7xl mx-auto space-y-2 md:space-y-6">
-          <h1 className="text-2xl md:text-3xl font-bold">Admin Control Center</h1>
-          <p className="text-xs md:text-sm text-stone-500 ">This dashboard gives a quick overview of total students, landowners, users, and bookings, along with recent booking activity for easy monitoring.
+        <div className="max-w-7xl mx-auto space-y-0 md:space-y-6">
+          <h1 className="text-2xl md:text-3xl font-bold ">Admin Control Center</h1>
+          <p className="text-[10px] md:text-sm text-stone-500 pb-2">This dashboard gives a quick overview of total students, landowners, users, and bookings, along with recent booking activity for easy monitoring.
           </p>
 
           <div className="flex bg-white rounded-3xl p-2 gap-2">

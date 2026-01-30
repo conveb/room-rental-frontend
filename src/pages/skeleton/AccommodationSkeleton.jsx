@@ -8,7 +8,7 @@ const AccommodationGridSkeleton = () => {
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-4 px-2 md:px-32 mt-2 md:mt-6 items-stretch">
       {skeletons.map((_, index) => (
-    <div className="flex flex-col h-full animate-pulse">
+    <div className="flex flex-col h-full animate-pulse" key={index}>
       <div className="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col h-full border border-gray-100">
         {/* Image Placeholder */}
         <div className="w-full h-60 bg-gray-300" />
