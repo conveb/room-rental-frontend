@@ -1,17 +1,36 @@
 // hooks/bookings/useBooking.js
 import { useState } from "react";
 import { toast } from "sonner";
-import { CancelBookingApi, createBookingApi, getBookingDetailsApi } from "../../services/allAPI";
+import { CancelBookingApi, createBookingApi, getBookingDetailsApi, getPropertyBasedBookingApi } from "../../services/allAPI";
 
 export const useBooking = () => {
   const [bookingLoading, setBookingLoading] = useState(false);
   const [bookingDetails, setBookingDetails] = useState(null);
+
+
+  const fetchPropertyBooking = async (propId) => {
+    setBookingLoading(true);
+    try {
+      const response = await getPropertyBasedBookingApi(propId);
+      if (response.status === 200) {
+        // Since it returns an array, get the first one if it exists
+        const booking = response.data[0] || null;
+        setBookingDetails(booking);
+        return booking;
+      }
+    } catch (err) {
+      console.error("Error fetching property booking", err);
+    } finally {
+      setBookingLoading(false);
+    }
+  };
 
   // Fetch specific booking details
   const fetchBookingDetails = async (id) => {
     setBookingLoading(true);
     try {
       const response = await getBookingDetailsApi(id);
+      console.log(response)
       if (response.status === 200) {
         setBookingDetails(response.data);
         return response.data;
@@ -74,6 +93,7 @@ export const useBooking = () => {
     requestBooking,
     cancelBooking,
     fetchBookingDetails,
+    fetchPropertyBooking,
     bookingDetails,
     bookingLoading
   };

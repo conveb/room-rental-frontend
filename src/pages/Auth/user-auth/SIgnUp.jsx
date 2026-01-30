@@ -91,6 +91,21 @@ const SignUp = () => {
     }
   };
 
+  const handlePaste = (e) => {
+    const data = e.clipboardData.getData("text").slice(0, OTP_LENGTH);
+    if (!/^\d+$/.test(data)) return; // Only allow digits
+
+    const newOtp = [...otp];
+    data.split("").forEach((char, index) => {
+      if (index < OTP_LENGTH) newOtp[index] = char;
+    });
+    setOtp(newOtp);
+
+    // Focus the last filled input or the next empty one
+    const lastIndex = Math.min(data.length, OTP_LENGTH - 1);
+    inputsRef.current[lastIndex]?.focus();
+  };
+
   /* ---------------- VERIFY + REGISTER ---------------- */
   const handleVerifyOtp = async () => {
     if (!form.full_name || !form.email || !form.privacy_policy) {
@@ -283,16 +298,21 @@ const SignUp = () => {
                 Enter the 6-digit code sent to your email
               </p>
 
-              <div className="flex justify-between gap-2 mb-8">
+              {/* OTP Input Section */}
+              <div className="flex justify-between gap-1 sm:gap-2 mb-8">
                 {otp.map((v, i) => (
                   <input
                     key={i}
                     ref={(el) => (inputsRef.current[i] = el)}
                     value={v}
+                    type="text"
+                    inputMode="numeric" // Better for mobile keyboards
+                    autoComplete="one-time-code" // Important for iOS auto-fill
                     maxLength={1}
                     onChange={(e) => handleOtpChange(e, i)}
                     onKeyDown={(e) => handleOtpKeyDown(e, i)}
-                    className="w-12 h-12 text-center border rounded-md text-lg focus:ring-1 focus:ring-blue-600"
+                    onPaste={handlePaste} // New paste handler
+                    className="w-full max-w-[3rem] aspect-square text-center border rounded-md text-lg sm:text-xl font-semibold focus:ring-2 focus:ring-blue-600 focus:outline-none transition-all"
                   />
                 ))}
               </div>

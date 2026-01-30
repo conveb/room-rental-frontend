@@ -19,7 +19,6 @@ export const AuthProvider = ({ children }) => {
     try {
       const res = await AuthAPI();
       setUser(res?.data ?? null);
-      console.log("user:", res.data);
     } catch {
       setUser(null);
     } finally {

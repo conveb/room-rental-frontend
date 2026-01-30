@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { usePropertyDetails } from "../../../hooks/property/usePropertyDetails";
 import ImgSkeleton from '../../../Assets/pngs/img_skeleton.png'
@@ -41,9 +41,19 @@ const AccommodationDetails = () => {
     end_date: "",
     tenant_message: ""
   });
-  const { requestBooking, bookingLoading, cancelBooking } = useBooking();
-  const [activeBookingId, setActiveBookingId] = useState(null);
-
+  const {
+    requestBooking,
+    bookingLoading,
+    cancelBooking,
+    fetchPropertyBooking,
+    bookingDetails
+  } = useBooking();
+  // 1. Fetch booking status on mount
+  useEffect(() => {
+    if (user && id) {
+      fetchPropertyBooking(id);
+    }
+  }, [id, user]);
   const getEarliestStartDate = () => {
     const today = new Date().toISOString().split('T')[0]; // 2026-01-28
     const availableFrom = property.available_from;
@@ -69,41 +79,34 @@ const AccommodationDetails = () => {
     setIsBookingModalOpen(true);
   };
   const handleConfirmBooking = async () => {
-  if (!bookingData.start_date || !bookingData.end_date) {
-    toast.error("Please select both dates.");
-    return;
-  }
+    if (!bookingData.start_date || !bookingData.end_date) {
+      toast.error("Please select both dates.");
+      return;
+    }
+    const data = new FormData();
+    data.append("start_date", bookingData.start_date);
+    data.append("end_date", bookingData.end_date);
+    if (bookingData.tenant_message) {
+      data.append("tenant_message", bookingData.tenant_message);
+    }
 
-  const data = new FormData();
-  data.append("start_date", bookingData.start_date);
-  data.append("end_date", bookingData.end_date);
-  if (bookingData.tenant_message) {
-    data.append("tenant_message", bookingData.tenant_message);
-  }
-
-  const result = await requestBooking(id, data);
-
-  if (result.success) {
-    setIsBookingModalOpen(false);
-    // 1. Store the ID to transform the button
-    setActiveBookingId(result.data.id); 
-    
-    // Optional: Only navigate if you want them to pay immediately, 
-    // otherwise stay here to show the Cancel button
-    // navigate("/auth/user/payment", {
-    //   state: { property, bookingId: result.data.id }
-    // });
-  }
-};
+    const result = await requestBooking(id, data);
+    if (result.success) {
+      setIsBookingModalOpen(false);
+      // bookingDetails is automatically updated by the hook now
+    }
+  };
 
   const handleCancel = async () => {
-    if (!activeBookingId) return;
+    if (!bookingDetails?.id) return;
+    const result = await cancelBooking(bookingDetails.id);
+    // hook handles clearing bookingDetails on success
+  };
 
-    // Use the hook's cancelBooking which handles the status: "Cancelled" payload
-    const result = await cancelBooking(activeBookingId);
-    if (result.success) {
-      setActiveBookingId(null); // Revert button back to "Request booking"
-    }
+  const handlePay = () => {
+    navigate("/auth/user/payment", {
+      state: { property, bookingId: bookingDetails.id }
+    });
   };
 
   const handleFavoriteClick = (e, property) => {
@@ -188,6 +191,7 @@ const AccommodationDetails = () => {
             <FaArrowLeft />
           </button>
           <h2 className="text-sm md:text-3xl font-semibold">{property.property_type.replace("_", " ")} in {property.city}</h2>
+          <p>{property.id}</p>
         </div>
 
 
@@ -356,17 +360,33 @@ const AccommodationDetails = () => {
 
               {/* Action Buttons */}
               <div className="sticky bottom-2 p-3 border rounded-xl bg-white">
-                {activeBookingId ? (
-                  // Transform to Cancel button after request is sent
-                  <button
-                    onClick={handleCancel}
-                    disabled={bookingLoading}
-                    className="w-full bg-red-600 text-white py-2.5 rounded-lg font-semibold hover:bg-red-700 transition-colors"
-                  >
-                    {bookingLoading ? "Cancelling..." : "Cancel Booking Request"}
-                  </button>
+                {bookingDetails ? (
+                  <>
+                    {/* SHOW PAY BUTTON ONLY IF CONFIRMED AND UNPAID */}
+                    {bookingDetails.status === "CONFIRMED" && bookingDetails.payment_status === "UNPAID" && (
+                      <button
+                        onClick={handlePay}
+                        className="w-full bg-green-600 text-white py-2.5 rounded-lg font-semibold hover:bg-green-700 transition-colors"
+                      >
+                        Pay Now (€{bookingDetails.total_rent_amount})
+                      </button>
+                    )}
+
+                    {/* CANCEL BUTTON (Visible for PENDING or CONFIRMED) */}
+                    <button
+                      onClick={handleCancel}
+                      disabled={bookingLoading}
+                      className="w-full bg-red-600 text-white py-2.5 rounded-lg font-semibold hover:bg-red-700 transition-colors"
+                    >
+                      {bookingLoading ? "Processing..." : "Cancel Booking Request"}
+                    </button>
+
+                    <p className="text-[10px] text-center text-gray-400 italic">
+                      Current Status: {bookingDetails.status}
+                    </p>
+                  </>
                 ) : (
-                  // Default Request button
+                  /* DEFAULT REQUEST BUTTON */
                   <button
                     onClick={openBookingModal}
                     className="w-full bg-black text-white py-2.5 rounded-lg font-semibold hover:bg-neutral-800 transition-colors"

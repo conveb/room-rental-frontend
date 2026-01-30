@@ -2,10 +2,11 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { signinAPI } from "../../services/allAPI";
 import { useAuth } from "../../context/AuthContext";
+import { toast } from "sonner";
 
 export const useSignin = () => {
   const navigate = useNavigate();
-  const { login } = useAuth(); 
+  const { login } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -21,16 +22,14 @@ export const useSignin = () => {
       setLoading(true);
 
       const res = await signinAPI(payload);
-  
+
       if (!res?.data) {
         throw new Error("Login failed");
       }
       console.log("Signin response:", res.data);
 
-
       // ✅ UPDATE GLOBAL AUTH STATE
-    await login();
-
+      await login();
 
       if (res.data.user.role === "STUDENT") {
         navigate("/auth/user/accommodation");
@@ -53,6 +52,9 @@ export const useSignin = () => {
         err?.response?.data?.detail ||
         err?.message ||
         "Invalid email or password";
+        if(err?.response?.status === 401) {
+          toast.error("Unauthorized access. Please check your credentials.");
+        }
 
       setError(backendError);
     } finally {
