@@ -395,7 +395,7 @@ export default function UserAccount() {
                 showModal && (
                   <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
                     <div className="bg-white rounded-2xl w-full max-w-md p-6 space-y-4">
-                      <h2 className="text-lg font-semibold text-red-600">Delete Account</h2>
+                      <h2 className="text-lg font-semibold text-red-600">Logout</h2>
                       <p>Are you sure you want to Logout?</p>
                       <div className="flex justify-end gap-3 pt-2">
                         <button
