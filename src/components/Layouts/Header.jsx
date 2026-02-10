@@ -56,7 +56,7 @@ export default function Header() {
           : "bg-transparent  py-2 md:py-3"
         }
       `}
-      >
+    >
       <div className="max-w-6xl mx-auto flex items-center justify-between">
 
         {/* Logo */}
@@ -78,13 +78,20 @@ export default function Header() {
           <li><Link to="/list-room">List your room</Link></li>
           <li><Link to="/contact-us">Contact</Link></li>
 
-          <li className="bg-black text-white  rounded-full border border-stone-700">
-            <Link to={user ? getAccountRoute(role) : "/signin"}>
-              <button className="p-3">
-                {user ? <FaRegUser /> : "Sign In"}
-              </button>
-            </Link>
-          </li>
+          {loading ? (
+            <li className="w-24 h-10 rounded-full bg-gray-700 animate-pulse" />
+          ) : (
+            <li className="bg-black text-white rounded-full border border-stone-700">
+              <Link to={user ? getAccountRoute(role) : "/signin"}>
+                <button className="p-3">
+                  {user ? <FaRegUser /> : "Sign In"}
+                </button>
+              </Link>
+            </li>
+          )}
+
+
+
 
 
         </ul>

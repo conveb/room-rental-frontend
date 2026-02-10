@@ -37,12 +37,7 @@ export default function UserSaved() {
             </p>
           </div>
         </div>
-        {/* <Link
-          to="/accommodation"
-          className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition-all shadow-sm hover:shadow-md"
-        >
-          Browse More Rooms
-        </Link> */}
+
       </div>
 
       {/* Saved Rooms Grid */}
@@ -69,7 +64,11 @@ export default function UserSaved() {
                     />
                     <div className="absolute top-3 right-3">
                       <button
-                        onClick={() => removeFromFavorites(fav.id)}
+                        onClick={(e) => {
+                          e.preventDefault(); // Prevents the Link from opening
+                          e.stopPropagation(); // Prevents the click from reaching the Link
+                          removeFromFavorites(fav.id)
+                        }}
                         className="p-2 bg-white/90 backdrop-blur-sm rounded-full text-red-500 hover:bg-red-500 hover:text-white transition-colors shadow-sm"
                         title="Remove from saved"
                       >

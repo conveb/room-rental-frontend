@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react"; // Added useCallback
-import { googleAuthAPI } from "../../services/allAPI";
+import { createGooglePasswordApi, googleAuthAPI } from "../../services/allAPI";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -34,6 +34,28 @@ export const useGoogleAuth = () => {
     }
   }, [navigate, REDIRECT_URI]); // Dependencies for the function itself
 
+
+  const handleSetPassword = async (payload) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await createGooglePasswordApi(payload);
+      
+      if (response.status === 200 || response.status === 201) {
+        toast.success("Password set successfully!");
+        navigate("/dashboard"); // Or wherever you need them to go
+        return response.data;
+      }
+    } catch (err) {
+      const msg = err.response?.data?.detail || "Failed to set password";
+      setError(msg);
+      toast.error(msg);
+      throw err; // Throwing so the component can handle local UI logic if needed
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     const code = searchParams.get("code");
     if (code) {
@@ -43,5 +65,5 @@ export const useGoogleAuth = () => {
     }
   }, [searchParams, handleGoogleLogin]); // handleGoogleLogin is now a stable dependency
 
-  return { handleGoogleLogin, loading, error };
+  return { handleGoogleLogin,handleSetPassword, loading, error };
 };

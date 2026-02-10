@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { signinAPI } from "../../services/allAPI";
@@ -15,69 +16,54 @@ export const useSignin = () => {
 
     if (!payload.email || !payload.password) {
       setError("Email and password are required");
-      toast.error("Please enter email and password");
       return;
     }
 
     try {
       setLoading(true);
-      console.log("🔐 Attempting login...");
 
       const res = await signinAPI(payload);
 
       if (!res?.data) {
-        throw new Error("Login failed - no response data");
+        throw new Error("Login failed");
       }
-      
-      console.log("✅ Login successful");
-      
-      // NO NEED TO STORE REFRESH TOKEN - it's in HTTP-only cookie
-      
-      // Update auth context
-      await login(res.data);
+      console.log("Signin response:", res.data);
 
-      // Navigate based on role
-      const userRole = res.data.user?.role || res.data.role;
-      let redirectPath = "/";
-      
-      if (userRole === "STUDENT") {
-        redirectPath = "/auth/user/accommodation";
-      } else if (userRole === "LAND_OWNER") {
-        redirectPath = "/auth/landowner";
-      } else if (userRole === "ADMIN") {
-        redirectPath = "/auth/admin";
+      // ✅ UPDATE GLOBAL AUTH STATE
+      await login();
+
+      if (res.data.user.role === "STUDENT") {
+        navigate("/auth/user/accommodation");
+
+      } else if (res.data.user.role === "LAND_OWNER") {
+        navigate("/auth/landowner");
+
+      } else if (res.data.user.role === "ADMIN") {
+        navigate("/auth/admin");
+
+      } else {
+        navigate("/");
       }
-      
-      console.log(`📍 Navigating to: ${redirectPath}`);
-      navigate(redirectPath);
-      toast.success("Login successful!");
+
 
     } catch (err) {
-      console.error("❌ Login error:", err);
-      
-      let errorMessage = "Invalid email or password";
-      
-      if (err.response) {
-        const errorData = err.response.data;
-        errorMessage = 
-          errorData?.detail ||
-          errorData?.message ||
-          errorData?.non_field_errors?.[0] ||
-          `Login failed (${err.response.status})`;
-        
-        if (err.response.status === 401) {
-          toast.error("Invalid credentials");
+      const backendError =
+        err?.response?.data?.user ||
+        err?.response?.data?.email ||
+        err?.response?.data?.detail ||
+        err?.message ||
+        "Invalid email or password";
+        if(err?.response?.status === 401) {
+          toast.error("Unauthorized access. Please check your credentials.");
         }
-      } else if (err.request) {
-        errorMessage = "No response from server";
-        toast.error("Network error");
-      }
-      
-      setError(errorMessage);
+
+      setError(backendError);
     } finally {
       setLoading(false);
     }
   };
+
+
 
   return { signin, loading, error };
 };

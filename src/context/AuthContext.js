@@ -18,56 +18,54 @@ export const AuthProvider = ({ children }) => {
   const fetchCurrentUser = useCallback(async () => {
     try {
       const res = await AuthAPI();
-      const userData = res?.data ?? null;
-      setUser(userData);
-      
-      if (userData) {
-        console.log("✅ User authenticated:", userData.email || userData.username);
-      }
-      
-      return userData;
-    } catch (error) {
-      console.error("❌ Failed to fetch user:", error.message);
+      setUser(res?.data ?? null);
+    } catch {
       setUser(null);
-      return null;
     } finally {
       setLoading(false);
     }
   }, []);
 
-  // Initial fetch on app load
   useEffect(() => {
     fetchCurrentUser();
   }, [fetchCurrentUser]);
 
-  const login = async (loginResponseData) => {
+  // const login = (response) => {
+  //   setUser(response?.user ?? null);
+  // };
+  const login = async () => {
     setLoading(true);
-    
-    // NO NEED TO STORE REFRESH TOKEN - it's in HTTP-only cookie
-    
-    // Set user state
-    const userData = loginResponseData?.user || loginResponseData;
-    if (userData) {
-      setUser(userData);
-      console.log("✅ User logged in:", userData.email || userData.username);
-    }
-    
-    setLoading(false);
+    await fetchCurrentUser();
   };
 
   const logout = async () => {
-    setLoading(true);
     try {
       await LogoutAPI();
-      console.log("✅ Logout successful");
     } catch (e) {
-      console.error("Logout API error:", e);
+      console.error("Logout failed", e);
     } finally {
       setUser(null);
-      setLoading(false);
-      navigate("/signin");
+      navigate("/");
     }
   };
+
+  // AUTO REFRESH: call fetchCurrentUser every 14 minutes only if user is logged in
+  useEffect(() => {
+    if (!user) return; // skip if not logged in
+
+    const interval = setInterval(async () => {
+      try {
+        await fetchCurrentUser();
+        console.log("Token refreshed");
+      } catch (err) {
+        console.error("Token refresh failed", err);
+        setUser(null);
+        navigate("/");
+      }
+    }, 14 * 60 * 1000); 
+
+    return () => clearInterval(interval);
+  }, [user, fetchCurrentUser, navigate]);
 
   return (
     <AuthContext.Provider
@@ -77,12 +75,11 @@ export const AuthProvider = ({ children }) => {
         login,
         logout,
         isAuthenticated: Boolean(user),
-        role: user?.role || user?.role_name || null,
-        fetchCurrentUser,
+        role: user?.role_name ?? null,
       }}
     >
       {children}
-    </AuthContext.Provider>
+    </AuthContext.Provider> 
   );
 };
 

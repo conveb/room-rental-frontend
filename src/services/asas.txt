@@ -1,4 +1,4 @@
-https://rental-homes-france.onrender.com/api/v1/google/setpassword/ 
+https://rental-homes-france.onrender.com/api/v1/google/setpassword/
 
 https://rental-homes-france.onrender.com/api/v1/verification/persona/start/ 
 
@@ -32,11 +32,3 @@ https://rental-homes-france.onrender.com/api/v1/support/my/
 
 https://rental-homes-france.onrender.com/api/v1/admin/users/id/profile/ 
 https://rental-homes-france.onrender.com/api/v1/admin/users/landowners/id/detail/ 
-
-
-
-
-
-
-
-
