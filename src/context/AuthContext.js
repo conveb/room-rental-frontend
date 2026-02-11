@@ -15,7 +15,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  const fetchCurrentUser = useCallback(async () => {
+  const fetchCurrentUser = async () => {
     try {
       const res = await AuthAPI();
       setUser(res?.data ?? null);
@@ -24,11 +24,11 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  };
 
   useEffect(() => {
     fetchCurrentUser();
-  }, [fetchCurrentUser]);
+  }, []);
 
   // const login = (response) => {
   //   setUser(response?.user ?? null);

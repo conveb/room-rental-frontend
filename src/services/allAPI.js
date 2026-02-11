@@ -1,7 +1,6 @@
 import { commonAPI } from "./commonAPI";
 
 
-//public 10
 export const signinAPI = async (data) => { return await commonAPI("post", "/api/v1/login/", data);};
 export const signupAPI = (payload) => commonAPI("post", "/api/v1/auth/register/", payload);
 export const verifyOtpAPI = (payload) => commonAPI("post", "/api/v1/auth/verify/", payload);
