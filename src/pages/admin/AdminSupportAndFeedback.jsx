@@ -3,8 +3,8 @@ import { Dialog } from "primereact/dialog";
 import { Dropdown } from "primereact/dropdown";
 import { Button } from "primereact/button";
 import { InputTextarea } from "primereact/inputtextarea";
-import { HelmetProvider } from "react-helmet-async";
 import { useSupportAndFeedback } from "../../hooks/admin/useSupportAndFeedback";
+import Title from "../../components/Title";
 
 const STATUS_OPTIONS = [
   { label: "All", value: "ALL" },
@@ -44,7 +44,7 @@ export default function AdminSupportAndFeedback() {
 
   return (
     <>
-      <HelmetProvider><title>Admin Console | Support & Feedback</title></HelmetProvider>
+      <Title><title>Admin Console | Support & Feedback</title></Title>
 
       <div className="p-0 md:p-6 space-y-6 bg-gray-50/50 min-h-screen">
         {/* TAB SWITCHER */}

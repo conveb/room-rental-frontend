@@ -3,9 +3,9 @@ import { AddCountries } from "./containers/AddCountry";
 import { AddLocations } from "./containers/AddLocations";
 import { AddAmenities } from "./containers/AddAmenities";
 import { useState } from "react";
-import { HelmetProvider } from "react-helmet-async";
 import { FaArrowLeft } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
+import Title from "../../components/Title";
 
 export default function AdminManageConstants() {
     const [activeTab, setActiveTab] = useState("countries");
@@ -13,11 +13,11 @@ export default function AdminManageConstants() {
 
     return (
         <>
-            <HelmetProvider>
+            <Title>
                 <title>Admin Console | Manage</title>
                 <meta name="description" content="This is the home page" />
                 <meta name="keywords" content="react, seo, helmet" />
-            </HelmetProvider>
+            </Title>
             <div className="min-h-screen md:p-6 ">
            <button onClick={() => navigate(-1)}>
                 <p className="flex items-center gap-3 my-2"><FaArrowLeft/>back</p>

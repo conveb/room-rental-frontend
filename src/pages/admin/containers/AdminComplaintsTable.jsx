@@ -4,8 +4,8 @@ import { Dialog } from "primereact/dialog";
 import { Dropdown } from "primereact/dropdown";
 import { Button } from "primereact/button";
 import { InputTextarea } from "primereact/inputtextarea";
-import { HelmetProvider } from "react-helmet-async";
 import { useAdminComplaints } from "../../../hooks/admin/useAdminComplaints";
+import Title from "../../../components/Title";
 
 const STATUS_OPTIONS = [
     { label: "Pending", value: "pending" },
@@ -40,7 +40,7 @@ export default function AdminComplaintsTable() {
 
     return (
        <>
-        <HelmetProvider><title>Admin | Manage Complaints</title></HelmetProvider>
+        <Title><title>Admin | Manage Complaints</title></Title>
 
             <div className=" space-y-6">
                 <div className="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border">

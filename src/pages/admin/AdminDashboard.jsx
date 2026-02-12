@@ -13,7 +13,6 @@ import { MdOutlineGroups3, MdOutlineLibraryBooks } from "react-icons/md";
 import { MdImportantDevices } from "react-icons/md";
 import SkeletonAdmin from "../skeleton/skeletonAdmin";
 import { useAdminUsers } from "../../hooks/admin/useAdminUsers";
-import { HelmetProvider } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { useProperties } from "../../hooks/property/useProperties";
 import ImgSkeleton from '../../Assets/pngs/img_skeleton.png'
@@ -26,6 +25,7 @@ import { toast } from "sonner";
 import NoBookings from "../skeleton/NoBookings";
 import { FiCalendar } from "react-icons/fi";
 import { RiSecurePaymentFill } from "react-icons/ri";
+import Title from "../../components/Title";
 export default function AdminDashboard() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("overview");
@@ -563,11 +563,11 @@ export default function AdminDashboard() {
 
   return (
     <>
-      <HelmetProvider>
+      <Title>
         <title>Admin Console | Dashboard</title>
         <meta name="description" content="This is the home page" />
         <meta name="keywords" content="react, seo, helmet" />
-      </HelmetProvider>
+      </Title>
       <div className="min-h-screen  md:p-6">
         <div className="max-w-7xl mx-auto space-y-0 md:space-y-6">
           <h1 className="text-2xl md:text-3xl font-bold ">Admin Control Center</h1>

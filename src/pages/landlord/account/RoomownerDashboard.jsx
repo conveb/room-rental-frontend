@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { HelmetProvider } from "react-helmet-async";
 import {
   MdOutlineHouse,
   MdOutlinePayments,
@@ -10,6 +9,7 @@ import {
 } from "react-icons/md";
 import { FiUsers } from "react-icons/fi";
 import useMyProperties from "../../../hooks/property/useMyProperties";
+import Title from "../../../components/Title";
 
 export default function LandownerDashboard() {
   const { properties } = useMyProperties();
@@ -111,9 +111,9 @@ export default function LandownerDashboard() {
 
   return (
     <>
-      <HelmetProvider>
+      <Title>
         <title>Owner Dashboard | Rental Homes France</title>
-      </HelmetProvider>
+      </Title>
       <div className="min-h-screen  md:p-6">
         <div className="max-w-7xl mx-auto space-y-6">
           <header>

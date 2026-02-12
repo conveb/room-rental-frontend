@@ -15,7 +15,7 @@ import { TbReport } from "react-icons/tb";
 import { useAuth } from "../../context/AuthContext";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
 import { LuHandshake } from "react-icons/lu";
-import { HelmetProvider } from "react-helmet-async";
+import Title from "../../components/Title";
 
 const titleMap = {
   "/auth/admin": "Dashboard",
@@ -60,9 +60,9 @@ const AdminLayout = () => {
 
   return (
     <>
-      <HelmetProvider>
+      <Title>
         <title>{title} | Alive Paris</title>
-      </HelmetProvider>
+      </Title>
 
       {/* ✅ SINGLE MODAL - HIGH Z-INDEX */}
       {showModal && (

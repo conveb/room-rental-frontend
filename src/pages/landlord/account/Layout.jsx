@@ -12,9 +12,9 @@ import Logo from '../../../Assets/pngs/logo.png';
 import { FaDoorOpen } from "react-icons/fa6";
 import { IoIosNotifications } from "react-icons/io";
 import { useAuth } from "../../../context/AuthContext";
-import { HelmetProvider } from "react-helmet-async";
 import { useUserProfile } from "../../../hooks/users/useUserProfile";
 import { AiOutlineLogout } from "react-icons/ai";
+import Title from "../../../components/Title";
 
 const titleMap = {
   "/auth/landowner": "Dashboard",
@@ -44,9 +44,9 @@ const Layout = () => {
 
   return (
     <>
-          <HelmetProvider>
+          <Title>
             <title>{title} | Alive Paris</title>
-          </HelmetProvider>
+          </Title>
     
           <div className=" min-h-screen flex flex-col md:flex-row bg-stone-100">
             {/* SIDEBAR (DESKTOP ONLY) */}

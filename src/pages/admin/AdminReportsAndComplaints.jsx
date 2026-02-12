@@ -1,15 +1,15 @@
 import React, { useState } from "react";
-import { HelmetProvider } from "react-helmet-async";
 import { TabView, TabPanel } from "primereact/tabview";
 import AdminComplaintsTable from "./containers/AdminComplaintsTable";
 import AdminReportsView from "./containers/AdminReportsView";
+import Title from "../../components/Title";
 
 
 export default function AdminReportsAndComplaints() {
 const [activeIndex, setActiveIndex] = useState(0);
     return (
         <>
-            <HelmetProvider><title>Admin | Reports & Complaints</title></HelmetProvider>
+            <Title><title>Admin | Reports & Complaints</title></Title>
             
             <div className="p-2">
                 <div className="mb-6">
