@@ -4,6 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import Logo from "../../Assets/pngs/logo-silver.png";
 import { useAuth } from "../../context/AuthContext";
 import { FaRegUser } from "react-icons/fa";
+import { ImSpinner9 } from "react-icons/im";
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -79,7 +80,9 @@ export default function Header() {
           <li><Link to="/contact-us">Contact</Link></li>
 
           {loading ? (
-            <li className="w-24 h-10 rounded-full bg-gray-700 animate-pulse" />
+            <p className="flex justify-center items-center w-24 h-10 rounded-full bg-gray-700 " >
+              <ImSpinner9 size={20} className="animate-spin" />
+            </p>
           ) : (
             <li className="bg-black text-white rounded-full border border-stone-700">
               <Link to={user ? getAccountRoute(role) : "/signin"}>
@@ -139,23 +142,19 @@ export default function Header() {
             <li onClick={() => setOpen(false)}>
               <Link to="/contact-us">Contact</Link>
             </li>
-            {
-              !loading && (
-                user ? (
-                  <li className="bg-black text-white px-3 py-3 border border-white border-2 rounded-full border border-stone-700">
-                    <Link to={getAccountRoute(role)}>
-                      <FaRegUser />
-                    </Link>
-                  </li>
-                ) : (
-                  <li className="bg-black text-white px-6 py-2 rounded-full border border-stone-700">
-                    <Link to="/signin">
-                      Sign In
-                    </Link>
-                  </li>
-                )
-              )
-            }
+            {loading ? (
+              <p className="flex justify-center items-center w-24 h-10 rounded-full bg-gray-700 " >
+                <ImSpinner9 size={20} className="animate-spin" />
+              </p>
+            ) : (
+              <li className="bg-black text-white rounded-full border border-stone-700">
+                <Link to={user ? getAccountRoute(role) : "/signin"}>
+                  <button className="p-3">
+                    {user ? <FaRegUser /> : "Sign In"}
+                  </button>
+                </Link>
+              </li>
+            )}
 
 
 

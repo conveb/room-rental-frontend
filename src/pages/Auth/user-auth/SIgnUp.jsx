@@ -7,6 +7,8 @@ import { useSignup } from "../../../hooks/auth/useSignup";
 import { useEmailVerification } from "../../../hooks/auth/useEmailVerification";
 import BacktoHome from "../../../components/btns/BacktoHome";
 import { toast } from "sonner";
+import { PiStudentFill } from "react-icons/pi";
+import { FaHouseUser } from "react-icons/fa";
 
 const OTP_LENGTH = 6;
 
@@ -195,7 +197,10 @@ const SignUp = () => {
                       setForm({ ...form, account_type: type })
                     }
                   >
+                    <p className="flex justify-center items-center gap-2">
+                    {type === "STUDENT" ? <PiStudentFill /> : <FaHouseUser />}
                     {type.replace("_", " ")}
+                    </p>
                   </button>
                 ))}
               </div>

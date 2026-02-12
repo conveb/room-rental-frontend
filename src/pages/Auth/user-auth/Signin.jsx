@@ -51,7 +51,7 @@ const SignIn = () => {
             <div className="mb-8">
               <h1 className="text-2xl font-semibold text-gray-900">Sign in</h1>
               <p className="mt-1 text-sm text-gray-500">
-                Log in to manage bookings and chat with landlords.
+                Sign in to explore available properties and secure your stay today.
               </p>
             </div>
 
