@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getMyComplaints, createComplaint } from "../../services/allAPI"; // Adjust path as needed
+import { getMyComplaints, createComplaint, getComplaintDetailsApi } from "../../services/allAPI"; // Adjust path as needed
 
 export const useComplaints = () => {
   const [complaints, setComplaints] = useState([]);
@@ -29,15 +29,15 @@ export const useComplaints = () => {
   }, []);
 
   // Function to fetch specific details
-//   const fetchComplaintDetails = async (id) => {
-//     try {
-//       const response = await getComplaintDetailsApi(id);
-//       return response.data; // Returns the full object including admin_reply
-//     } catch (err) {
-//       console.error("Detail fetch error:", err);
-//       return null;
-//     }
-//   };
+  const fetchComplaintDetails = async (id) => {
+    try {
+      const response = await getComplaintDetailsApi(id);
+      return response.data; // Returns the full object including admin_reply
+    } catch (err) {
+      console.error("Detail fetch error:", err);
+      return null;
+    }
+  };
 
   // Add a new complaint
   const addComplaint = async (payload) => {
@@ -55,5 +55,5 @@ export const useComplaints = () => {
     }
   };
 
-  return { complaints, loading, error, addComplaint, refresh: fetchComplaints};
+  return { complaints,fetchComplaintDetails, loading, error, addComplaint, refresh: fetchComplaints};
 };

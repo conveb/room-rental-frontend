@@ -73,6 +73,17 @@ export default function UserAccount() {
   }, [user]);
 
   const handleSaveProfile = async () => {
+    // ✅ Validate Full Name
+    if (!editValues.full_name || editValues.full_name.trim() === '') {
+      toast.error('Full name is required');
+      return;
+    }
+
+    // ✅ Validate Phone Number
+    if (!editValues.phone || editValues.phone.trim() === '') {
+      toast.error('Phone number is required');
+      return;
+    }
     const payload = {
       full_name: editValues.full_name,
       phone: editValues.phone,
@@ -255,7 +266,14 @@ export default function UserAccount() {
           {/* Profile Form */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-3">
-              <label className="text-xs text-neutral-500">Full name</label>
+              <div className="flex justify-between items-center">
+                <label className="text-xs text-neutral-500">
+                  Full name <span className="text-red-500">*</span>
+                </label>
+                {!isEditing && !user?.full_name && (
+                  <span className="text-xs text-red-500">Missing</span>
+                )}
+              </div>
               <input
                 disabled={!isEditing}
                 value={editValues.full_name || ""}
@@ -264,6 +282,11 @@ export default function UserAccount() {
                 }
                 className="w-full rounded-xl border px-4 py-4 text-xs md:text-sm disabled:bg-neutral-50"
               />
+              {!isEditing && !user?.full_name && (
+                <p className="text-xs text-red-500 mt-1">
+                  Please edit profile to add your full name
+                </p>
+              )}
 
               <label className="text-xs text-neutral-500">Email (Cannot be changed)</label>
               <input
@@ -275,7 +298,14 @@ export default function UserAccount() {
                 className="w-full no-drop rounded-xl border px-4 py-4 text-xs text-gray-400 md:text-sm disabled:bg-neutral-50"
               />
 
-              <label className="text-xs text-neutral-500">Phone</label>
+              <div className="flex justify-between items-center">
+                <label className="text-xs text-neutral-500">
+                  Phone <span className="text-red-500">*</span>
+                </label>
+                {!isEditing && !user?.phone && (
+                  <span className="text-xs text-red-500">Missing</span>
+                )}
+              </div>
               <input
                 disabled={!isEditing}
                 value={editValues.phone || ""}
@@ -284,6 +314,11 @@ export default function UserAccount() {
                 }
                 className="w-full rounded-xl border px-4 py-4 text-xs md:text-sm disabled:bg-neutral-50"
               />
+              {!isEditing && !user?.phone && (
+                <p className="text-xs text-red-500 mt-1">
+                  Please edit profile to add your phone number
+                </p>
+              )}
 
               <div className="flex gap-2 pt-2">
                 {isEditing ? (

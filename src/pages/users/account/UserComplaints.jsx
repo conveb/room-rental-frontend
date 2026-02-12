@@ -50,7 +50,7 @@ export default function UserComplaints() {
   };
 
   return (
-    <div className="min-w-6xl mx-auto min-h-screen bg-gray-50 py-10 space-y-6 ">
+    <div className="min-w-6xl mx-auto min-h-screen  py-10 space-y-6 p-5 container">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-4">

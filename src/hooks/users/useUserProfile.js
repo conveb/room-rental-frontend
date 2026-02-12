@@ -5,6 +5,7 @@ import {
   changeUserPasswordAPI,
   deleteUserProfileAPI,
 } from "../../services/allAPI";
+import { toast } from "sonner";
 
 export const useUserProfile = () => {
   const [user, setUser] = useState(null);
@@ -29,6 +30,17 @@ export const useUserProfile = () => {
   const updateUserProfile = async (payload) => {
     try {
       setUpdating(true);
+
+      // ✅ Double-check validation on the hook level too
+      if (!payload.full_name || !payload.full_name.trim()) {
+        toast.error('Full name is required');
+        return { success: false, message: 'Full name is required' };
+      }
+
+      if (!payload.phone || !payload.phone.trim()) {
+        toast.error('Phone number is required');
+        return { success: false, message: 'Phone number is required' };
+      }
       await updateUserProfileAPI(payload);
 
       // Always refetch source of truth
@@ -62,7 +74,7 @@ export const useUserProfile = () => {
     }
   };
 
-    const deleteUserProfile = async () => {
+  const deleteUserProfile = async () => {
     try {
       const confirmed = window.confirm(
         "Are you sure you want to delete your account? This action cannot be undone."
