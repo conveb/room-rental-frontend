@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Helmet } from "react-helmet";
+import { HelmetProvider } from "react-helmet-async";
 import {
   MdOutlineHouse,
   MdOutlinePayments,
@@ -111,9 +111,9 @@ export default function LandownerDashboard() {
 
   return (
     <>
-      <Helmet>
+      <HelmetProvider>
         <title>Owner Dashboard | Rental Homes France</title>
-      </Helmet>
+      </HelmetProvider>
       <div className="min-h-screen  md:p-6">
         <div className="max-w-7xl mx-auto space-y-6">
           <header>

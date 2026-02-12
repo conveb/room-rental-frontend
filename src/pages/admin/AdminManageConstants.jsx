@@ -3,7 +3,7 @@ import { AddCountries } from "./containers/AddCountry";
 import { AddLocations } from "./containers/AddLocations";
 import { AddAmenities } from "./containers/AddAmenities";
 import { useState } from "react";
-import { Helmet } from "react-helmet";
+import { HelmetProvider } from "react-helmet-async";
 import { FaArrowLeft } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 
@@ -13,11 +13,11 @@ export default function AdminManageConstants() {
 
     return (
         <>
-            <Helmet>
+            <HelmetProvider>
                 <title>Admin Console | Manage</title>
                 <meta name="description" content="This is the home page" />
                 <meta name="keywords" content="react, seo, helmet" />
-            </Helmet>
+            </HelmetProvider>
             <div className="min-h-screen md:p-6 ">
            <button onClick={() => navigate(-1)}>
                 <p className="flex items-center gap-3 my-2"><FaArrowLeft/>back</p>

@@ -3,7 +3,6 @@ import React, {
   useContext,
   useEffect,
   useState,
-  useCallback,
 } from "react";
 import { AuthAPI, LogoutAPI } from "../services/allAPI";
 import { useNavigate } from "react-router-dom";
@@ -13,6 +12,7 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isInitialized, setIsInitialized] = useState(false); // FIX: track initialization
   const navigate = useNavigate();
 
   const fetchCurrentUser = async () => {
@@ -23,6 +23,7 @@ export const AuthProvider = ({ children }) => {
       setUser(null);
     } finally {
       setLoading(false);
+      setIsInitialized(true); // FIX: mark as initialized
     }
   };
 
@@ -30,9 +31,23 @@ export const AuthProvider = ({ children }) => {
     fetchCurrentUser();
   }, []);
 
-  // const login = (response) => {
-  //   setUser(response?.user ?? null);
-  // };
+  // ✅ HANDLE REAL SESSION EXPIRY - only when refresh token fails during active session
+  useEffect(() => {
+    const handleRealSessionExpired = () => {
+      // FIX: Only logout if user was actually logged in AND we've finished initializing
+      if (user && isInitialized) {
+        console.log("🔴 Session expired - logging out");
+        setUser(null);
+        navigate("/login");
+      } else {
+        console.log("ℹ️ Session expired event ignored - no active session or still initializing");
+      }
+    };
+
+    window.addEventListener('real-session-expired', handleRealSessionExpired);
+    return () => window.removeEventListener('real-session-expired', handleRealSessionExpired);
+  }, [navigate, user, isInitialized]); // FIX: add isInitialized
+
   const login = async () => {
     setLoading(true);
     await fetchCurrentUser();
@@ -41,31 +56,14 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       await LogoutAPI();
+      console.log("✅ Logout successful");
     } catch (e) {
       console.error("Logout failed", e);
     } finally {
       setUser(null);
-      navigate("/");
+      navigate("/signin", { replace: true });
     }
   };
-
-  // AUTO REFRESH: call fetchCurrentUser every 14 minutes only if user is logged in
-  useEffect(() => {
-    if (!user) return; // skip if not logged in
-
-    const interval = setInterval(async () => {
-      try {
-        await fetchCurrentUser();
-        console.log("Token refreshed");
-      } catch (err) {
-        console.error("Token refresh failed", err);
-        setUser(null);
-        navigate("/");
-      }
-    }, 14 * 60 * 1000); 
-
-    return () => clearInterval(interval);
-  }, [user, fetchCurrentUser, navigate]);
 
   return (
     <AuthContext.Provider
@@ -79,7 +77,7 @@ export const AuthProvider = ({ children }) => {
       }}
     >
       {children}
-    </AuthContext.Provider> 
+    </AuthContext.Provider>
   );
 };
 

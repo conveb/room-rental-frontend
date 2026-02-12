@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { Helmet } from "react-helmet";
+
 import AddProperties from "../../admin/containers/AddProperties";
 import MyProperties from "../../admin/containers/MyProperties";
 

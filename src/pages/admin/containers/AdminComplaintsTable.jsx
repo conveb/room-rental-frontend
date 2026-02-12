@@ -4,7 +4,7 @@ import { Dialog } from "primereact/dialog";
 import { Dropdown } from "primereact/dropdown";
 import { Button } from "primereact/button";
 import { InputTextarea } from "primereact/inputtextarea";
-import { Helmet } from "react-helmet";
+import { HelmetProvider } from "react-helmet-async";
 import { useAdminComplaints } from "../../../hooks/admin/useAdminComplaints";
 
 const STATUS_OPTIONS = [
@@ -40,7 +40,7 @@ export default function AdminComplaintsTable() {
 
     return (
        <>
-        <Helmet><title>Admin | Manage Complaints</title></Helmet>
+        <HelmetProvider><title>Admin | Manage Complaints</title></HelmetProvider>
 
             <div className=" space-y-6">
                 <div className="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border">

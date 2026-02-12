@@ -13,7 +13,7 @@ import { MdOutlineGroups3, MdOutlineLibraryBooks } from "react-icons/md";
 import { MdImportantDevices } from "react-icons/md";
 import SkeletonAdmin from "../skeleton/skeletonAdmin";
 import { useAdminUsers } from "../../hooks/admin/useAdminUsers";
-import { Helmet } from "react-helmet";
+import { HelmetProvider } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { useProperties } from "../../hooks/property/useProperties";
 import ImgSkeleton from '../../Assets/pngs/img_skeleton.png'
@@ -557,11 +557,11 @@ export default function AdminDashboard() {
 
   return (
     <>
-      <Helmet>
+      <HelmetProvider>
         <title>Admin Console | Dashboard</title>
         <meta name="description" content="This is the home page" />
         <meta name="keywords" content="react, seo, helmet" />
-      </Helmet>
+      </HelmetProvider>
       <div className="min-h-screen  md:p-6">
         <div className="max-w-7xl mx-auto space-y-0 md:space-y-6">
           <h1 className="text-2xl md:text-3xl font-bold ">Admin Control Center</h1>

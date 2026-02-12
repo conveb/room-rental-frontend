@@ -1,4 +1,4 @@
-import { Helmet } from "react-helmet";
+import { HelmetProvider } from "react-helmet-async";
 import HeroSection from "../../containers/HomePage/Hero";
 import LoremSection from "../../containers/HomePage/LoremSection";
 import MonthlyRentals from "../../containers/HomePage/MonthlyRentals";
@@ -8,11 +8,11 @@ export default function Home() {
 
   return (
     <>
-      <Helmet>
+      <HelmetProvider>
         <title>Alive Paris | Home</title>
         <meta name="description" content="This is the home page" />
         <meta name="keywords" content="react, seo, helmet" />
-      </Helmet>
+      </HelmetProvider>
       <div>
         <HeroSection />
         <MonthlyRentals />

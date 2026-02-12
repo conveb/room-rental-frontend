@@ -15,7 +15,7 @@ import { TbReport } from "react-icons/tb";
 import { useAuth } from "../../context/AuthContext";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
 import { LuHandshake } from "react-icons/lu";
-import { Helmet } from "react-helmet";
+import { HelmetProvider } from "react-helmet-async";
 const titleMap = {
   "/auth/admin": "Dashboard",
   "/auth/admin/audits": "Audits",
@@ -45,9 +45,9 @@ const AdminLayout = () => {
 
   return (
     <>
-      <Helmet>
+      <HelmetProvider>
         <title>{title} | Alive Paris</title>
-      </Helmet>
+      </HelmetProvider>
 
       <div className=" min-h-screen flex flex-col md:flex-row bg-stone-100">
         {/* SIDEBAR (DESKTOP ONLY) */}

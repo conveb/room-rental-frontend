@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useAuditLogs } from "../../hooks/admin/useAuditLogs";
-import { Helmet } from "react-helmet";
+import { HelmetProvider } from "react-helmet-async";
 
 const TABS = [
   { key: "users", label: "User Audits" },
@@ -39,9 +39,9 @@ export default function AdminAuditPage() {
 
   return (
     <>
-      <Helmet>
+      <HelmetProvider>
         <title>Admin Console | Audits</title>
-      </Helmet>
+      </HelmetProvider>
 
       <div className="min-h-screen md:px-8 py-3 md:py-6 text-xs md:text-sm bg-gray-50/50">
         <h1 className="text-2xl font-semibold mb-6">Audit Logs</h1>
