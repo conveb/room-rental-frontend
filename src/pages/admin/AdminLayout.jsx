@@ -16,12 +16,14 @@ import { useAuth } from "../../context/AuthContext";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
 import { LuHandshake } from "react-icons/lu";
 import { HelmetProvider } from "react-helmet-async";
+
 const titleMap = {
   "/auth/admin": "Dashboard",
   "/auth/admin/audits": "Audits",
   "/auth/admin/property/add_property": "Add Property",
   "/auth/admin/reports": "Reports",
 };
+
 const navItems = [
   { to: "/auth/admin", label: "Dashboard", icon: <HiMiniHome /> },
   { to: "/auth/admin/audits", label: "Audits", icon: <HiOutlineDocumentSearch /> },
@@ -33,15 +35,15 @@ const navItems = [
 const AdminLayout = () => {
   const location = useLocation();
   const title = titleMap[location.pathname] ?? "Admin";
-  const { user, loading } = useAuth();
+  const { user, logout } = useAuth();
   const [open, setOpen] = useState(false);
-  const { logout } = useAuth();
   const [showModal, setShowModal] = useState(false);
+  
   const handleConfirmLogout = async () => {
     await logout();
     setShowModal(false);
+    setOpen(false);
   };
-
 
   return (
     <>
@@ -49,7 +51,36 @@ const AdminLayout = () => {
         <title>{title} | Alive Paris</title>
       </HelmetProvider>
 
-      <div className=" min-h-screen flex flex-col md:flex-row bg-stone-100">
+      {/* ✅ SINGLE MODAL - DEFINED ONCE AT TOP LEVEL */}
+      {showModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 px-4 z-[100]">
+          <div className="bg-white rounded-2xl w-full max-w-md p-6 space-y-4">
+            <h2 className="text-lg font-semibold text-gray-900">
+              Confirm Logout
+            </h2>
+            <p className="text-sm text-gray-600">
+              Are you sure you want to logout from all devices?
+              This will end all active sessions.
+            </p>
+            <div className="flex justify-end gap-3 pt-3">
+              <button
+                onClick={() => setShowModal(false)}
+                className="px-4 py-2 rounded-xl border text-sm hover:bg-gray-100 transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmLogout}
+                className="px-4 py-2 rounded-xl bg-red-600 text-white text-sm hover:bg-red-700 transition"
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="min-h-screen flex flex-col md:flex-row bg-stone-100">
         {/* SIDEBAR (DESKTOP ONLY) */}
         <aside className="hidden md:flex w-64 bg-gradient-to-b from-zinc-950 to-zinc-900 text-gray-200 flex-col shadow-2xl flex-shrink-0">
           {/* LOGO */}
@@ -69,9 +100,10 @@ const AdminLayout = () => {
                 end={item.to === "/auth/admin"}
                 to={item.to}
                 className={({ isActive }) =>
-                  `flex items-center px-4 py-2.5 rounded-xl transition-all ${isActive
-                    ? "bg-white/90 text-black shadow-md"
-                    : "text-gray-300 hover:bg-white/10 hover:text-white"
+                  `flex items-center px-4 py-2.5 rounded-xl transition-all ${
+                    isActive
+                      ? "bg-white/90 text-black shadow-md"
+                      : "text-gray-300 hover:bg-white/10 hover:text-white"
                   }`
                 }
               >
@@ -80,45 +112,15 @@ const AdminLayout = () => {
               </NavLink>
             ))}
           </nav>
-          {/* FOOTER */}
-          <div className="fixed bottom-5 left-5 w-52 p-2  text-sm text-red-500">
+          
+          {/* FOOTER - DESKTOP LOGOUT */}
+          <div className="fixed bottom-5 left-5 w-52 p-2 text-sm text-red-500">
             <button
               onClick={() => setShowModal(true)}
-              className="flex items-center gap-3 w-full text-left p-4 rounded-xl  hover:bg-black/30 bg-black"
+              className="flex items-center gap-3 w-full text-left p-4 rounded-xl hover:bg-black/30 bg-black"
             >
               <AiOutlineLogout size={20} /> Logout
             </button>
-            {showModal && (
-              <div className="fixed inset-0  flex items-center justify-center bg-black/50 px-4 h-dvh ">
-                <div className="bg-white rounded-2xl w-full max-w-md p-6 space-y-4">
-                  <h2 className="text-lg font-semibold text-gray-900">
-                    Confirm Logout
-                  </h2>
-
-                  <p className="text-sm text-gray-600">
-                    Are you sure you want to logout from all devices?
-                    This will end all active sessions.
-                  </p>
-
-                  <div className="flex justify-end gap-3 pt-3">
-                    <button
-                      onClick={() => setShowModal(false)}
-                      className="px-4 py-2 rounded-xl border text-sm hover:bg-gray-100 transition"
-                    >
-                      Cancel
-                    </button>
-
-                    <button
-                      onClick={handleConfirmLogout}
-                      className="px-4 py-2 rounded-xl bg-red-600 text-white text-sm hover:bg-red-700 transition"
-                    >
-                      Logout
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-            {/* Logged in as <span className="text-gray-300">Super Admin</span> */}
           </div>
         </aside>
 
@@ -128,7 +130,7 @@ const AdminLayout = () => {
           <header className="py-3 md:py-4 bg-white/70 backdrop-blur-xl border-b border-white/30 flex items-center justify-between px-6 shadow-sm">
             <div>
               <h1 className="text-md md:text-lg font-semibold text-gray-900">
-                <span className="bg-black text-xs md:text-sm text-white px-2 py-1 rounded-full ">Admin</span>
+                <span className="bg-black text-xs md:text-sm text-white px-2 py-1 rounded-full">Admin</span>
               </h1>
               <span className="text-xs md:text-sm text-gray-500">{user?.email}</span>
             </div>
@@ -139,6 +141,8 @@ const AdminLayout = () => {
                 </p>
                 <IoIosNotifications />
               </Link>
+              
+              {/* MOBILE MENU BUTTON */}
               <button
                 onClick={() => setOpen(!open)}
                 className="block md:hidden rounded-full text-3xl text-gray-700 hover:bg-gray-50 transition p-1"
@@ -146,53 +150,25 @@ const AdminLayout = () => {
                 <HiMenu />
               </button>
 
+              {/* MOBILE MENU DROPDOWN - NO MODAL HERE */}
               {open && (
-                <div className="absolute right-0 top-12 w-32 bg-white border rounded-lg shadow-md">
-
+                <div className="absolute right-0 top-12 w-32 bg-white border rounded-lg shadow-md z-50">
                   <button
-                    onClick={() => setShowModal(true)}
-                    className="w-full text-left p-4 rounded-xl  hover:bg-neutral-50"
+                    onClick={() => {
+                      setShowModal(true);
+                      setOpen(false); // Close mobile menu
+                    }}
+                    className="w-full text-left px-4 py-3 rounded-xl hover:bg-neutral-50"
                   >
                     Logout
                   </button>
-                  {showModal && (
-                    <div className="fixed inset-0  flex items-center justify-center bg-black/50 px-4 h-dvh ">
-                      <div className="bg-white rounded-2xl w-full max-w-md p-6 space-y-4">
-                        <h2 className="text-lg font-semibold text-gray-900">
-                          Confirm Logout
-                        </h2>
-
-                        <p className="text-sm text-gray-600">
-                          Are you sure you want to logout from all devices?
-                          This will end all active sessions.
-                        </p>
-
-                        <div className="flex justify-end gap-3 pt-3">
-                          <button
-                            onClick={() => setShowModal(false)}
-                            className="px-4 py-2 rounded-xl border text-sm hover:bg-gray-100 transition"
-                          >
-                            Cancel
-                          </button>
-
-                          <button
-                            onClick={handleConfirmLogout}
-                            className="px-4 py-2 rounded-xl bg-red-600 text-white text-sm hover:bg-red-700 transition"
-                          >
-                            Logout
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  )}
                 </div>
               )}
             </div>
           </header>
 
           {/* OUTLET */}
-          <main className="flex-1 p-5  pb-20 md:pb-6 overflow-auto min-w-0">
-            {/* min-w-0 ensures flex child can shrink */}
+          <main className="flex-1 p-5 pb-20 md:pb-6 overflow-auto min-w-0">
             <Outlet />
           </main>
         </div>
@@ -201,10 +177,7 @@ const AdminLayout = () => {
         <nav className="md:hidden fixed bottom-0 inset-x-0 m-2 rounded-[1.4rem] bg-white/90 backdrop-blur-xl border border-gray-200 shadow-2xl z-50">
           <div className="flex justify-around items-center gap-1 h-16 px-1">
             {navItems.map(item => {
-              const isActive =
-                location.pathname === item.to ||
-                (item.to === "/admin" && location.pathname === "/admin");
-
+              const isActive = location.pathname === item.to;
               return (
                 <NavLink
                   key={item.to}
