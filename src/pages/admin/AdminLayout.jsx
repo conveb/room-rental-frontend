@@ -1,6 +1,6 @@
 // src/pages/admin/AdminLayout.jsx
 import React, { useState } from "react";
-import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
+import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-dom"; // Add useNavigate
 import { HiMiniHome } from "react-icons/hi2";
 import { PiStudentFill } from "react-icons/pi";
 import { FaHouseFlag } from "react-icons/fa6";
@@ -34,15 +34,28 @@ const navItems = [
 
 const AdminLayout = () => {
   const location = useLocation();
+  const navigate = useNavigate(); // Add navigate for debugging
   const title = titleMap[location.pathname] ?? "Admin";
   const { user, logout } = useAuth();
   const [open, setOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
   
   const handleConfirmLogout = async () => {
-    await logout();
-    setShowModal(false);
-    setOpen(false);
+    console.log("🚪 Logout confirmed - starting logout process");
+    try {
+      await logout();
+      console.log("✅ Logout successful, should redirect to /signin");
+    } catch (error) {
+      console.error("❌ Logout error:", error);
+    } finally {
+      setShowModal(false);
+      setOpen(false);
+      // Force navigation as backup
+      setTimeout(() => {
+        console.log("🔄 Force navigation to /signin");
+        navigate("/signin", { replace: true });
+      }, 100);
+    }
   };
 
   return (
@@ -51,9 +64,14 @@ const AdminLayout = () => {
         <title>{title} | Alive Paris</title>
       </HelmetProvider>
 
-      {/* ✅ SINGLE MODAL - DEFINED ONCE AT TOP LEVEL */}
+      {/* ✅ SINGLE MODAL - HIGH Z-INDEX */}
       {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/50 px-4 z-[100]">
+        <div 
+          className="fixed inset-0 flex items-center justify-center bg-black/50 px-4 z-[9999]"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setShowModal(false);
+          }}
+        >
           <div className="bg-white rounded-2xl w-full max-w-md p-6 space-y-4">
             <h2 className="text-lg font-semibold text-gray-900">
               Confirm Logout
@@ -116,7 +134,10 @@ const AdminLayout = () => {
           {/* FOOTER - DESKTOP LOGOUT */}
           <div className="fixed bottom-5 left-5 w-52 p-2 text-sm text-red-500">
             <button
-              onClick={() => setShowModal(true)}
+              onClick={() => {
+                console.log("🖥️ Desktop logout clicked");
+                setShowModal(true);
+              }}
               className="flex items-center gap-3 w-full text-left p-4 rounded-xl hover:bg-black/30 bg-black"
             >
               <AiOutlineLogout size={20} /> Logout
@@ -155,8 +176,9 @@ const AdminLayout = () => {
                 <div className="absolute right-0 top-12 w-32 bg-white border rounded-lg shadow-md z-50">
                   <button
                     onClick={() => {
+                      console.log("📱 Mobile logout clicked");
                       setShowModal(true);
-                      setOpen(false); // Close mobile menu
+                      setOpen(false);
                     }}
                     className="w-full text-left px-4 py-3 rounded-xl hover:bg-neutral-50"
                   >

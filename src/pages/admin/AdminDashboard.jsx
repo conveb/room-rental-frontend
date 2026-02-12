@@ -532,14 +532,20 @@ export default function AdminDashboard() {
 
             {/* Right */}
             <div className="flex flex-col md:flex-row gap-2 w-full md:w-auto">
-              {p.status === "Pending" && (
+              
+                <Link
+                            to={`/auth/admin/accommodation-details/${p.id}`}
+                            key={p.id}
+                            className="flex flex-col h-full" // 1. Ensure the link container takes full height
+                          >
+
                 <button
-                  onClick={() => approveProperty(p.id)}
                   className="bg-green-500 text-white px-4 py-2 rounded-lg w-full md:w-auto"
-                >
-                  Approve
+                  >
+                  View
                 </button>
-              )}
+                  </Link>
+              
               <button
                 onClick={() => deleteLocation(p.id)}
                 className="bg-red-500 text-white px-4 py-1 md:py-2 rounded-lg w-full md:w-auto"

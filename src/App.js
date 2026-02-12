@@ -106,6 +106,7 @@ function App() {
             <Route path="property/add_country" element={<AddCountries />} />
             <Route path="property/add_location" element={<AddLocations />} />
             <Route path="property/add_amenities" element={<AddAmenities />} />
+            <Route path="accommodation-details/:id" element={<AccommodationDetails />} />
             <Route path="groups&permissions" element={<AdminGroupsAndPermissions />} />
             <Route path="bookings/booking-details/:id" element={<BookingDetails />} />
             <Route path="reports&complaints" element={<AdminReportsAndComplaints />} />
