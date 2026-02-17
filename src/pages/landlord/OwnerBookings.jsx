@@ -31,11 +31,11 @@ export default function OwnerBookings() {
         {bookings.map((booking) => (
           <div key={booking.id} className="bg-white border rounded-2xl p-5 shadow-sm hover:shadow-md transition-all">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-              
+
               {/* Left Side: Booking Info */}
               <div className="flex-1">
                 <div className="text-xs font-mono text-neutral-400 mb-1 flex items-center gap-1">
-                  <LuHash size={12}/> {booking.reference_no}
+                  <LuHash size={12} /> {booking.reference_no}
                 </div>
                 <h3 className="font-bold text-lg text-neutral-800 flex items-center gap-2">
                   <LuHouse className="text-emerald-500" size={18} /> {booking.property_title}
@@ -47,29 +47,28 @@ export default function OwnerBookings() {
 
               {/* Middle: Amount & Current Status Badge */}
               <div className="flex flex-col items-start md:items-center gap-2">
-                 <span className="text-lg font-bold text-emerald-600">
-                    ₹{Number(booking.total_rent_amount).toLocaleString()}
-                 </span>
-                 <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase ${
-                    booking.status === 'PENDING' ? 'bg-orange-100 text-orange-600' : 
+                <span className="text-lg font-bold text-emerald-600">
+                  ₹{Number(booking.total_rent_amount).toLocaleString()}
+                </span>
+                <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase ${booking.status === 'PENDING' ? 'bg-orange-100 text-orange-600' :
                     booking.status === 'CONFIRMED' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'
-                 }`}>
-                   {booking.status}
-                 </span>
+                  }`}>
+                  {booking.status}
+                </span>
               </div>
 
               {/* Right Side: ACTION BUTTONS (Confirm/Reject) */}
               <div className="w-full md:w-auto">
                 {booking.status === 'PENDING' ? (
                   <div className="flex gap-3">
-                    <button 
-                      onClick={() => updateStatus(booking.id, "CONFIRMED")}
+                    <button
+                      onClick={() => updateStatus(booking.id, "APPROVED")} // Changed from "CONFIRMED"
                       disabled={isUpdating}
                       className="flex-1 md:flex-none flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-colors disabled:opacity-50"
                     >
-                      <LuCircleCheck size={16} /> Confirm
+                      <LuCircleCheck size={16} /> Approve
                     </button>
-                    <button 
+                    <button
                       onClick={() => updateStatus(booking.id, "REJECTED")}
                       disabled={isUpdating}
                       className="flex-1 md:flex-none flex items-center justify-center gap-2 border-2 border-red-100 hover:bg-red-50 text-red-600 px-5 py-2.5 rounded-xl text-sm font-bold transition-colors disabled:opacity-50"
@@ -78,14 +77,21 @@ export default function OwnerBookings() {
                     </button>
                   </div>
                 ) : (
-                  <p className="text-xs text-neutral-400 italic">Action already taken</p>
+                  <div className="flex flex-col items-end">
+                    <p className="text-xs text-neutral-400 italic">Action already taken</p>
+                    {/* Badge logic update for APPROVED */}
+                    <span className={`mt-1 px-3 py-1 rounded-full text-[10px] font-bold uppercase ${booking.status === 'APPROVED' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'
+                      }`}>
+                      {booking.status}
+                    </span>
+                  </div>
                 )}
-              </div>
-
             </div>
+
+          </div>
           </div>
         ))}
-      </div>
     </div>
+    </div >
   );
 }

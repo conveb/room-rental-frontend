@@ -1,23 +1,32 @@
 import React, { useState, useCallback, useMemo } from "react";
 import { MdMyLocation, MdMap, MdLink } from "react-icons/md";
 import { Dialog } from "primereact/dialog";
-import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from "react-leaflet";
 import { toast } from "sonner";
+
+// Component to handle auto-centering map
+function ChangeView({ center }) {
+  const map = useMap();
+  map.setView(center, map.getZoom());
+  return null;
+}
 
 export default function LocationPicker({ formData, onLocationChange }) {
   const [mapVisible, setMapVisible] = useState(false);
   const [mapUrl, setMapUrl] = useState("");
   
-  // Memoize the current position to prevent unnecessary re-renders
-  const currentPosition = useMemo(() => [formData.latitude, formData.longitude], [formData.latitude, formData.longitude]);
+  const currentPosition = useMemo(() => [
+    formData.latitude || 9.9312, 
+    formData.longitude || 76.2673
+  ], [formData.latitude, formData.longitude]);
 
-  // Wrap in useCallback to prevent unnecessary re-renders
   const updateLocationDetails = useCallback(async (lat, lng) => {
     try {
       const response = await fetch(
         `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`
       );
       const data = await response.json();
+      
       if (data.address) {
         onLocationChange({
           latitude: lat,
@@ -29,35 +38,29 @@ export default function LocationPicker({ formData, onLocationChange }) {
         });
       }
     } catch (err) {
-      console.error("Geocoding failed", err);
       toast.error("Failed to fetch address details");
     }
   }, [onLocationChange]);
 
-  const getLiveLocation = useCallback(() => {
-    if (!navigator.geolocation) {
-      toast.error("Geolocation not supported");
-      return;
-    }
+  const getLiveLocation = () => {
+    if (!navigator.geolocation) return toast.error("Geolocation not supported");
     navigator.geolocation.getCurrentPosition(
       (pos) => updateLocationDetails(pos.coords.latitude, pos.coords.longitude),
-      () => toast.error("Could not get location")
+      () => toast.error("Access denied")
     );
-  }, [updateLocationDetails]);
+  };
 
-  const handleLinkPaste = useCallback(() => {
+  const handleLinkPaste = () => {
     const regex = /@(-?\d+\.\d+),(-?\d+\.\d+)/;
     const match = mapUrl.match(regex);
     if (match) {
       updateLocationDetails(parseFloat(match[1]), parseFloat(match[2]));
       setMapUrl("");
-      toast.success("Coordinates imported!");
     } else {
-      toast.error("Invalid Google Maps Link. Ensure it contains @lat,lng");
+      toast.error("Ensure link contains @lat,lng");
     }
-  }, [mapUrl, updateLocationDetails]);
+  };
 
-  // Simple Map Click Handler Component
   const MapClickHandler = () => {
     useMapEvents({
       click(e) {
@@ -69,95 +72,40 @@ export default function LocationPicker({ formData, onLocationChange }) {
   };
 
   return (
-    <div className="bg-gray-50 p-3 md:p-5 rounded-2xl border border-gray-100 space-y-4 shadow-inner">
-      <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest">
-        Location Selection (3 Options)
+    <div className="bg-white p-5 rounded-2xl border border-slate-100 space-y-4 shadow-sm">
+      <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+        <MdMap /> Property Location
       </h3>
 
-      <div className="grid grid-cols-1 gap-2 w-full">
-        <button
-          type="button"
-          onClick={getLiveLocation}
-          className="flex items-center gap-3 bg-white border p-3 rounded-xl hover:shadow-md transition text-left"
-        >
-          <MdMyLocation size={25} className="text-blue-500" /> Use My Current GPS
+      <div className="grid grid-cols-2 gap-3">
+        <button type="button" onClick={getLiveLocation} className="flex items-center gap-3 bg-blue-50/50 border border-blue-100 p-3 rounded-xl text-blue-700 text-xs font-bold">
+          <MdMyLocation size={18} /> GPS
         </button>
-
-        <button
-          type="button"
-          onClick={() => setMapVisible(true)}
-          className="flex items-center gap-3 bg-white border p-3 rounded-xl hover:shadow-md transition text-left"
-        >
-          <MdMap size={25} className="text-green-500" /> Pick on Interactive Map
+        <button type="button" onClick={() => setMapVisible(true)} className="flex items-center gap-3 bg-emerald-50/50 border border-emerald-100 p-3 rounded-xl text-emerald-700 text-xs font-bold">
+          <MdMap size={18} /> Pin Map
         </button>
+      </div>
 
-        <div className="bg-white border p-3 rounded-xl space-y-2">
-          <div className="flex items-center gap-3">
-            <MdLink size={25} className="text-purple-500" />
-            <span className="font-medium">Google Maps URL</span>
-          </div>
-          <div className="flex gap-2 w-full">
-            <input
-              className="flex-1 min-w-0 bg-gray-50 p-2 rounded text-xs outline-none border"
-              placeholder="Paste link with @lat,lng..."
-              value={mapUrl}
-              onChange={(e) => setMapUrl(e.target.value)}
-            />
-            <button
-              type="button"
-              onClick={handleLinkPaste}
-              className="shrink-0 bg-black text-white px-4 py-1 rounded-lg text-xs"
-            >
-              Import
-            </button>
-          </div>
+      <div className="bg-slate-50 border p-3 rounded-xl flex gap-2">
+        <input className="flex-1 bg-white p-2 rounded-lg text-xs border" placeholder="Paste Maps URL..." value={mapUrl} onChange={(e) => setMapUrl(e.target.value)} />
+        <button type="button" onClick={handleLinkPaste} className="bg-indigo-600 text-white px-4 rounded-lg text-xs font-bold">Import</button>
+      </div>
+
+      <div className="space-y-2 pt-2 border-t border-dashed">
+        <div className="grid grid-cols-3 gap-2">
+          <input value={formData.city} readOnly placeholder="City" className="border p-2 rounded-lg bg-slate-50 text-[10px]" />
+          <input value={formData.region} readOnly placeholder="Region" className="border p-2 rounded-lg bg-slate-50 text-[10px]" />
+          <input value={formData.country} readOnly placeholder="Country" className="border p-2 rounded-lg bg-slate-50 text-[10px]" />
         </div>
+        <textarea value={formData.address} readOnly rows={2} className="w-full border p-2 rounded-lg bg-slate-50 text-[10px] resize-none" placeholder="Detected Address" />
       </div>
 
-      {/* Manual Overrides / Display */}
-      <div className="grid grid-cols-3 gap-3 mt-4">
-        <input
-          value={formData.country}
-          readOnly
-          className="border p-2 rounded-lg bg-white/50 cursor-not-allowed"
-          placeholder="Country"
-        />
-        <input
-          value={formData.region}
-          readOnly
-          className="border p-2 rounded-lg bg-white/50 cursor-not-allowed"
-          placeholder="Region"
-        />
-        <input
-          value={formData.city}
-          readOnly
-          className="border p-2 rounded-lg bg-white/50 cursor-not-allowed"
-          placeholder="City"
-        />
-        <textarea
-          value={formData.address}
-          readOnly
-          className="col-span-3 border p-2 rounded-lg bg-white/50 cursor-not-allowed"
-          rows={2}
-          placeholder="Full Address"
-        />
-      </div>
-
-      <Dialog
-        header="Click on Map to Select Property Location"
-        visible={mapVisible}
-        style={{ width: "90vw", maxWidth: "800px" }}
-        onHide={() => setMapVisible(false)}
-      >
-        <div className="h-[450px] w-full rounded-xl overflow-hidden border">
+      <Dialog header="Pick Location" visible={mapVisible} style={{ width: "95vw", maxWidth: "800px" }} onHide={() => setMapVisible(false)}>
+        <div className="h-[400px] w-full rounded-xl overflow-hidden">
           {mapVisible && (
-            <MapContainer
-              center={currentPosition}
-              zoom={13}
-              style={{ height: "100%" }}
-              key={JSON.stringify(currentPosition)} // Force re-render when position changes
-            >
+            <MapContainer center={currentPosition} zoom={15} style={{ height: "100%" }}>
               <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+              <ChangeView center={currentPosition} />
               <MapClickHandler />
               <Marker position={currentPosition} />
             </MapContainer>

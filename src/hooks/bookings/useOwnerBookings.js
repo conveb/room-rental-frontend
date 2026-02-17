@@ -23,19 +23,28 @@ export const useOwnerBookings = () => {
 
     const updateStatus = async (id, statusValue) => {
         setIsUpdating(true);
-        const formData = new FormData();
-        formData.append("status", statusValue);
+
+        // 1. Send as a simple JSON object, not FormData
+        // 2. Ensure statusValue is "APPROVED" or "REJECTED"
+        const requestBody = {
+            status: statusValue
+        };
 
         try {
-            const result = await ConfirmOrRejectBookingApi(id, formData);
+            // Make sure your allAPI.js handles JSON bodies correctly
+            const result = await ConfirmOrRejectBookingApi(id, requestBody);
+
             if (result.status >= 200 && result.status < 300) {
-                toast.success(`Booking ${statusValue === "CONFIRMED" ? "Confirmed" : "Rejected"} successfully!`);
-                await fetchBookings(); // Refresh list immediately
+                toast.success(`Booking ${statusValue === "APPROVED" ? "Approved" : "Rejected"} successfully!`);
+                await fetchBookings(); // Refresh the list
             } else {
-                toast.error("Failed to update status.");
+                toast.error("Server rejected the request.");
             }
         } catch (err) {
-            toast.error("An error occurred.");
+            // Detailed error logging to catch any other backend complaints
+            console.error("400 Error Details:", err.response?.data);
+            const errorMessage = err.response?.data?.message || "Failed to update status.";
+            toast.error(errorMessage);
         } finally {
             setIsUpdating(false);
         }

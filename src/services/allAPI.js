@@ -22,6 +22,8 @@ export const updateUserProfileAPI = (payload) => commonAPI("patch", "/api/v1/me/
 export const changeUserPasswordAPI = (payload) => commonAPI("post", "/api/v1/me/reset-password/",payload);
 export const deleteUserProfileAPI = () => commonAPI("delete", "/api/v1/me/delete-account/");
 
+export const ListNotificationsApi= ()=>commonAPI('get','/api/v1/notifications/') 
+
 export const getMyBookingsApi= ()=>commonAPI('get','/api/v1/bookings/my') 
 
 export const createSupportApi= (data)=>commonAPI('post','/api/v1/support/create/',data) 
@@ -107,7 +109,7 @@ export const deleteCountryPayoutProviderApi = (id) => commonAPI("delete", `/api/
 
 export const getBookingDetailsApi= (id) => commonAPI('get', `/api/v1/bookings/${id}/`);
 export const createBookingApi= (id,data)=>commonAPI('post',`/api/v1/bookings/${id}/create/`,data) 
-export const ConfirmOrRejectBookingApi = (id) => commonAPI("put", `/api/v1/bookings/${id}/status/`);
+export const ConfirmOrRejectBookingApi = (id,data) => commonAPI("put", `/api/v1/bookings/${id}/status/`,data);
 
 export const CompleteBookingApi = (id) => commonAPI("patch", `/api/v1/bookings/${id}/complete/`);
 export const CancelBookingApi = (id, data) => commonAPI("patch", `/api/v1/bookings/${id}/cancel/`, data);

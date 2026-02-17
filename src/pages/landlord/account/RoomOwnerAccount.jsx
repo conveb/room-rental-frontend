@@ -15,6 +15,7 @@ import UserProfileSkeleton from "../../skeleton/UserProfileSkeleton";
 import { toast } from "sonner";
 import { usePayoutAccount } from "../../../hooks/payout_providers/usePayoutAccount";
 import PayoutModal from "./PayoutModal";
+import { LiaPassportSolid } from "react-icons/lia";
 
 export default function RoomOwnerAccount() {
   const navigate = useNavigate();
@@ -96,7 +97,7 @@ export default function RoomOwnerAccount() {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen  md:mx-auto md:container">
+    <div className="min-h-screen  md:mx-auto md:container p-5">
       <div className="space-y-5 mt-3">
         {/* Header Section */}
         <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 text-center">
@@ -174,11 +175,18 @@ export default function RoomOwnerAccount() {
           {/* Owner Actions Side */}
           <div className="">
             <h3 className="font-semibold text-gray-800 ml-2">Account Management</h3>
-
+             <Link to="/auth/landowner/upload-passport">
+              <ActionBtn
+              icon={<LiaPassportSolid  size={22} />}
+              label="Upload Passport"
+              color="bg-red-400"
+              
+              />
+              </Link>
             <ActionBtn
               icon={<MdOutlineAccountBalance size={22} />}
               label={account ? "Edit Payout Account" : "Add Payout Account"}
-              color="bg-blue-100"
+              color="bg-blue-300"
               // Removing the 'link' prop so it uses the 'onClick' logic
               onClick={() => setIsModalOpen(true)}
             />
@@ -192,7 +200,7 @@ export default function RoomOwnerAccount() {
             <ActionBtn
               icon={<MdOutlinePassword size={22} />}
               label="Security & Password"
-              color="bg-purple-100"
+              color="bg-purple-300"
               onClick={() => setPasswordModal(true)}
             />
             {passwordModal && (
@@ -278,14 +286,14 @@ export default function RoomOwnerAccount() {
             <ActionBtn
               icon={<HiOutlineDocumentText size={22} />}
               label="Terms & Property Policy"
-              color="bg-orange-100"
+              color="bg-orange-300"
               link="/terms"
             />
 
             <ActionBtn
               icon={<MdOutlineContactSupport size={22} />}
               label="Owner Support"
-              color="bg-teal-100"
+              color="bg-teal-300"
               link="/auth/landowner/support"
             />
 

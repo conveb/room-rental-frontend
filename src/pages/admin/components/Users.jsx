@@ -20,7 +20,7 @@ const Users = ({
   const [showBlockModal, setShowBlockModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [reason, setReason] = useState("");
-  const [statusTab, setStatusTab] = useState('active'); // 'active' or 'blocked'
+  const [statusTab, setStatusTab] = useState('active'); 
 
   const handleBlockUser = async () => {
     const success = await blockUser(selectedUser.id, {

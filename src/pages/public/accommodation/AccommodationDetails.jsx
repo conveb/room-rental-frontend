@@ -369,10 +369,10 @@ const AccommodationDetails = () => {
                 {(bookingDetails && bookingDetails.status !== "CANCELLED") ? (
                   <div className="flex flex-col gap-2">
                     {/* 1. PAY BUTTON: Only if CONFIRMED */}
-                    {bookingDetails.status === "CONFIRMED" && bookingDetails.payment_status === "UNPAID" && (
+                    {bookingDetails.status === "APPROVED" && bookingDetails.payment_status === "UNPAID" && (
                       <button
                         onClick={handlePay}
-                        className="w-full bg-green-600 text-white py-2.5 rounded-lg font-bold hover:bg-green-700 transition-all shadow-md"
+                        className="w-full bg-black text-white py-2.5 rounded-lg font-bold hover:bg-black/80 transition-all shadow-md"
                       >
                         Pay Now (€{bookingDetails.total_rent_amount})
                       </button>
@@ -382,7 +382,7 @@ const AccommodationDetails = () => {
                     <button
                       onClick={handleCancel}
                       disabled={bookingLoading}
-                      className="w-full bg-red-600 text-white py-2.5 rounded-lg font-semibold hover:bg-red-700 transition-colors"
+                      className="w-full bg-red-300 text-white py-2.5 rounded-lg font-semibold hover:bg-red-700 transition-colors"
                     >
                       {bookingLoading ? "Processing..." : "Cancel Booking Request"}
                     </button>

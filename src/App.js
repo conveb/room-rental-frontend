@@ -63,6 +63,8 @@ import BookingDetails from "./pages/admin/containers/BookingDetails";
 import AdminGroupsAndPermissions from "./pages/admin/AdminGroupsAndPermissions";
 import PrivateRoute from "./components/routes/PrivateRoute";
 import { LandOwnerRoute } from "./components/routes/LandOwnerRoute";
+import UploadPassport from "./pages/landlord/UploadPassport";
+import { NotificationProvider } from "./context/NotificationContext";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -72,6 +74,8 @@ function App() {
       {loading && <SplashScreen onFinish={() => setLoading(false)} />}
 
       <Toaster position="top-center" />
+      <NotificationProvider>
+
       <Routes>
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/signin" element={<SignIn />} />
@@ -129,6 +133,7 @@ function App() {
             <Route path="property/my-property/edit-property" element={<EditPropertyPage />} />
             <Route path="payout-account" element={<PayoutPage />} />
             <Route path="bookings" element={<OwnerBookings />} />
+            <Route path="upload-passport" element={<UploadPassport />} />
           </Route>
         </Route>
 
@@ -153,6 +158,7 @@ function App() {
         </Route>
 
       </Routes>
+      </NotificationProvider>
     </>
   );
 }

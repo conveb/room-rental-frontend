@@ -1,163 +1,76 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa6";
-/* ---------------- MOCK NOTIFICATIONS ---------------- */
-
-const notificationsData = [
-  {
-    id: 1,
-    title: "Booking Confirmed",
-    message: "Your room booking has been confirmed successfully.",
-    time: "2 mins ago",
-    type: "success",
-    unread: true,
-  },
-  {
-    id: 2,
-    title: "New Message",
-    message: "You received a message from the property owner.",
-    time: "1 hour ago",
-    type: "message",
-    unread: true,
-  },
-  {
-    id: 3,
-    title: "Payment Reminder",
-    message: "Your payment is due in 2 days.",
-    time: "Yesterday",
-    type: "warning",
-    unread: false,
-  },
-  {
-    id: 4,
-    title: "Account Updated",
-    message: "Your profile information was updated successfully.",
-    time: "2 days ago",
-    type: "info",
-    unread: false,
-  },
-];
-
-/* ---------------- COMPONENT ---------------- */
+import { useNotifications } from "../../hooks/useNotifications";
 
 const NotificationPage = () => {
   const navigate = useNavigate();
-  const [notifications, setNotifications] = useState(notificationsData);
+  const { notifications, setNotifications, loading } = useNotifications();
 
   const markAsRead = (id) => {
-    setNotifications((prev) =>
-      prev.map((n) =>
-        n.id === id ? { ...n, unread: false } : n
-      )
+    setNotifications(prev => 
+      prev.map(n => n.id === id ? { ...n, unread: false } : n)
     );
   };
 
-  const clearAll = () => {
-    setNotifications([]);
-  };
+  const clearAll = () => setNotifications([]);
+  console.log(notifications)
 
-  const badgeColor = (type) => {
-    switch (type) {
-      case "success":
-        return "bg-green-100 text-green-700";
-      case "warning":
-        return "bg-yellow-100 text-yellow-700";
-      case "message":
-        return "bg-blue-100 text-blue-700";
-      default:
-        return "bg-gray-100 text-gray-700";
-    }
-  };
-
-  /* ---------------- UI ---------------- */
+  if (loading) return <div className="p-10 text-center">
+    <img src="https://static.vecteezy.com/system/resources/previews/023/570/826/non_2x/still-empty-no-notification-yet-concept-illustration-line-icon-design-eps10-modern-graphic-element-for-landing-page-empty-state-ui-infographic-vector.jpg" alt="Loading..." className="mx-auto" />
+  </div>;
 
   return (
-    <div className="min-h-screen bg-neutral-50 px-2 md:px-6 py-4 ">
-      <div className="max-w-3xl mx-auto space-y-4">
-
-        {/* HEADER */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            {/* BACK ARROW */}
-            <button
-              onClick={() => navigate(-1)}
-              className="h-9 w-9 rounded-full flex items-center justify-center
-                         hover:bg-neutral-200 transition text-2xl"
-            >
-            <FaArrowLeft/>
+    <div className="min-h-screen container mx-auto ">
+      <div className="w-full max-w-none px-4 md:px-10 py-6">
+        
+        {/* Header Section */}
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-4">
+            <button onClick={() => navigate(-1)} className="p-2 hover:bg-gray-200 rounded-full transition">
+              <FaArrowLeft size={20} />
             </button>
-
-            <h1 className="text-lg md:text-xl font-semibold">
-              Notifications
-            </h1>
+            <h1 className="text-2xl font-bold">Notifications</h1>
           </div>
-
           {notifications.length > 0 && (
-            <button
-              onClick={clearAll}
-              className="text-xs md:text-sm text-red-500 hover:underline"
-            >
-              Clear all
+            <button onClick={clearAll} className="text-sm font-semibold text-red-500 hover:text-red-700">
+              Clear All
             </button>
           )}
         </div>
 
-        {/* EMPTY STATE */}
-        {notifications.length === 0 && (
-          <div className="bg-white rounded-2xl shadow p-10 text-center">
-            <p className="text-sm text-neutral-500">
-              You have no notifications 🎉
-            </p>
-          </div>
-        )}
-
-        {/* NOTIFICATION LIST */}
-        <div className="space-y-3">
-          {notifications.map((item) => (
-            <div
-              key={item.id}
-              onClick={() => markAsRead(item.id)}
-              className={`
-                flex gap-4 p-4 rounded-2xl shadow-sm cursor-pointer
-                transition hover:shadow-md
-                ${item.unread ? "bg-white" : "bg-neutral-100"}
-              `}
-            >
-              {/* UNREAD DOT */}
-              <div className="pt-1">
-                {item.unread && (
-                  <span className="block h-2 w-2 rounded-full bg-black" />
-                )}
-              </div>
-
-              {/* CONTENT */}
-              <div className="flex-1">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <h3 className="text-sm md:text-base font-medium">
-                    {item.title}
-                  </h3>
-
-                  <span
-                    className={`text-xs px-2 py-0.5 rounded-full ${badgeColor(
-                      item.type
-                    )}`}
-                  >
-                    {item.type}
-                  </span>
-                </div>
-
-                <p className="text-xs md:text-sm text-neutral-600 mt-1">
-                  {item.message}
-                </p>
-
-                <span className="text-[11px] text-neutral-400 mt-2 block">
-                  {item.time}
-                </span>
-              </div>
+        {/* List Section - Full Width */}
+        <div className="space-y-2">
+          {notifications.length === 0 ? (
+            <div className="bg-white p-10 md:p-20 text-center rounded-xl shadow-sm border border-gray-100">
+              <img src="https://static.vecteezy.com/system/resources/previews/023/570/826/non_2x/still-empty-no-notification-yet-concept-illustration-line-icon-design-eps10-modern-graphic-element-for-landing-page-empty-state-ui-infographic-vector.jpg" alt="Loading..." className="mx-auto w-52 md:w-96" />
+              <p className="text-gray-500 mt-4">No notifications to show</p>
             </div>
-          ))}
+          ) : (
+            notifications.map((item) => (
+              <div
+                key={item.id}
+                onClick={() => markAsRead(item.id)}
+                className={`flex items-start gap-4 p-5 transition-all cursor-pointer border-b ${
+                  item.unread ? "bg-white border-l-4 border-l-blue-500 shadow-sm" : "bg-transparent opacity-70"
+                }`}
+              >
+                <div className="mt-1">
+                  <div className={`h-2.5 w-2.5 rounded-full ${item.unread ? "bg-blue-500" : "bg-transparent"}`} />
+                </div>
+                <div className="flex-1">
+                  <div className="flex justify-between">
+                    <h3 className={`text-base ${item.unread ? "font-bold text-gray-900" : "font-medium text-gray-600"}`}>
+                      {item.title}
+                    </h3>
+                    <span className="text-xs text-gray-400 uppercase">{item.time || 'recent'}</span>
+                  </div>
+                  <p className="text-sm text-gray-500 mt-1">{item.message}</p>
+                </div>
+              </div>
+            ))
+          )}
         </div>
-
       </div>
     </div>
   );
