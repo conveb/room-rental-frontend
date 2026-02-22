@@ -9,6 +9,7 @@ import BacktoHome from "../../../components/btns/BacktoHome";
 import { toast } from "sonner";
 import { PiStudentFill } from "react-icons/pi";
 import { FaHouseUser } from "react-icons/fa";
+import { validateEmail, validateFullName, validatePassword, validatePhone } from "../../../utils/authValidation";
 
 const OTP_LENGTH = 6;
 
@@ -17,6 +18,7 @@ const SignUp = () => {
   const inputsRef = useRef([]);
   const navigate = useNavigate();
   const [isTimerActive, setIsTimerActive] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const { sendOtp, verifyOtp, resendOtp, loading, error } =
     useEmailVerification();
@@ -53,6 +55,26 @@ const SignUp = () => {
   /* ---------------- SEND OTP ---------------- */
   const handleCreateAccount = async (e) => {
     e.preventDefault();
+    // 1. Run Validations
+    const newErrors = {
+      full_name: validateFullName(form.full_name),
+      email: validateEmail(form.email),
+      phone: validatePhone(form.phone),
+      password: validatePassword(form.password, form.confirm_password),
+    };
+
+    setErrors(newErrors);
+
+    // 2. Check if any errors exist
+    if (Object.values(newErrors).some(error => error !== null)) {
+      toast.error("Please fix the errors in the form.");
+      return;
+    }
+
+    if (!form.privacy_policy) {
+      toast.error("You must accept the privacy policy.");
+      return;
+    }
     try {
       await sendOtp({
         email: form.email,
@@ -198,38 +220,49 @@ const SignUp = () => {
                     }
                   >
                     <p className="flex justify-center items-center gap-2">
-                    {type === "STUDENT" ? <PiStudentFill /> : <FaHouseUser />}
-                    {type.replace("_", " ")}
+                      {type === "STUDENT" ? <PiStudentFill /> : <FaHouseUser />}
+                      {type.replace("_", " ")}
                     </p>
                   </button>
                 ))}
               </div>
+              <div>
 
-              <input
-                name="full_name"
-                placeholder="Full name"
-                value={form.full_name}
-                onChange={handleFormChange}
-                className="w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
-              />
+                <input
+                  name="full_name"
+                  placeholder="Full name"
+                  value={form.full_name}
+                  onChange={handleFormChange}
+                  className="w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+                />
+                {errors.full_name && <p className="text-[10px] text-red-500 ml-1">{errors.full_name}</p>}
+              </div>
 
-              <input
-                name="email"
-                type="email"
-                placeholder="Email address"
-                value={form.email}
-                onChange={handleFormChange}
-                className="w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
-              />
+              <div>
 
-              <input
-                name="phone"
-                type="tel"
-                placeholder="Phone number"
-                value={form.phone}
-                onChange={handleFormChange}
-                className="w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
-              />
+                <input
+                  name="email"
+                  type="email"
+                  placeholder="Email address"
+                  value={form.email}
+                  onChange={handleFormChange}
+                  className="w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+                />
+                {errors.email && <p className="text-[10px] text-red-500 ml-1">{errors.email}</p>}
+              </div>
+
+              <div>
+
+                <input
+                  name="phone"
+                  type="tel"
+                  placeholder="Phone number"
+                  value={form.phone}
+                  onChange={handleFormChange}
+                  className="w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+                />
+                {errors.phone && <p className="text-[10px] text-red-500 ml-1">{errors.phone}</p>}
+              </div>
 
               <div className="relative">
                 <input
@@ -246,6 +279,7 @@ const SignUp = () => {
                 >
                   {showPassword ? <FiEye /> : <FiEyeOff />}
                 </span>
+                {errors.password && <p className="text-[10px] text-red-500 ml-1">{errors.password}</p>}
               </div>
 
               <div className="relative">
@@ -265,6 +299,7 @@ const SignUp = () => {
                 >
                   {showConfirmPassword ? <FiEye /> : <FiEyeOff />}
                 </span>
+                {errors.confirm_password && <p className="text-[10px] text-red-500 ml-1">{errors.confirm_password}</p>}
               </div>
 
               <label className={`flex items-start gap-2 text-xs transition-colors ${!form.privacy_policy ? 'text-red-500' : 'text-gray-600'}`}>

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom"; // Add useLocation
 import { toast } from "sonner";
 import { LuLock, LuCircleCheck, LuCalendar, LuMapPin, LuChevronRight, LuShieldCheck } from "react-icons/lu";
 import { useBooking } from "../../../hooks/bookings/useBookings";
@@ -7,7 +7,7 @@ import { usePayment } from "../../../hooks/payout_providers/usePayment";
 
 const PaymentPage = () => {
   const { bookingId } = useParams();
-  const navigate = useNavigate();
+  const location = useLocation(); // Used to check if we already have the URL from a previous state
   const { processPayment, paymentLoading } = usePayment();
   const { bookingLoading, fetchBookingDetails, bookingDetails } = useBooking();
 
@@ -15,13 +15,27 @@ const PaymentPage = () => {
     if (bookingId) fetchBookingDetails(bookingId);
   }, [bookingId]);
 
+  // Handle the redirect to Wise
   const handlePayment = async () => {
-    const result = await processPayment(bookingId);
-    if (result.success) {
-      toast.success("Payment confirmed! Welcome home.");
-      navigate("/auth/user/confirmation");
-    } else {
-      toast.error("Payment failed. Please try again.");
+    try {
+      // 1. Call the processPayment hook (which should call your createPaymentApi)
+      const result = await processPayment(bookingId);
+
+      // 2. Check for success and the presence of the payment URL
+      // Adjust 'result.payment_url' based on your actual API response structure
+      if (result && (result.payment_url || result.url)) {
+        const externalUrl = result.payment_url || result.url;
+        
+        toast.success("Redirecting to secure payment gateway...");
+        
+        // 3. Redirect the entire browser window to the Wise UI
+        window.location.href = externalUrl;
+      } else {
+        toast.error("Could not generate payment link. Please try again.");
+      }
+    } catch (error) {
+      console.error("Payment Error:", error);
+      toast.error("An error occurred during payment initiation.");
     }
   };
 
@@ -48,7 +62,6 @@ const PaymentPage = () => {
     <div className="min-h-screen bg-[#F8F9FA] py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto">
         
-        {/* Breadcrumbs / Progress */}
         <nav className="flex items-center gap-2 text-xs font-medium text-neutral-400 mb-8 uppercase tracking-widest">
           <span>Search</span>
           <LuChevronRight size={12} />
@@ -59,7 +72,6 @@ const PaymentPage = () => {
 
         <div className="grid lg:grid-cols-12 gap-8 items-start">
           
-          {/* Left Column: Summary & Property Card */}
           <div className="lg:col-span-7 space-y-6">
             <div className="bg-white rounded-3xl p-2 shadow-sm border border-neutral-100">
               <div className="relative h-72 w-full overflow-hidden rounded-[1.5rem]">
@@ -96,7 +108,6 @@ const PaymentPage = () => {
               </div>
             </div>
 
-            {/* Trust Badges */}
             <div className="flex items-center justify-between px-4 py-2 opacity-50 grayscale">
               <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" className="h-4" />
               <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" className="h-6" />
@@ -105,7 +116,6 @@ const PaymentPage = () => {
             </div>
           </div>
 
-          {/* Right Column: Checkout Form */}
           <div className="lg:col-span-5">
             <div className="bg-white rounded-3xl p-8 shadow-xl shadow-neutral-200/50 border border-neutral-100 sticky top-8">
               <div className="flex items-center justify-between mb-8">
@@ -119,7 +129,7 @@ const PaymentPage = () => {
               <div className="space-y-4 mb-8">
                 <div className="flex justify-between text-sm">
                   <span className="text-neutral-500">Booking Reference</span>
-                  <span className="font-mono text-neutral-400">{id?.slice(0, 8)}...</span>
+                  <span className="font-mono text-neutral-400">#{id?.slice(0, 8)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-neutral-500">Base Rent</span>
@@ -156,15 +166,13 @@ const PaymentPage = () => {
                     </span>
                   ) : (
                     <span className="flex items-center justify-center gap-2">
-                      Complete Booking <LuCircleCheck size={18} />
+                      Pay with Wise <LuCircleCheck size={18} />
                     </span>
                   )}
                 </button>
 
                 <p className="text-center text-[10px] text-neutral-400 leading-relaxed">
-                  By clicking "Complete Booking", you agree to our 
-                  <a href="#" className="underline ml-1">Terms of Service</a> and 
-                  <a href="#" className="underline ml-1">Cancellation Policy</a>.
+                  You will be redirected to Wise to complete your transaction securely.
                 </p>
               </div>
 
@@ -174,7 +182,7 @@ const PaymentPage = () => {
                 </div>
                 <div>
                   <p className="text-[11px] font-bold text-neutral-800 leading-none">Secure Checkout</p>
-                  <p className="text-[10px] text-neutral-500 mt-1">256-bit SSL encrypted connection</p>
+                  <p className="text-[10px] text-neutral-500 mt-1">Directly processed by Wise</p>
                 </div>
               </div>
             </div>

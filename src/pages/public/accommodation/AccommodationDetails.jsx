@@ -14,6 +14,7 @@ import { useFavorites } from "../../../hooks/users/useFavorites";
 import { useBooking } from "../../../hooks/bookings/useBookings";
 import { CancelBookingApi } from "../../../services/allAPI";
 import { LuImagePlus } from "react-icons/lu";
+import { usePayment } from "../../../hooks/payout_providers/usePayment";
 
 const addMonths = (dateStr, months) => {
   const date = new Date(dateStr);
@@ -27,6 +28,7 @@ const AccommodationDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { property, loading, error } = usePropertyDetails(id);
+  const { initiatePayment, isLoading } = usePayment();
 
   const [activeImage, setActiveImage] = useState(null);
   const [openStack, setOpenStack] = useState(false);
@@ -94,12 +96,10 @@ const AccommodationDetails = () => {
     const result = await requestBooking(id, data);
     if (result.success) {
       setIsBookingModalOpen(false);
-      // bookingDetails is automatically updated by the hook now
     }
   };
 
   const handleCancel = async () => {
-    // Use bookingDetails from the hook which was populated by fetchPropertyBooking
     if (!bookingDetails?.id) {
       toast.error("No active booking found to cancel.");
       return;
@@ -110,8 +110,26 @@ const AccommodationDetails = () => {
     // will trigger a re-render and show the "Request booking" button again.
   };
 
-  const handlePay = () => {
-    navigate(`/auth/user/payment/${bookingDetails.id}`);
+  const handlePay = async () => {
+    try {
+      // 1. Call the hook to get the link from your API
+      const response = await initiatePayment(bookingDetails.id);
+
+      // 2. Extract the link (adjust key name based on your API response)
+      const paymentUrl = response.payment_url;
+
+      if (paymentUrl) {
+        // 3. Navigate and pass both ID and URL in the state object
+        navigate(`/auth/user/payment/${bookingDetails.id}`, {
+          state: {
+            url: paymentUrl,
+            bookingId: bookingDetails.id
+          }
+        });
+      }
+    } catch (err) {
+      console.error("Payment Error:", err);
+    }
   };
 
   const handleFavoriteClick = (e, property) => {
@@ -399,13 +417,19 @@ const AccommodationDetails = () => {
                     )}
 
                     {/* 2. CANCEL BUTTON: Only shows if PENDING or CONFIRMED */}
-                    <button
-                      onClick={handleCancel}
-                      disabled={bookingLoading}
-                      className="w-full bg-red-300 text-white py-2.5 rounded-lg font-semibold hover:bg-red-700 transition-colors"
-                    >
+                    {
+                      bookingDetails.status === "APPROVED" ? (
+                        ""
+                      ) : (
+                        <button
+                          onClick={handleCancel}
+                          disabled={bookingLoading}
+                          className="w-full bg-red-300 text-white py-2.5 rounded-lg font-semibold hover:bg-red-700 transition-colors"
+                        >
                       {bookingLoading ? "Processing..." : "Cancel Booking Request"}
                     </button>
+                    )
+                  }
                   </div>
                 ) : (
                   /* 3. REQUEST BUTTON: Shows if no booking OR if the booking was cancelled */
@@ -481,7 +505,7 @@ const AccommodationDetails = () => {
                           disabled={bookingLoading}
                           className="flex-1 py-3 bg-black text-white rounded-xl font-medium disabled:bg-gray-400 transition"
                         >
-                          {bookingLoading ? "Sending..." : "Confirm & Pay"}
+                          {bookingLoading ? "Sending..." : "Request"}
                         </button>
                       </div>
                     </div>

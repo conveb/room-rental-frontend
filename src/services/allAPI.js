@@ -149,7 +149,6 @@ export const deleteGroupApi = (id) => commonAPI("delete", `/api/v1/admin/auth/gr
 // My bookings
 // create bookings
 // booking detail
-// cancel bookings
 // confirm/reject booking
 // all booking
 // list bookings by owner

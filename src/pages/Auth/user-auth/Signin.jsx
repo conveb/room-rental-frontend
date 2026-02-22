@@ -7,6 +7,7 @@ import { FiEye, FiEyeOff } from "react-icons/fi";
 import BacktoHome from "../../../components/btns/BacktoHome";
 import { useSignin } from "../../../hooks/auth/useSignin";
 import { useGoogleAuth } from "../../../hooks/auth/useGoogleAuth";
+import { validateEmail, validateLoginPassword } from "../../../utils/authValidation";
 
 const SignIn = () => {
   const { signin, loading: manualLoading, error: manualError } = useSignin();
@@ -14,6 +15,7 @@ const SignIn = () => {
 
   const [form, setForm] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState({});
 
 
   const loginWithGoogle = useGoogleLogin({
@@ -29,6 +31,14 @@ const SignIn = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // 1. Validate inputs before sending to server
+    const emailErr = validateEmail(form.email);
+    const passErr = validateLoginPassword(form.password);
+
+    if (emailErr || passErr) {
+      setErrors({ email: emailErr, password: passErr });
+      return; // Stop the request
+    }
     await signin(form);
   };
 
@@ -43,7 +53,7 @@ const SignIn = () => {
 
       <div className="w-full max-w-5xl mx-auto flex overflow-hidden ">
         {/* LEFT PANEL */}
-        
+
 
         {/* RIGHT PANEL */}
         <div className="w-full  flex items-center justify-center bg-white">
@@ -56,26 +66,33 @@ const SignIn = () => {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
-              <input
-                name="email"
-                type="email"
-                value={form.email}
-                onChange={handleChange}
-                placeholder="Email"
-                className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-black outline-none"
-                required
-              />
+              <div>
 
-              <div className="relative">
                 <input
-                  name="password"
-                  type={showPassword ? "text" : "password"}
-                  value={form.password}
+                  name="email"
+                  type="email"
+                  value={form.email}
                   onChange={handleChange}
-                  placeholder="Password"
+                  placeholder="Email"
                   className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-black outline-none"
                   required
                 />
+                {errors.email && <p className="text-[10px] text-red-500 ml-1">{errors.email}</p>}
+              </div>
+              <div className="relative">
+                <div>
+
+                  <input
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    value={form.password}
+                    onChange={handleChange}
+                    placeholder="Password"
+                    className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-black outline-none"
+                    required
+                  />
+                  {errors.password && <p className="text-[10px] text-red-500 ml-1">{errors.password}</p>}
+                </div>
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}

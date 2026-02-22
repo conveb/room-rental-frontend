@@ -13,14 +13,13 @@ import { Characters } from "./characterCollection";
 
 const navItems = [
   { to: "/auth/user/accommodation", label: "Explore", icon: <HiMiniHome /> },
-  { to: "/auth/user/bookings", label: "My Stays", icon: <FaRegCalendarCheck /> },
+  { to: "/auth/user/bookings", label: "Bookings", icon: <FaRegCalendarCheck /> },
   // { to: "/auth/user/messages", label: "Inbox", icon: <IoChatboxEllipsesOutline /> },
   { to: "/auth/user/account", label: "Account", icon: <FaRegUserCircle /> },
 ];
 
 const UserLayout = () => {
   const location = useLocation();
-  const [open, setOpen] = useState(false);
   const { user } = useAuth(); // Contains email
   const { user: userData } = useUserProfile(); // Contains full_name
   const { unreadCount } = useNotifications();
@@ -31,13 +30,13 @@ const UserLayout = () => {
 
       {/* HEADER */}
       <header className="fixed top-0 left-0 right-0   bg-white border-b border-gray-100   z-40">
-        <div className="container mx-auto flex items-center justify-between  h-16">
+        <div className="container mx-auto flex items-center justify-between  h-16 px-3 md:px-0">
 
           {/* LEFT: LOGO & SEARCH */}
-          <div className="flex justify-end gap-4 lg:gap-8 flex-1">
-            <Link to="/" className="flex items-center gap-2 shrink-0">
+          <div className="flex items-end gap-4 lg:gap-8 flex-1">
+            <Link to="/" className="flex items-end gap-2 ">
               <img src={Logo} alt="logo" className="w-8 h-8 object-contain" />
-              <span className="font-bold text-lg hidden sm:block text-slate-900">Alive Paris</span>
+              <p className="font-bold text-lg  text-slate-900">Alive Paris</p>
             </Link>
 
 

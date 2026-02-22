@@ -1,11 +1,26 @@
 import { Link } from "react-router-dom";
 import { usePropertyDetails } from "../../../hooks/property/usePropertyDetails";
+import { useBooking } from "../../../hooks/bookings/useBookings";
+import { toast } from "sonner";
 
 function BookingCard({ item }) {
   const { property, loading } = usePropertyDetails(item.property);
-  
+  const {
+    cancelBooking,
+  } = useBooking();
+
   const status = item.status?.toUpperCase();
   const canCancel = status === "PENDING" || status === "CONFIRMED";
+  if (loading || !property) return null;
+
+  const handleCancel = async () => {
+    if (!item?.id) {
+      toast.error("Booking reference not found.");
+      return;
+    }
+    await cancelBooking(item.id);
+  };
+
 
   return (
     <div className="bg-white rounded-2xl border border-gray-100 p-2 md:p-4 flex flex-col md:flex-row gap-4 items-center">
@@ -14,9 +29,9 @@ function BookingCard({ item }) {
         {loading ? (
           <div className="w-full h-full animate-pulse bg-gray-200" />
         ) : (
-          <img 
-            src={property?.cover_image || "/placeholder.jpg"} 
-            alt="property" 
+          <img
+            src={property?.cover_image || "/placeholder.jpg"}
+            alt="property"
             className="w-full h-full object-cover"
           />
         )}
@@ -33,12 +48,11 @@ function BookingCard({ item }) {
               {property?.city}, {property?.country}
             </p>
           </div>
-          
-          <span className={`px-3 py-1 text-[10px] font-bold rounded-full uppercase border ${
-            status === 'CONFIRMED' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 
+
+          <span className={`px-3 py-1 text-[10px] font-bold rounded-full uppercase border ${status === 'CONFIRMED' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
             status === 'CANCELLED' ? 'bg-red-50 text-red-600 border-red-100' :
-            'bg-amber-50 text-amber-600 border-amber-100'
-          }`}>
+              'bg-amber-50 text-amber-600 border-amber-100'
+            }`}>
             {item.status}
           </span>
         </div>
@@ -51,16 +65,16 @@ function BookingCard({ item }) {
 
       {/* Actions - Fixed heights */}
       <div className="flex flex-row md:flex-col gap-2 w-full md:w-auto">
-        <Link 
-          to={`/bookings/${item.id}`} 
+        <Link
+          to={`/auth/user/accommodation-details/${property.id}`}
           className="flex-1 md:w-32 py-2 text-xs font-bold bg-black text-white rounded-lg text-center"
         >
           Details
         </Link>
-        
+
         {canCancel && (
-          <button 
-            onClick={() => {/* logic to cancel */}}
+          <button
+            onClick={handleCancel}
             className="flex-1 md:w-32 py-2 text-xs font-bold bg-red-600 text-white rounded-lg text-center"
           >
             Cancel Booking
