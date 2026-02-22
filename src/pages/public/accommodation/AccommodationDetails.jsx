@@ -13,6 +13,7 @@ import { useAuth } from "../../../context/AuthContext";
 import { useFavorites } from "../../../hooks/users/useFavorites";
 import { useBooking } from "../../../hooks/bookings/useBookings";
 import { CancelBookingApi } from "../../../services/allAPI";
+import { LuImagePlus } from "react-icons/lu";
 
 const addMonths = (dateStr, months) => {
   const date = new Date(dateStr);
@@ -110,9 +111,7 @@ const AccommodationDetails = () => {
   };
 
   const handlePay = () => {
-    navigate("/auth/user/payment", {
-      state: { property, bookingId: bookingDetails.id }
-    });
+    navigate(`/auth/user/payment/${bookingDetails.id}`);
   };
 
   const handleFavoriteClick = (e, property) => {
@@ -163,7 +162,6 @@ const AccommodationDetails = () => {
       // Check if the browser supports the Web Share API
       if (navigator.share) {
         await navigator.share(shareData);
-        console.log("Shared successfully");
       } else {
         // Fallback: Copy to clipboard or show a custom modal
         alert("Sharing is not supported on this browser. Link copied to clipboard!");
@@ -235,20 +233,42 @@ const AccommodationDetails = () => {
             </div>
 
             {/* Mobile Image Stack */}
-            <div className="absolute bottom-3 right-3 lg:hidden flex items-center">
-              <div className={`flex gap-2 transition ${openStack ? "opacity-100 translate-x-0" : "opacity-0 translate-x-12 pointer-events-none"}`}>
+            <div className="absolute bottom-1 right-1 lg:hidden flex items-center max-w-[90vw]">
+              {/* Scrollable Container */}
+              <div
+                className={`flex gap-2 transition-all duration-300 overflow-x-auto no-scrollbar py-2 px-1
+      ${openStack ? "opacity-100 translate-x-0" : "opacity-0 translate-x-12 pointer-events-none"}`}
+                style={{ maxWidth: 'calc(100vw - 80px)' }} // Ensures space for the toggle button
+              >
                 {images.map((img, i) => (
                   <button
                     key={i}
                     onClick={() => { setActiveImage(img); setOpenStack(false); }}
-                    className="h-14 w-14 rounded-lg overflow-hidden border bg-white"
+                    className="h-14 w-14 flex-shrink-0 rounded-lg overflow-hidden border bg-white shadow-sm"
                   >
                     <img src={img} className="h-full w-full object-cover" />
                   </button>
                 ))}
               </div>
-              <button onClick={() => setOpenStack(!openStack)} className="ml-2 w-10 h-10 md:h-12 md:w-12 rounded-full bg-black text-white">
-                +{images.length}
+
+              {/* Toggle Button */}
+              <button
+                onClick={() => setOpenStack(!openStack)}
+                className="relative ml-2 flex-shrink-0 w-10 h-10 md:h-12 md:w-12 rounded-full bg-black text-white z-10 shadow-lg flex items-center justify-center"
+              >
+                {openStack ? (
+                  <span className="text-xl">✕</span>
+                ) : (
+                  <div className="relative">
+                    {/* The Icon */}
+                    <LuImagePlus size={22} />
+
+                    {/* The Notification Badge */}
+                    <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-white text-black text-[10px] font-bold border-2 border-black">
+                      +{images.length}
+                    </span>
+                  </div>
+                )}
               </button>
             </div>
 

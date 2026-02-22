@@ -28,6 +28,8 @@ export const useSignin = () => {
         throw new Error("Login failed");
       }
       console.log("Signin response:", res.data);
+      // After successful login
+      localStorage.setItem('aliveparis_session_hint', 'true');
 
       // ✅ UPDATE GLOBAL AUTH STATE
       await login();
@@ -53,9 +55,9 @@ export const useSignin = () => {
         err?.response?.data?.detail ||
         err?.message ||
         "Invalid email or password";
-        if(err?.response?.status === 401) {
-          toast.error("Unauthorized access. Please check your credentials.");
-        }
+      if (err?.response?.status === 401) {
+        toast.error("Unauthorized access. Please check your credentials.");
+      }
 
       setError(backendError);
     } finally {

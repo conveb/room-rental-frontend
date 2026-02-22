@@ -5,11 +5,12 @@ import Logo from "../../Assets/pngs/logo-silver.png";
 import { useAuth } from "../../context/AuthContext";
 import { FaRegUser } from "react-icons/fa";
 import { ImSpinner9 } from "react-icons/im";
+
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
-  const { user, role, loading } = useAuth();
+  const { user, role, loading, sessionHint } = useAuth();
 
   const getAccountRoute = (role) => {
     switch (role) {
@@ -48,6 +49,42 @@ export default function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Determine what to show in the button
+  const renderAuthButton = () => {
+    // If we have a session hint and we're still loading, show account button optimistically
+    if (loading && sessionHint) {
+      return (
+        <li className="bg-black text-white rounded-full border border-stone-700">
+          <Link to={getAccountRoute(role)}>
+            <button className="p-3">
+              <FaRegUser />
+            </button>
+          </Link>
+        </li>
+      );
+    }
+
+    // If we're still loading and no session hint, show minimal loading indicator
+    if (loading) {
+      return (
+        <li className="flex justify-center items-center w-10 h-10 rounded-full bg-gray-700">
+          <ImSpinner9 size={16} className="animate-spin" />
+        </li>
+      );
+    }
+
+    // Final state based on actual user data
+    return (
+      <li className="bg-black text-white rounded-full border border-stone-700">
+        <Link to={user ? getAccountRoute(role) : "/signin"}>
+          <button className="p-3">
+            {user ? <FaRegUser /> : "Sign In"}
+          </button>
+        </Link>
+      </li>
+    );
+  };
+
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-30 w-full px-2 md:px-0 
@@ -79,23 +116,7 @@ export default function Header() {
           <li><Link to="/list-room">List your room</Link></li>
           <li><Link to="/contact-us">Contact</Link></li>
 
-          {loading ? (
-            <p className="flex justify-center items-center w-24 h-10 rounded-full bg-gray-700 " >
-              <ImSpinner9 size={20} className="animate-spin" />
-            </p>
-          ) : (
-            <li className="bg-black text-white rounded-full border border-stone-700">
-              <Link to={user ? getAccountRoute(role) : "/signin"}>
-                <button className="p-3">
-                  {user ? <FaRegUser /> : "Sign In"}
-                </button>
-              </Link>
-            </li>
-          )}
-
-
-
-
+          {renderAuthButton()}
 
         </ul>
 
@@ -142,21 +163,9 @@ export default function Header() {
             <li onClick={() => setOpen(false)}>
               <Link to="/contact-us">Contact</Link>
             </li>
-            {loading ? (
-              <p className="flex justify-center items-center w-24 h-10 rounded-full bg-gray-700 " >
-                <ImSpinner9 size={20} className="animate-spin" />
-              </p>
-            ) : (
-              <li className="bg-black text-white rounded-full border border-stone-700">
-                <Link to={user ? getAccountRoute(role) : "/signin"}>
-                  <button className="p-3">
-                    {user ? <FaRegUser /> : "Sign In"}
-                  </button>
-                </Link>
-              </li>
-            )}
-
-
+            
+            {/* Mobile auth button */}
+            {renderAuthButton()}
 
           </ul>
         </div>

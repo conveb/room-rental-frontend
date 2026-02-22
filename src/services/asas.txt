@@ -20,7 +20,7 @@ https://rental-homes-france.onrender.com/api/v1/feedback/id/delete/
 https://rental-homes-france.onrender.com/api/v1/admin/auth/permissions/ 
 
 
-https://rental-homes-france.onrender.com/api/v1/overview-counts/ 
+https://rental-homes-france.onrender.com/api/v1/overview-counts/  - wait
 
 https://rental-homes-france.onrender.com/api/v1/properties/id/amenities/ 
 

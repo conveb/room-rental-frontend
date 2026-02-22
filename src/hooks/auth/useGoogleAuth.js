@@ -2,12 +2,14 @@ import { useState, useEffect, useCallback } from "react"; // Added useCallback
 import { createGooglePasswordApi, googleAuthAPI } from "../../services/allAPI";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
+import { useAuth } from "../../context/AuthContext";
 
 export const useGoogleAuth = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { login } = useAuth();
 
   const REDIRECT_URI = "https://www.aliveparis.com/signin";
 
@@ -22,6 +24,8 @@ export const useGoogleAuth = () => {
       });
 
       if (response.status === 200 || response.status === 201) {
+         // Refresh user data in auth context
+        await login(); 
         toast.success("Logged in successfully!");
         navigate("/");
       }
@@ -32,7 +36,7 @@ export const useGoogleAuth = () => {
     } finally {
       setLoading(false);
     }
-  }, [navigate, REDIRECT_URI]); // Dependencies for the function itself
+  }, [navigate,login,REDIRECT_URI]); // Dependencies for the function itself
 
 
   const handleSetPassword = async (payload) => {
@@ -42,6 +46,7 @@ export const useGoogleAuth = () => {
       const response = await createGooglePasswordApi(payload);
       
       if (response.status === 200 || response.status === 201) {
+        await login();
         toast.success("Password set successfully!");
         navigate("/dashboard"); // Or wherever you need them to go
         return response.data;

@@ -147,7 +147,7 @@ function App() {
             <Route path="payments" element={<UserPayments />} />
             <Route path="saved" element={<UserSaved />} />
             <Route path="support" element={<UserSupport />} />
-            <Route path="payment" element={<PaymentPage />} />
+            <Route path="payment/:bookingId" element={<PaymentPage />} />
             <Route path="complaints" element={<UserComplaints />} />
             <Route path="send_feedback" element={<UserFeedback />} />
             <Route path="report_landowner" element={<UserReportLandowner />} />

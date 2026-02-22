@@ -8,30 +8,34 @@ import { Characters } from '../../users/account/characterCollection';
 const Users = ({
   users,
   loading,
-  filteredUsers, // This is already filtered by search and role
+  filteredUsers,
   search,
   setSearch,
   roleFilter,
   setRoleFilter,
-  blockUser,
+  updateUserStatus, // Changed from blockUser
   blocking
 }) => {
   const [showDetails, setShowDetails] = useState(false);
-  const [showBlockModal, setShowBlockModal] = useState(false);
+  const [showStatusModal, setShowStatusModal] = useState(false); // Renamed from showBlockModal
   const [selectedUser, setSelectedUser] = useState(null);
   const [reason, setReason] = useState("");
   const [statusTab, setStatusTab] = useState('active'); 
+  const [actionType, setActionType] = useState('block'); // 'block' or 'unblock'
 
-  const handleBlockUser = async () => {
-    const success = await blockUser(selectedUser.id, {
-      is_active: false,
-      reason,
-    });
+  const handleStatusUpdate = async () => {
+    const payload = {
+      is_active: actionType === 'unblock', // true for unblock, false for block
+      ...(actionType === 'block' && { reason }) // Only include reason when blocking
+    };
+
+    const success = await updateUserStatus(selectedUser.id, payload);
 
     if (success) {
-      setShowBlockModal(false);
+      setShowStatusModal(false);
       setReason("");
       setSelectedUser(null);
+      setActionType('block');
     }
   };
 
@@ -155,7 +159,7 @@ const Users = ({
                 <p className="text-xs text-gray-400">{u.role}</p>
               </div>
 
-              {/* Status Badge - Optional, you can remove if tabs are clear enough */}
+              {/* Status Badge */}
               <span
                 className={`px-3 py-1 text-xs rounded-2xl ${
                   u.is_active 
@@ -176,49 +180,73 @@ const Users = ({
           id={selectedUser.id}
           avatar_id={selectedUser.avatar_id}
           role={selectedUser.role}
+          is_active={selectedUser.is_active}
           onClose={() => {
             setShowDetails(false);
             setSelectedUser(null);
           }}
-          onBlock={() => {
-            setShowBlockModal(true);
+          onStatusUpdate={(type) => {
+            setActionType(type);
+            setShowStatusModal(true);
           }}
         />
       )}
 
-      {/* Block Modal */}
-      {showBlockModal && (
+      {/* Status Update Modal (Block/Unblock) */}
+      {showStatusModal && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl p-6 w-[90%] max-w-md space-y-4">
-            <h3 className="text-lg font-semibold">Block User</h3>
+            <h3 className="text-lg font-semibold">
+              {actionType === 'block' ? 'Block User' : 'Unblock User'}
+            </h3>
             <p className="text-sm text-gray-500">{selectedUser?.full_name}</p>
 
-            <textarea
-              value={reason}
-              onChange={e => setReason(e.target.value)}
-              placeholder="Enter reason..."
-              className="w-full border rounded-xl p-3 text-sm resize-none"
-              rows={4}
-            />
+            {actionType === 'block' && (
+              <>
+                <p className="text-sm text-gray-600">
+                  Please provide a reason for blocking this user:
+                </p>
+                <textarea
+                  value={reason}
+                  onChange={e => setReason(e.target.value)}
+                  placeholder="Enter reason..."
+                  className="w-full border rounded-xl p-3 text-sm resize-none"
+                  rows={4}
+                />
+              </>
+            )}
+
+            {actionType === 'unblock' && (
+              <p className="text-sm text-gray-600">
+                Are you sure you want to unblock this user? They will be able to access their account again.
+              </p>
+            )}
 
             <div className="flex justify-end gap-2">
               <button
                 onClick={() => {
-                  setShowBlockModal(false);
+                  setShowStatusModal(false);
                   setReason("");
                   setSelectedUser(null);
+                  setActionType('block');
                 }}
-                className="px-4 py-2 rounded-xl border"
+                className="px-4 py-2 rounded-xl border hover:bg-gray-50 transition"
               >
                 Cancel
               </button>
 
               <button
-                disabled={blocking || !reason}
-                onClick={handleBlockUser}
-                className="px-4 py-2 rounded-xl bg-red-500 text-white disabled:opacity-50"
+                disabled={blocking || (actionType === 'block' && !reason)}
+                onClick={handleStatusUpdate}
+                className={`px-4 py-2 rounded-xl text-white disabled:opacity-50 transition ${
+                  actionType === 'block' 
+                    ? 'bg-red-500 hover:bg-red-600' 
+                    : 'bg-green-500 hover:bg-green-600'
+                }`}
               >
-                {blocking ? "Blocking..." : "Block"}
+                {blocking 
+                  ? (actionType === 'block' ? 'Blocking...' : 'Unblocking...') 
+                  : (actionType === 'block' ? 'Block User' : 'Unblock User')}
               </button>
             </div>
           </div>

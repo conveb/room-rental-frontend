@@ -17,6 +17,7 @@ import Overview from "./components/OverView";
 import Users from "./components/Users";
 import Properties from "./components/Properties";
 import { getStatusStyle } from "../../utils/bookingUtils";
+import { useOverview } from "../../hooks/useOverview";
 
 // Import utils
 
@@ -33,9 +34,11 @@ export default function AdminDashboard() {
     landOwnersCount,
   } = useAdminUsers(activeTab);
 
+  const { data, loading, error } = useOverview();
+
   const { filteredProperties: listProperties, loading: propertiesLoading } = useProperties();
   const { bookings, loading: bookingsLoading } = useAllBookings();
-  const { blockUser, blocking } = useBlockUser();
+  const { updateUserStatus, loading: blocking } = useBlockUser();
 
   // ---------------- State ----------------
   const [properties, setProperties] = useState([]);
@@ -81,8 +84,8 @@ export default function AdminDashboard() {
   // ---------------- Derived Data ----------------
   const recentData = bookings
     ? [...bookings]
-        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-        .slice(0, 6)
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+      .slice(0, 6)
     : [];
 
   return (
@@ -92,12 +95,12 @@ export default function AdminDashboard() {
         <meta name="description" content="This is the home page" />
         <meta name="keywords" content="react, seo, helmet" />
       </Title>
-      
+
       <div className="min-h-screen md:p-6">
         <div className="max-w-7xl mx-auto space-y-0 md:space-y-6">
           <h1 className="text-2xl md:text-3xl font-bold">Admin Control Center</h1>
           <p className="text-[10px] md:text-sm text-stone-500 pb-2">
-            This dashboard gives a quick overview of total students, landowners, users, 
+            This dashboard gives a quick overview of total students, landowners, users,
             and bookings, along with recent booking activity for easy monitoring.
           </p>
 
@@ -107,9 +110,8 @@ export default function AdminDashboard() {
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`flex-1 py-3 rounded-2xl text-sm md:text-md capitalize ${
-                  activeTab === tab ? "bg-black text-white" : "bg-gray-100"
-                }`}
+                className={`flex-1 py-3 rounded-2xl text-sm md:text-md capitalize ${activeTab === tab ? "bg-black text-white" : "bg-gray-100"
+                  }`}
               >
                 {tab}
               </button>
@@ -138,7 +140,7 @@ export default function AdminDashboard() {
               setSearch={setSearch}
               roleFilter={roleFilter}
               setRoleFilter={setRoleFilter}
-              blockUser={blockUser}
+              updateUserStatus={updateUserStatus} // Changed from blockUser
               blocking={blocking}
             />
           )}

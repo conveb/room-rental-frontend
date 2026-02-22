@@ -1,30 +1,40 @@
+// hooks/bookings/useBookingDetails.js
 import { useState } from 'react';
-import { toast } from 'sonner'; // Import toast from sonner
-import { createPaymentApi } from '../../services/allAPI';
+import { getBookingDetailsApi } from '../../services/allAPI';
+import { toast } from 'sonner';
 
 export const usePayment = () => {
-    const [paymentLoading, setPaymentLoading] = useState(false);
+  const [booking, setBooking] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-    const processPayment = async (paymentData) => {
-        setPaymentLoading(true);
-        try {
-            const response = await createPaymentApi(paymentData);
-            
-            if (response.status >= 200 && response.status < 300) {
-                toast.success('Payment processed successfully!');
-                return { success: true, data: response.data };
-            } else {
-                const errorMsg = response.data?.booking?.[0] || "Payment failed.";
-                toast.error(errorMsg); // Minimalist error toast
-                return { success: false };
-            }
-        } catch (error) {
-            toast.error('Connection error. Please try again.');
-            return { success: false };
-        } finally {
-            setPaymentLoading(false);
-        }
-    };
+  const fetchBookingDetails = async (bookingId) => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const response = await getBookingDetailsApi(bookingId);
+      
+      if (response.status === 200) {
+        setBooking(response.data);
+        return { success: true, data: response.data };
+      } else {
+        throw new Error(response.data?.message || 'Failed to fetch booking');
+      }
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message || 'Error fetching booking details';
+      setError(errorMessage);
+      toast.error(errorMessage);
+      return { success: false, error: errorMessage };
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    return { processPayment, paymentLoading };
+  return {
+    booking,
+    loading,
+    error,
+    fetchBookingDetails
+  };
 };

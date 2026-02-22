@@ -1,107 +1,185 @@
-import React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-// FIX 1: Ensure this path matches your folder exactly
+import React, { useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-// FIX 2: Changed LuCheckCircle to LuCircleCheck
-import { LuShieldCheck, LuLock, LuCircleCheck } from "react-icons/lu";
+import { LuLock, LuCircleCheck, LuCalendar, LuMapPin, LuChevronRight, LuShieldCheck } from "react-icons/lu";
+import { useBooking } from "../../../hooks/bookings/useBookings";
 import { usePayment } from "../../../hooks/payout_providers/usePayment";
 
 const PaymentPage = () => {
+  const { bookingId } = useParams();
   const navigate = useNavigate();
-  const { state } = useLocation();
   const { processPayment, paymentLoading } = usePayment();
+  const { bookingLoading, fetchBookingDetails, bookingDetails } = useBooking();
 
-  const { booking } = state || {};
+  useEffect(() => {
+    if (bookingId) fetchBookingDetails(bookingId);
+  }, [bookingId]);
 
-  if (!booking) {
+  const handlePayment = async () => {
+    const result = await processPayment(bookingId);
+    if (result.success) {
+      toast.success("Payment confirmed! Welcome home.");
+      navigate("/auth/user/confirmation");
+    } else {
+      toast.error("Payment failed. Please try again.");
+    }
+  };
+
+  if (bookingLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="text-center space-y-4">
-          <p className="text-neutral-400 text-sm font-medium tracking-widest uppercase">No Active Session</p>
-          <button onClick={() => navigate(-1)} className="px-8 py-3 bg-black text-white rounded-full text-xs font-bold uppercase tracking-widest">Return</button>
-        </div>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#FAFAFA]">
+        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-black mb-4"></div>
+        <p className="text-sm text-neutral-500 font-medium">Securing your session...</p>
       </div>
     );
   }
 
-  const handleAuthorization = async () => {
-    const payload = {
-      booking: booking.id 
-    };
+  if (!bookingDetails) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-neutral-500">Booking details could not be retrieved.</p>
+      </div>
+    );
+  }
 
-    const result = await processPayment(payload);
-
-    if (result.success) {
-      toast.success("Payment successful! Reservation confirmed.");
-      setTimeout(() => {
-        navigate("/auth/user/confirmation", { state: { booking } });
-      }, 1500);
-    }
-  };
+  const { property, start_date, end_date, total_rent_amount, id } = bookingDetails;
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA] text-neutral-900 px-6 flex items-center justify-center">
-      <div className="max-w-4xl w-full grid gap-8 lg:grid-cols-2 bg-white rounded-[3rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.1)] overflow-hidden border border-neutral-100">
+    <div className="min-h-screen bg-[#F8F9FA] py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-5xl mx-auto">
         
-        {/* Left: Property Visual */}
-        <div className="relative h-64 lg:h-auto bg-neutral-900">
-          <img
-            src={booking.property_image || "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1000"}
-            alt="Property"
-            className="h-full w-full object-cover opacity-60"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
-          <div className="absolute bottom-8 left-8">
-            <p className="text-emerald-400 text-[10px] font-black uppercase tracking-[0.3em] mb-1">Identity Verified</p>
-            <h2 className="text-white text-xl font-bold">{booking.property_title}</h2>
+        {/* Breadcrumbs / Progress */}
+        <nav className="flex items-center gap-2 text-xs font-medium text-neutral-400 mb-8 uppercase tracking-widest">
+          <span>Search</span>
+          <LuChevronRight size={12} />
+          <span>Details</span>
+          <LuChevronRight size={12} />
+          <span className="text-black">Payment</span>
+        </nav>
+
+        <div className="grid lg:grid-cols-12 gap-8 items-start">
+          
+          {/* Left Column: Summary & Property Card */}
+          <div className="lg:col-span-7 space-y-6">
+            <div className="bg-white rounded-3xl p-2 shadow-sm border border-neutral-100">
+              <div className="relative h-72 w-full overflow-hidden rounded-[1.5rem]">
+                <img
+                  src={property?.cover_image || "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267"}
+                  alt={property?.title}
+                  className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                <div className="absolute bottom-6 left-6 right-6">
+                  <h2 className="text-white text-2xl font-bold tracking-tight">{property?.title}</h2>
+                  <div className="flex items-center gap-2 text-white/80 text-sm mt-1">
+                    <LuMapPin size={14} />
+                    <span>{property?.city}, {property?.country}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-6 grid grid-cols-2 gap-4">
+                <div className="p-4 bg-neutral-50 rounded-2xl">
+                  <p className="text-[10px] uppercase text-neutral-400 font-bold mb-1">Check-in</p>
+                  <div className="flex items-center gap-2 font-semibold text-sm">
+                    <LuCalendar className="text-neutral-400" size={16} />
+                    {new Date(start_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                  </div>
+                </div>
+                <div className="p-4 bg-neutral-50 rounded-2xl">
+                  <p className="text-[10px] uppercase text-neutral-400 font-bold mb-1">Check-out</p>
+                  <div className="flex items-center gap-2 font-semibold text-sm">
+                    <LuCalendar className="text-neutral-400" size={16} />
+                    {new Date(end_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Trust Badges */}
+            <div className="flex items-center justify-between px-4 py-2 opacity-50 grayscale">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" className="h-4" />
+              <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" className="h-6" />
+              <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="Paypal" className="h-4" />
+              <img src="https://upload.wikimedia.org/wikipedia/commons/b/ba/Stripe_logo%2C_revised_2016.svg" alt="Stripe" className="h-6" />
+            </div>
           </div>
-        </div>
 
-        {/* Right: Authorization Actions */}
-        <div className="p-10 flex flex-col justify-center">
-          <div className="mb-8">
-            <div className="flex items-center gap-2 mb-2">
-              <LuLock className="text-emerald-500" size={14} />
-              <span className="text-[10px] font-black uppercase tracking-widest text-neutral-400">Secure Authorization</span>
+          {/* Right Column: Checkout Form */}
+          <div className="lg:col-span-5">
+            <div className="bg-white rounded-3xl p-8 shadow-xl shadow-neutral-200/50 border border-neutral-100 sticky top-8">
+              <div className="flex items-center justify-between mb-8">
+                <h3 className="text-xl font-bold">Price Summary</h3>
+                <div className="flex items-center gap-1 text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">
+                  <LuShieldCheck size={14} />
+                  <span className="text-[10px] font-bold uppercase">Verified</span>
+                </div>
+              </div>
+
+              <div className="space-y-4 mb-8">
+                <div className="flex justify-between text-sm">
+                  <span className="text-neutral-500">Booking Reference</span>
+                  <span className="font-mono text-neutral-400">{id?.slice(0, 8)}...</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-neutral-500">Base Rent</span>
+                  <span className="font-medium">€{Number(total_rent_amount).toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-neutral-500">Service Fee</span>
+                  <span className="font-medium text-emerald-600">€0.00</span>
+                </div>
+                
+                <hr className="border-dashed border-neutral-200" />
+                
+                <div className="flex justify-between items-end pt-2">
+                  <div>
+                    <span className="block text-sm font-bold">Total Amount</span>
+                    <span className="text-[10px] text-neutral-400">Includes all taxes & fees</span>
+                  </div>
+                  <span className="text-3xl font-black tracking-tight">
+                    €{Number(total_rent_amount).toLocaleString()}
+                  </span>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <button
+                  onClick={handlePayment}
+                  disabled={paymentLoading}
+                  className="group relative w-full h-16 bg-black text-white rounded-2xl font-bold text-sm uppercase tracking-widest overflow-hidden transition-all hover:bg-neutral-800 disabled:bg-neutral-200 active:scale-[0.98]"
+                >
+                  {paymentLoading ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <div className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      Authorizing...
+                    </span>
+                  ) : (
+                    <span className="flex items-center justify-center gap-2">
+                      Complete Booking <LuCircleCheck size={18} />
+                    </span>
+                  )}
+                </button>
+
+                <p className="text-center text-[10px] text-neutral-400 leading-relaxed">
+                  By clicking "Complete Booking", you agree to our 
+                  <a href="#" className="underline ml-1">Terms of Service</a> and 
+                  <a href="#" className="underline ml-1">Cancellation Policy</a>.
+                </p>
+              </div>
+
+              <div className="mt-8 pt-6 border-t border-neutral-100 flex items-center gap-3">
+                <div className="h-10 w-10 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600">
+                  <LuLock size={20} />
+                </div>
+                <div>
+                  <p className="text-[11px] font-bold text-neutral-800 leading-none">Secure Checkout</p>
+                  <p className="text-[10px] text-neutral-500 mt-1">256-bit SSL encrypted connection</p>
+                </div>
+              </div>
             </div>
-            <h3 className="text-2xl font-black tracking-tight">Finalize Payment</h3>
           </div>
 
-          <div className="space-y-6 mb-10">
-            <div className="flex justify-between items-center pb-4 border-b border-neutral-50">
-              <span className="text-xs text-neutral-500 font-medium">Reference</span>
-              <span className="text-xs font-mono font-bold">{booking.reference_no}</span>
-            </div>
-            
-            <div className="flex justify-between items-center pb-4 border-b border-neutral-50">
-              <span className="text-xs text-neutral-500 font-medium">Initial Amount</span>
-              <span className="text-xl font-black text-neutral-900">₹{Number(booking.initial_payment_amount).toLocaleString()}</span>
-            </div>
-
-            <div className="bg-emerald-50/50 p-4 rounded-2xl flex gap-3">
-              {/* Updated Icon Name here */}
-              <LuCircleCheck className="text-emerald-600 shrink-0" size={18} />
-              <p className="text-[11px] text-emerald-800 leading-relaxed">
-                By clicking authorize, you agree to the lease terms for the period of <b>{booking.start_date}</b> to <b>{booking.end_date}</b>.
-              </p>
-            </div>
-          </div>
-
-          <button
-            onClick={handleAuthorization}
-            disabled={paymentLoading}
-            className="w-full h-16 flex items-center justify-center rounded-2xl bg-neutral-900 text-white font-bold text-xs uppercase tracking-[0.2em] shadow-xl hover:bg-black disabled:bg-neutral-200 transition-all active:scale-95"
-          >
-            {paymentLoading ? (
-              <div className="h-5 w-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-            ) : (
-              "Authorize Transaction"
-            )}
-          </button>
-
-          <p className="mt-6 text-center text-[9px] font-bold text-neutral-300 uppercase tracking-widest">
-            Processing via Secure Gateway
-          </p>
         </div>
       </div>
     </div>

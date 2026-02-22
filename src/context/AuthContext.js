@@ -9,21 +9,40 @@ import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext(null);
 
+// Key for localStorage
+const SESSION_HINT_KEY = 'aliveparis_session_hint';
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [isInitialized, setIsInitialized] = useState(false); // FIX: track initialization
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [sessionHint, setSessionHint] = useState(() => {
+    // Check localStorage on initial load
+    return localStorage.getItem(SESSION_HINT_KEY) === 'true';
+  });
+  
   const navigate = useNavigate();
 
   const fetchCurrentUser = async () => {
     try {
       const res = await AuthAPI();
-      setUser(res?.data ?? null);
+      if (res?.data) {
+        setUser(res.data);
+        // User is authenticated - set session hint
+        localStorage.setItem(SESSION_HINT_KEY, 'true');
+        setSessionHint(true);
+      } else {
+        setUser(null);
+        localStorage.removeItem(SESSION_HINT_KEY);
+        setSessionHint(false);
+      }
     } catch {
       setUser(null);
+      localStorage.removeItem(SESSION_HINT_KEY);
+      setSessionHint(false);
     } finally {
       setLoading(false);
-      setIsInitialized(true); // FIX: mark as initialized
+      setIsInitialized(true);
     }
   };
 
@@ -31,24 +50,24 @@ export const AuthProvider = ({ children }) => {
     fetchCurrentUser();
   }, []);
 
-  // ✅ HANDLE REAL SESSION EXPIRY - only when refresh token fails during active session
+  // Handle real session expiry
   useEffect(() => {
     const handleRealSessionExpired = () => {
-      // FIX: Only logout if user was actually logged in AND we've finished initializing
       if (user && isInitialized) {
         console.log("🔴 Session expired - logging out");
         setUser(null);
+        localStorage.removeItem(SESSION_HINT_KEY);
+        setSessionHint(false);
         navigate("/login");
-      } else {
-        console.log("ℹ️ Session expired event ignored - no active session or still initializing");
       }
     };
 
     window.addEventListener('real-session-expired', handleRealSessionExpired);
     return () => window.removeEventListener('real-session-expired', handleRealSessionExpired);
-  }, [navigate, user, isInitialized]); // FIX: add isInitialized
+  }, [navigate, user, isInitialized]);
 
   const login = async () => {
+    console.log("🔵 Starting login process...");
     setLoading(true);
     await fetchCurrentUser();
   };
@@ -61,6 +80,8 @@ export const AuthProvider = ({ children }) => {
       console.error("Logout failed", e);
     } finally {
       setUser(null);
+      localStorage.removeItem(SESSION_HINT_KEY);
+      setSessionHint(false);
       navigate("/signin", { replace: true });
     }
   };
@@ -74,6 +95,7 @@ export const AuthProvider = ({ children }) => {
         logout,
         isAuthenticated: Boolean(user),
         role: user?.role_name ?? null,
+        sessionHint, // Add this to context
       }}
     >
       {children}

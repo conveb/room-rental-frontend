@@ -34,13 +34,16 @@ export const ReportRoomOwnerApi = (id, data) => {return commonAPI('post', `/api/
 export const AddFavouritesApi= (data)=>commonAPI('post','/api/v1/favourites/add/',data) 
 export const GetFavouritesApi= ()=>commonAPI('get','/api/v1/favourites/') 
 export const RemoveFavouritesApi= (id)=>commonAPI('delete',`/api/v1/favourites/${id}/remove/`) 
-//landowner 4
+
 export const viewMyPropertyApi= ()=>commonAPI('get','/api/v1/properties/my/') 
 export const updatePropertyApi = (propertyId, data) => commonAPI("patch", `/api/v1/properties/${propertyId}/update/`, data);
 export const createPropertyApi= (data)=>commonAPI('post','/api/v1/properties/create/',data) 
 export const deletePropertyApi = (propertyId) => commonAPI("delete", `/api/v1/properties/${propertyId}/delete/`);
-//admin 48
+
 export const getAllUsersAPI = ()=>commonAPI('get','/api/v1/admin/users') 
+// =============================================================================
+export const getOverviewAPI = ()=>commonAPI('get','/api/v1/overview-counts/');
+// =============================================================================
 export const getUserProfileAPI = () => commonAPI("get", "/api/v1/me/profile");
 export const getUserCompleteDetailsAPI = (id) => commonAPI("get", `/api/v1/admin/users/students/${id}/detail`);
 export const blockUserAPI = (userId, payload) => commonAPI("patch", `/api/v1/admin/users/${userId}/status/`, payload);
@@ -105,7 +108,6 @@ export const createCountryPayoutProviderApi= (data)=>commonAPI('post',`/api/v1/c
 export const updateCountryPayoutProviderApi = (id, data) => commonAPI("patch", `/api/v1/country-payout-providers/${id}/`, data);
 export const deleteCountryPayoutProviderApi = (id) => commonAPI("delete", `/api/v1/country-payout-providers/${id}/`);
 
-// 74
 
 export const getBookingDetailsApi= (id) => commonAPI('get', `/api/v1/bookings/${id}/`);
 export const createBookingApi= (id,data)=>commonAPI('post',`/api/v1/bookings/${id}/create/`,data) 

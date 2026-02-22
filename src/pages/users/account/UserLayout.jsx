@@ -9,6 +9,7 @@ import Logo from "../../../Assets/pngs/logo.png";
 import { useAuth } from "../../../context/AuthContext";
 import { useUserProfile } from "../../../hooks/users/useUserProfile";
 import { useNotifications } from "../../../context/NotificationContext";
+import { Characters } from "./characterCollection";
 
 const navItems = [
   { to: "/auth/user/accommodation", label: "Explore", icon: <HiMiniHome /> },
@@ -24,75 +25,82 @@ const UserLayout = () => {
   const { user: userData } = useUserProfile(); // Contains full_name
   const { unreadCount } = useNotifications();
 
+
   return (
     <div className="min-h-screen flex flex-col ">
 
       {/* HEADER */}
-      <header className="fixed top-0 left-0 right-0 h-16 bg-white border-b border-gray-100 flex items-center justify-between container mx-auto z-40">
+      <header className="fixed top-0 left-0 right-0   bg-white border-b border-gray-100   z-40">
+        <div className="container mx-auto flex items-center justify-between  h-16">
 
-        {/* LEFT: LOGO & SEARCH */}
-        <div className="flex items-end gap-4 lg:gap-8 flex-1">
-          <Link to="/" className="flex items-center gap-2 shrink-0">
-            <img src={Logo} alt="logo" className="w-8 h-8 object-contain" />
-            <span className="font-bold text-lg hidden sm:block text-slate-900">Alive Paris</span>
-          </Link>
+          {/* LEFT: LOGO & SEARCH */}
+          <div className="flex items-end gap-4 lg:gap-8 flex-1">
+            <Link to="/" className="flex items-center gap-2 shrink-0">
+              <img src={Logo} alt="logo" className="w-8 h-8 object-contain" />
+              <span className="font-bold text-lg hidden sm:block text-slate-900">Alive Paris</span>
+            </Link>
 
 
-        </div>
-
-        {/* MIDDLE: DESKTOP NAVIGATION */}
-        <nav className="hidden lg:flex items-center gap-1 mx-4">
-          {navItems.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              className={({ isActive }) =>
-                `px-4 py-2 rounded-full text-sm font-semibold transition-all ${isActive ? "bg-slate-900 text-white" : "text-slate-600 hover:bg-slate-100"
-                }`
-              }
-            >
-              {item.label}
-            </NavLink>
-          ))}
-        </nav>
-
-        {/* RIGHT: USER ACTIONS & PROFILE */}
-        <div className="flex items-center gap-1 md:gap-3 flex-1 justify-end">
-
-          {/* Wishlist Icon */}
-          <Link to="/auth/user/saved" className=" p-2 text-slate-600 hover:bg-slate-50 rounded-full transition relative">
-            <IoBookmarkOutline className="text-xl" />
-          </Link>
-
-          {/* Notifications */}
-          <Link to="/auth/user/notifications" className="relative p-2 text-slate-600 hover:bg-slate-50 rounded-full transition">
-            <IoIosNotifications className="text-2xl" />
-            {unreadCount > 0 && (
-              <span className="absolute top-1.5 right-1.5 bg-red-500 text-white text-[10px] font-bold h-4 w-4 flex items-center justify-center rounded-full border border-white">
-                {unreadCount > 9 ? "9+" : unreadCount}
-              </span>
-            )}
-          </Link>
-
-          {/* Desktop User Glance */}
-          <div className="hidden md:flex items-center gap-3 ml-2 pl-4 border-l border-gray-100">
-            <div className="text-right">
-              <p className="text-xs font-bold text-slate-900 capitalize leading-none">
-                {userData?.full_name || "Guest User"}
-              </p>
-              <p className="text-[10px] text-slate-500 mt-1">
-                {user?.email}
-              </p>
-            </div>
-            <div className="h-9 w-9 bg-slate-100 rounded-full flex items-center justify-center border border-gray-200 overflow-hidden">
-              {userData?.profile_image ? (
-                <img src={userData.profile_image} alt="profile" className="w-full h-full object-cover" />
-              ) : (
-                <FaRegUserCircle className="text-gray-400 text-xl" />
-              )}
-            </div>
           </div>
 
+          {/* MIDDLE: DESKTOP NAVIGATION */}
+          <nav className="hidden lg:flex items-center gap-1 mx-4">
+            {navItems.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className={({ isActive }) =>
+                  `px-4 py-2 rounded-full text-sm font-semibold transition-all ${isActive ? "bg-slate-900 text-white" : "text-slate-600 hover:bg-slate-100"
+                  }`
+                }
+              >
+                {item.label}
+              </NavLink>
+            ))}
+          </nav>
+
+          {/* RIGHT: USER ACTIONS & PROFILE */}
+          <div className="flex items-center gap-1 md:gap-3 flex-1 justify-end">
+
+            {/* Desktop User Glance */}
+            <div className="hidden md:flex items-center gap-3 mr-2 pr-4 border-r border-gray-100">
+              <div className="text-right">
+                <p className="text-xs font-bold text-slate-900 capitalize leading-none">
+                  {userData?.full_name || "Guest User"}
+                </p>
+                <p className="text-[10px] text-slate-500 mt-1">
+                  {user?.email}
+                </p>
+              </div>
+              <div className=" border border-black border-2 p-[2px]  rounded-full">
+                <div className="h-10 w-10 bg-slate-100   rounded-full flex items-center justify-center overflow-hidden">
+                  {userData?.avatar_id ? (
+                    <img src={
+                      Characters.find((c) => c.id === Number(userData.avatar_id))?.img
+                    } alt="profile" className="w-full h-full object-cover" />
+                  ) : (
+                    <FaRegUserCircle className="text-gray-400 text-xl" />
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Wishlist Icon */}
+            <Link to="/auth/user/saved" className=" p-2 text-slate-600 hover:bg-slate-50 rounded-full transition relative">
+              <IoBookmarkOutline className="text-xl" />
+            </Link>
+
+            {/* Notifications */}
+            <Link to="/auth/user/notifications" className="relative p-2 text-slate-600 hover:bg-slate-50 rounded-full transition">
+              <IoIosNotifications className="text-2xl" />
+              {unreadCount > 0 && (
+                <span className="absolute top-1.5 right-1.5 bg-red-500 text-white text-[10px] font-bold h-4 w-4 flex items-center justify-center rounded-full border border-white">
+                  {unreadCount > 9 ? "9+" : unreadCount}
+                </span>
+              )}
+            </Link>
+
+          </div>
           {/* Mobile Menu Toggle */}
           <button onClick={() => setOpen(true)} className="md:hidden p-2 text-slate-700 hover:bg-slate-50 rounded-full">
             <HiMiniBars3 className="text-2xl" />

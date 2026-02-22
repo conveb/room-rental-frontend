@@ -5,7 +5,7 @@ export const useBlockUser = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const blockUser = async (userId, payload) => {
+  const updateUserStatus = async (userId, payload) => {
     try {
       setLoading(true);
       setError(null);
@@ -19,5 +19,5 @@ export const useBlockUser = () => {
     }
   };
 
-  return { blockUser, loading, error };
+  return { updateUserStatus, loading, error };
 };

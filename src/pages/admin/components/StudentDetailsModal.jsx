@@ -1,11 +1,11 @@
 import React from "react";
 import { useUserCompleteDetails } from "../../../hooks/users/useUserCompleteDetails";
 import { useNavigate } from "react-router-dom";
-import { MdOutlineOpenInNew, MdBlock } from "react-icons/md";
+import { MdOutlineOpenInNew, MdBlock, MdCheckCircle } from "react-icons/md";
 import { Characters } from '../../users/account/characterCollection';
 import { toast } from "sonner";
 
-const StudentDetailsModal = ({ id, avatar_id, role, onClose, onBlock }) => {
+const StudentDetailsModal = ({ id, avatar_id, role, is_active, onClose, onStatusUpdate }) => {
   const { data, loading } = useUserCompleteDetails(id);
   const navigate = useNavigate();
   const character = Characters.find((c) => String(c.id) === String(avatar_id));
@@ -25,9 +25,8 @@ const StudentDetailsModal = ({ id, avatar_id, role, onClose, onBlock }) => {
 
   if (!data) return null;
 
-  const { email, is_active, student_profile, created_at } = data;
+  const { email, student_profile, created_at } = data;
 
-  // --- NEW: DYNAMIC NAVIGATION HANDLER ---
   const handleViewDetails = () => {
     if (role === "STUDENT") {
       navigate(`/auth/admin/student/${id}`);
@@ -36,7 +35,7 @@ const StudentDetailsModal = ({ id, avatar_id, role, onClose, onBlock }) => {
     } else {
       toast.error("Unknown user role. Cannot navigate to details.");
     }
-    onClose(); // Close modal after navigating
+    onClose();
   };
 
   return (
@@ -99,18 +98,25 @@ const StudentDetailsModal = ({ id, avatar_id, role, onClose, onBlock }) => {
           {/* ACTION BUTTONS */}
           <div className="flex flex-row gap-3">
             <button
-              onClick={handleViewDetails} // TRIGGER DYNAMIC REDIRECT
+              onClick={handleViewDetails}
               className="flex-1 flex items-center justify-center gap-2 py-3 bg-gray-100 hover:bg-gray-200 text-gray-900 rounded-2xl font-semibold transition"
             >
-              View Details
+              <MdOutlineOpenInNew /> View Details
             </button>
 
-            {is_active && (
+            {is_active ? (
               <button
-                onClick={onBlock}
+                onClick={() => onStatusUpdate('block')}
                 className="flex-1 flex items-center justify-center gap-2 py-3 bg-red-50 hover:bg-red-100 text-red-600 rounded-2xl font-bold transition border border-red-100"
               >
                 <MdBlock /> Block
+              </button>
+            ) : (
+              <button
+                onClick={() => onStatusUpdate('unblock')}
+                className="flex-1 flex items-center justify-center gap-2 py-3 bg-green-50 hover:bg-green-100 text-green-600 rounded-2xl font-bold transition border border-green-100"
+              >
+                <MdCheckCircle /> Unblock
               </button>
             )}
           </div>
