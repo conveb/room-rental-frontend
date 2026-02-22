@@ -5,7 +5,7 @@ import { IoBookmarkOutline, IoChatboxEllipsesOutline } from "react-icons/io5";
 import { FaRegCalendarCheck, FaRegUserCircle } from "react-icons/fa";
 import { IoIosNotifications } from "react-icons/io";
 import colors from "../../../theme/colors";
-import Logo from "../../../Assets/pngs/logo.png";
+import Logo from "../../../Assets/Images/logo.jpg";
 import { useAuth } from "../../../context/AuthContext";
 import { useUserProfile } from "../../../hooks/users/useUserProfile";
 import { useNotifications } from "../../../context/NotificationContext";
@@ -34,7 +34,7 @@ const UserLayout = () => {
         <div className="container mx-auto flex items-center justify-between  h-16">
 
           {/* LEFT: LOGO & SEARCH */}
-          <div className="flex items-end gap-4 lg:gap-8 flex-1">
+          <div className="flex justify-end gap-4 lg:gap-8 flex-1">
             <Link to="/" className="flex items-center gap-2 shrink-0">
               <img src={Logo} alt="logo" className="w-8 h-8 object-contain" />
               <span className="font-bold text-lg hidden sm:block text-slate-900">Alive Paris</span>
@@ -72,13 +72,21 @@ const UserLayout = () => {
                   {user?.email}
                 </p>
               </div>
-              <div className=" border border-black border-2 p-[2px]  rounded-full">
-                <div className="h-10 w-10 bg-slate-100   rounded-full flex items-center justify-center overflow-hidden">
+              <div className="border border-black border-2 p-[2px] rounded-full">
+                <div className="h-10 w-10 bg-slate-100 rounded-full flex items-center justify-center overflow-hidden">
                   {userData?.avatar_id ? (
-                    <img src={
-                      Characters.find((c) => c.id === Number(userData.avatar_id))?.img
-                    } alt="profile" className="w-full h-full object-cover" />
+                    <img
+                      src={Characters.find((c) => c.id === Number(userData.avatar_id))?.img}
+                      alt="profile"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : userData?.full_name ? (
+                    // Show first letter if name exists
+                    <span className="text-gray-700 font-bold uppercase text-2xl">
+                      {userData.full_name.charAt(0)}
+                    </span>
                   ) : (
+                    // Fallback to icon if absolutely no data is available
                     <FaRegUserCircle className="text-gray-400 text-xl" />
                   )}
                 </div>
@@ -101,68 +109,12 @@ const UserLayout = () => {
             </Link>
 
           </div>
-          {/* Mobile Menu Toggle */}
-          <button onClick={() => setOpen(true)} className="md:hidden p-2 text-slate-700 hover:bg-slate-50 rounded-full">
-            <HiMiniBars3 className="text-2xl" />
-          </button>
+
         </div>
       </header>
 
       {/* MOBILE DRAWER */}
-      {open && (
-        <div className="fixed inset-0 z-50 md:hidden">
-          <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onClick={() => setOpen(false)} />
-          <aside className="fixed top-0 left-0 h-full w-80 bg-white shadow-2xl flex flex-col p-6 transition-transform">
-            <div className="flex justify-between items-center mb-8">
-              <span className="font-bold text-xl text-slate-900">Menu</span>
-              <button onClick={() => setOpen(false)} className="p-2 bg-slate-50 rounded-full text-xl hover:bg-slate-100"><HiXMark /></button>
-            </div>
 
-            {/* User Profile Card in Sidebar */}
-            <div className="mb-8 p-5 bg-slate-50 rounded-2xl border border-slate-100">
-              <div className="flex items-center gap-4">
-                <div className="h-14 w-14 bg-white rounded-full flex items-center justify-center text-slate-900 font-bold text-xl shadow-sm border border-slate-200">
-                  {userData?.full_name?.charAt(0) || "U"}
-                </div>
-                <div className="flex-1 overflow-hidden">
-                  <p className="font-bold text-slate-900 truncate capitalize text-lg leading-tight">
-                    {userData?.full_name || "Welcome!"}
-                  </p>
-                  <p className="text-xs text-slate-500 truncate mt-1">
-                    {user?.email}
-                  </p>
-                </div>
-              </div>
-              <Link
-                to="/auth/user/account"
-                onClick={() => setOpen(false)}
-                className="mt-4 block text-center py-2 bg-white border border-slate-200 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-50"
-              >
-                View Profile
-              </Link>
-            </div>
-
-            <nav className="space-y-2">
-              {navItems.map(item => (
-                <NavLink
-                  key={item.to}
-                  to={item.to}
-                  onClick={() => setOpen(false)}
-                  className={({ isActive }) =>
-                    `flex items-center p-4 rounded-xl transition-all ${isActive
-                      ? "bg-slate-900 text-white shadow-lg shadow-slate-200"
-                      : "text-slate-600 hover:bg-slate-50"
-                    }`
-                  }
-                >
-                  <span className="mr-4 text-2xl">{item.icon}</span>
-                  <span className="font-semibold">{item.label}</span>
-                </NavLink>
-              ))}
-            </nav>
-          </aside>
-        </div>
-      )}
 
       {/* MAIN CONTENT AREA */}
       <main className="flex-1 pt-16 pb-20 md:pb-6 overflow-auto">

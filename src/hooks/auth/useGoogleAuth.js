@@ -9,7 +9,7 @@ export const useGoogleAuth = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { login } = useAuth();
+  const { login , fetchCurrentUser  } = useAuth();
 
   const REDIRECT_URI = "https://www.aliveparis.com/signin";
 
@@ -25,18 +25,17 @@ export const useGoogleAuth = () => {
 
       if (response.status === 200 || response.status === 201) {
          // Refresh user data in auth context
-        await login(); 
+        await fetchCurrentUser();
         toast.success("Logged in successfully!");
         navigate("/");
       }
     } catch (err) {
       const msg = err.response?.data?.detail || "Google login failed";
       setError(msg);
-      toast.error(msg);
     } finally {
       setLoading(false);
     }
-  }, [navigate,login,REDIRECT_URI]); // Dependencies for the function itself
+  }, [navigate,login]); // Dependencies for the function itself ,REDIRECT_URI<-removed because its stable
 
 
   const handleSetPassword = async (payload) => {

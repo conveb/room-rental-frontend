@@ -31,10 +31,12 @@ export const AuthProvider = ({ children }) => {
         // User is authenticated - set session hint
         localStorage.setItem(SESSION_HINT_KEY, 'true');
         setSessionHint(true);
+        return res.data;
       } else {
         setUser(null);
         localStorage.removeItem(SESSION_HINT_KEY);
         setSessionHint(false);
+        return null;
       }
     } catch {
       setUser(null);
@@ -69,7 +71,7 @@ export const AuthProvider = ({ children }) => {
   const login = async () => {
     console.log("🔵 Starting login process...");
     setLoading(true);
-    await fetchCurrentUser();
+    return await fetchCurrentUser();
   };
 
   const logout = async () => {
@@ -93,6 +95,7 @@ export const AuthProvider = ({ children }) => {
         loading,
         login,
         logout,
+        fetchCurrentUser,
         isAuthenticated: Boolean(user),
         role: user?.role_name ?? null,
         sessionHint, // Add this to context
