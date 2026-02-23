@@ -192,7 +192,12 @@ const AdminOtpVerification = () => {
                             ))}
                         </div>
 
-                        
+                        {/* Test OTP hint */}
+                        {process.env.NODE_ENV === 'development' && (
+                            <p className="text-xs text-gray-400 text-center">
+                                Test OTP: 448667
+                            </p>
+                        )}
 
                         {/* Error Message */}
                         {error && (
@@ -201,7 +206,7 @@ const AdminOtpVerification = () => {
                             </p>
                         )}
 
-                        
+
 
                         {/* Verify Button */}
                         <button
