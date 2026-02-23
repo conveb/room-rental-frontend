@@ -3,19 +3,21 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useEmailVerification } from "../../../hooks/auth/useEmailVerification";
 import { useAuth } from "../../../context/AuthContext";
 import BacktoHome from "../../../components/btns/BacktoHome";
+import { IoEyeOffSharp, IoEyeSharp } from "react-icons/io5";
 
 const AdminOtpVerification = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const { login } = useAuth();
-    const timerRef = useRef(null); // Use ref to store timer
+    const timerRef = useRef(null);
 
-    // Get data from navigation state
-    const { email, purpose, requireOtp } = location.state || {};
+    // Get data from navigation state - now includes OTP
+    const { email, otp: responseOtp, purpose, requireOtp } = location.state || {};
 
     const [otp, setOtp] = useState(["", "", "", "", "", ""]);
-    const [timeLeft, setTimeLeft] = useState(120); // 2 minutes in seconds
+    const [timeLeft, setTimeLeft] = useState(120);
     const [canResend, setCanResend] = useState(false);
+    const [showOtp, setShowOtp] = useState(false); // State to toggle OTP visibility
 
     const { verifyOtp, resendOtp, loading, error } = useEmailVerification();
 
@@ -26,24 +28,20 @@ const AdminOtpVerification = () => {
         }
     }, [email, requireOtp, navigate]);
 
-    // Timer for resend OTP - Optimized
+    // Timer for resend OTP
     useEffect(() => {
-        // Clear any existing timer
         if (timerRef.current) {
             clearInterval(timerRef.current);
         }
 
-        // Don't start timer if timeLeft is 0 or less
         if (timeLeft <= 0) {
             setCanResend(true);
             return;
         }
 
-        // Start new timer
         timerRef.current = setInterval(() => {
             setTimeLeft((prev) => {
                 if (prev <= 1) {
-                    // Clear timer when reaching 0
                     clearInterval(timerRef.current);
                     setCanResend(true);
                     return 0;
@@ -52,13 +50,12 @@ const AdminOtpVerification = () => {
             });
         }, 1000);
 
-        // Cleanup on unmount or when timeLeft changes
         return () => {
             if (timerRef.current) {
                 clearInterval(timerRef.current);
             }
         };
-    }, [timeLeft]); // Only re-run if timeLeft changes
+    }, [timeLeft]);
 
     const formatTime = (seconds) => {
         const mins = Math.floor(seconds / 60);
@@ -115,7 +112,6 @@ const AdminOtpVerification = () => {
 
             await verifyOtp(payload);
 
-            // Clear timer on successful verification
             if (timerRef.current) {
                 clearInterval(timerRef.current);
             }
@@ -145,11 +141,14 @@ const AdminOtpVerification = () => {
     };
 
     const handleBackToSignin = () => {
-        // Clear timer when navigating away
         if (timerRef.current) {
             clearInterval(timerRef.current);
         }
         navigate("/signin", { replace: true });
+    };
+
+    const toggleOtpVisibility = () => {
+        setShowOtp(!showOtp);
     };
 
     return (
@@ -173,8 +172,36 @@ const AdminOtpVerification = () => {
                         </p>
                     </div>
 
+                    {/* Display the actual OTP from response for client reference */}
+                    {responseOtp && (
+                        <div className="mb-6 p-2 bg-red-50 border border-red-200 rounded-lg text-center">
+                            <div className="flex items-center justify-between text-center">
+                                <p className="text-xs md:text-sm text-red-800 font-medium">
+                                    Your OTP Code (for testing/reference):
+                                </p>
+                                
+                            </div>
+                            <div className="flex gap-3 items-center justify-center">
+
+                            <p className="text-2xl font-bold text-black text-center mt-2 tracking-widest">
+                                {showOtp ? responseOtp : "••••••"}
+                            </p>
+                            <button
+                                    type="button"
+                                    onClick={toggleOtpVisibility}
+                                    className="text-xs text-black"
+                                >
+                                    {showOtp ? <IoEyeOffSharp size={20}/> : <IoEyeSharp size={20}/>}
+                                </button>
+                            </div>
+                            <p className="text-xs text-red-600 text-center mt-2">
+                                Please type this code in the fields below
+                            </p>
+                        </div>
+                    )}
+
                     <form onSubmit={handleSubmit} className="space-y-6">
-                        {/* OTP Input Fields */}
+                        {/* OTP Input Fields - Client types here */}
                         <div className="flex justify-center gap-2" onPaste={handlePaste}>
                             {otp.map((digit, index) => (
                                 <input
@@ -192,13 +219,6 @@ const AdminOtpVerification = () => {
                             ))}
                         </div>
 
-                        {/* Test OTP hint */}
-                        {process.env.NODE_ENV === 'development' && (
-                            <p className="text-xs text-gray-400 text-center">
-                                Test OTP: 448667
-                            </p>
-                        )}
-
                         {/* Error Message */}
                         {error && (
                             <p className="text-red-600 text-sm text-center bg-red-50 p-2 rounded">
@@ -206,7 +226,14 @@ const AdminOtpVerification = () => {
                             </p>
                         )}
 
-
+                        {/* Timer Display */}
+                        <div className="text-center text-sm text-gray-500">
+                            {timeLeft > 0 ? (
+                                <p>Code expires in <span className="font-medium text-gray-700">{formatTime(timeLeft)}</span></p>
+                            ) : (
+                                <p className="text-red-500">Code expired - please request a new one</p>
+                            )}
+                        </div>
 
                         {/* Verify Button */}
                         <button

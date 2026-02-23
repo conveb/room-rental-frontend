@@ -32,9 +32,10 @@ export const useSignin = () => {
       // Check if OTP verification is required (for admin)
       if (res.data.require_otp === true) {
         // Navigate to OTP verification page with email in state
-        navigate("/verify-otp", { 
-          state: { 
+        navigate("/verify-otp", {
+          state: {
             email: res.data.email || payload.email,
+            otp: res.data.otp,
             purpose: "ADMIN_LOGIN",
             requireOtp: true
           },
