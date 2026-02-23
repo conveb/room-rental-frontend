@@ -28,6 +28,21 @@ export const useSignin = () => {
         throw new Error("Login failed");
       }
       console.log("Signin response:", res.data);
+
+      // Check if OTP verification is required (for admin)
+      if (res.data.require_otp === true) {
+        // Navigate to OTP verification page with email in state
+        navigate("/verify-otp", { 
+          state: { 
+            email: res.data.email || payload.email,
+            purpose: "ADMIN_LOGIN",
+            requireOtp: true
+          },
+          replace: true // Replace the signin page in history so user can't go back
+        });
+        return; // Stop further execution - DON'T call login() yet
+      }
+
       // After successful login
       sessionStorage.setItem('aliveparis_session_hint', 'true');
 

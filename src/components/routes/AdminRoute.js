@@ -3,6 +3,7 @@ import { useAuth } from "../../context/AuthContext";
 
 export function AdminRoute() {
   const { user, role, loading } = useAuth();
+  
 
   if (loading) return <>loading...</>;
 

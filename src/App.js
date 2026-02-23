@@ -65,6 +65,7 @@ import PrivateRoute from "./components/routes/PrivateRoute";
 import { LandOwnerRoute } from "./components/routes/LandOwnerRoute";
 import UploadPassport from "./pages/landlord/UploadPassport";
 import { NotificationProvider } from "./context/NotificationContext";
+import AdminOtpVerification from "./pages/admin/requests/AdminOtpVerification";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -95,6 +96,7 @@ function App() {
           <Route path="/account-suspended" element={<BlockedPage />} />
         </Route>
 
+            <Route path="verify-otp" element={<AdminOtpVerification />} />
         <Route element={<AdminRoute />}> 
           <Route path="/auth/admin" element={<AdminLayout />}>
             <Route index element={<AdminDashboard />} />
