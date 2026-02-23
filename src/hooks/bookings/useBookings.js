@@ -8,8 +8,6 @@ export const useBooking = () => {
   const [bookingDetails, setBookingDetails] = useState(null);
 
 
-  // hooks/bookings/useBooking.js
-
   const fetchPropertyBooking = async (propId) => {
     setBookingLoading(true);
     try {
@@ -33,7 +31,7 @@ export const useBooking = () => {
       setBookingLoading(false);
     }
   };
-  // Fetch specific booking details
+
   const fetchBookingDetails = async (id) => {
     setBookingLoading(true);
     try {
@@ -50,7 +48,6 @@ export const useBooking = () => {
     }
   };
 
-// hooks/bookings/useBooking.js
 
 const requestBooking = async (propertyId, bookingData) => {
   setBookingLoading(true);

@@ -18,9 +18,9 @@ export const AuthProvider = ({ children }) => {
   const [isInitialized, setIsInitialized] = useState(false);
   const [sessionHint, setSessionHint] = useState(() => {
     // Check localStorage on initial load
-    return localStorage.getItem(SESSION_HINT_KEY) === 'true';
+    return sessionStorage.getItem(SESSION_HINT_KEY) === 'true';
   });
-  
+
   const navigate = useNavigate();
 
   const fetchCurrentUser = async () => {
@@ -29,18 +29,18 @@ export const AuthProvider = ({ children }) => {
       if (res?.data) {
         setUser(res.data);
         // User is authenticated - set session hint
-        localStorage.setItem(SESSION_HINT_KEY, 'true');
+        sessionStorage.setItem(SESSION_HINT_KEY, 'true');
         setSessionHint(true);
         return res.data;
       } else {
         setUser(null);
-        localStorage.removeItem(SESSION_HINT_KEY);
+        sessionStorage.removeItem(SESSION_HINT_KEY);
         setSessionHint(false);
         return null;
       }
     } catch {
       setUser(null);
-      localStorage.removeItem(SESSION_HINT_KEY);
+      sessionStorage.removeItem(SESSION_HINT_KEY);
       setSessionHint(false);
     } finally {
       setLoading(false);
@@ -58,7 +58,7 @@ export const AuthProvider = ({ children }) => {
       if (user && isInitialized) {
         console.log("🔴 Session expired - logging out");
         setUser(null);
-        localStorage.removeItem(SESSION_HINT_KEY);
+        sessionStorage.removeItem(SESSION_HINT_KEY);
         setSessionHint(false);
         navigate("/login");
       }

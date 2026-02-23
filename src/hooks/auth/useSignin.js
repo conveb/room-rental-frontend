@@ -29,7 +29,7 @@ export const useSignin = () => {
       }
       console.log("Signin response:", res.data);
       // After successful login
-      localStorage.setItem('aliveparis_session_hint', 'true');
+      sessionStorage.setItem('aliveparis_session_hint', 'true');
 
       // ✅ UPDATE GLOBAL AUTH STATE
       await login();
