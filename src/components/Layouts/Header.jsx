@@ -52,7 +52,7 @@ export default function Header() {
   // Determine what to show in the button
   const renderAuthButton = () => {
     // If we have a session hint and we're still loading, show account button optimistically
-    if (loading && sessionHint) {
+    if (sessionHint || user) {
       return (
         <li className="bg-black text-white rounded-full border border-stone-700">
           <Link to={getAccountRoute(role)}>
@@ -73,13 +73,11 @@ export default function Header() {
       );
     }
 
-    // Final state based on actual user data
+   // Confirmed no session
     return (
       <li className="bg-black text-white rounded-full border border-stone-700">
-        <Link to={user ? getAccountRoute(role) : "/signin"}>
-          <button className="p-3">
-            {user ? <FaRegUser /> : "Sign In"}
-          </button>
+        <Link to="/signin">
+          <button className="p-3">Sign In</button>
         </Link>
       </li>
     );
@@ -163,7 +161,7 @@ export default function Header() {
             <li onClick={() => setOpen(false)}>
               <Link to="/contact-us">Contact</Link>
             </li>
-            
+
             {/* Mobile auth button */}
             {renderAuthButton()}
 

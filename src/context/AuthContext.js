@@ -82,7 +82,7 @@ export const AuthProvider = ({ children }) => {
       console.error("Logout failed", e);
     } finally {
       setUser(null);
-      localStorage.removeItem(SESSION_HINT_KEY);
+      sessionStorage.removeItem(SESSION_HINT_KEY);
       setSessionHint(false);
       navigate("/signin", { replace: true });
     }
