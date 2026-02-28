@@ -20,6 +20,8 @@ export default function UserAccount() {
   const navigate = useNavigate();
   const { user: checkProvider, logout } = useAuth();
 
+  const [authProvider, setAuthProvider] = useState();
+
   const {
     user,
     setUser,
@@ -61,6 +63,12 @@ export default function UserAccount() {
     if (user) {
       setEditValues(user);
       setSelectedAvatar(user.avatar_id || defaultAvatar);
+    }
+    if (checkProvider) {
+      setAuthProvider(checkProvider)
+      console.log(checkProvider.auth_provider)
+      console.log(checkProvider.password_set
+      )
     }
   }, [user]);
 
@@ -372,89 +380,43 @@ export default function UserAccount() {
               <div>
 
 
-                {checkProvider?.auth_provider === "PASSWORD" ? (
-
-
+                {/* Case 1: Manual login with password set → Reset Password */}
+                {authProvider.auth_provider === "PASSWORD" && authProvider.password_set === true && (
                   <button
                     onClick={() => setPasswordModal(true)}
                     className="w-full text-left p-2 rounded-xl border hover:bg-neutral-50 flex gap-3 items-center"
                   >
-                    <p className="p-3 bg-cyan-300 rounded-xl"><MdOutlinePassword size={20} /></p> Reset password
+                    <p className="p-3 bg-cyan-300 rounded-xl"><MdOutlinePassword size={20} /></p>
+                    Reset Password
                   </button>
-                ) : (
-                  <>
-                    <button
-                      onClick={() => setGooglePasswordModal(true)}
-                      className="w-full text-left p-2 rounded-xl border  flex gap-3 items-center "
-                      aria-label="Password reset not available for Google accounts"
-                    >
-                      <div className="p-3 bg-gray-100 rounded-xl">
-                        <FcGoogle size={20} />
-                      </div>
-                      <div className="text-left">
-                        <span className="font-medium ">Set Password</span>
-                        <p className="text-xs text-gray-400 mt-1">
-                          You authenticated through google - Set password
-                        </p>
-                      </div>
-                    </button>
+                )}
 
-                    {googlePasswordModal && (
-                      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-                        <div className="bg-white rounded-2xl w-full max-w-md p-6 space-y-4">
-                          <div className="flex items-center gap-2">
-                            <FcGoogle size={24} />
-                            <h2 className="text-lg font-semibold">Create Account Password</h2>
-                          </div>
-                          <p className="text-sm text-gray-500">
-                            Set a password so you can log in without using Google in the future.
-                          </p>
+                {/* Case 2: Google login, no password set → Set Password */}
+                {authProvider.auth_provider === "GOOGLE" && authProvider.password_set === false && (
+                  <button
+                    onClick={() => setGooglePasswordModal(true)}
+                    className="w-full text-left p-2 rounded-xl border flex gap-3 items-center"
+                  >
+                    <div className="p-3 bg-gray-100 rounded-xl"><FcGoogle size={20} /></div>
+                    <div className="text-left">
+                      <span className="font-medium">Set Password</span>
+                      <p className="text-xs text-gray-400 mt-1">
+                        You authenticated through Google — Set a password
+                      </p>
+                    </div>
+                  </button>
+                )}
 
-                          <input
-                            type="password"
-                            placeholder="New password"
-                            value={googlePasswordForm.new_password}
-                            onChange={(e) =>
-                              setGooglePasswordForm({ ...googlePasswordForm, new_password: e.target.value })
-                            }
-                            className="w-full rounded-xl border px-4 py-3 text-sm"
-                          />
-
-                          <input
-                            type="password"
-                            placeholder="Confirm new password"
-                            value={googlePasswordForm.confirm_password}
-                            onChange={(e) =>
-                              setGooglePasswordForm({ ...googlePasswordForm, confirm_password: e.target.value })
-                            }
-                            className="w-full rounded-xl border px-4 py-3 text-sm"
-                          />
-
-                          <div className="flex justify-end gap-3 pt-2">
-                            <button
-                              onClick={() => setGooglePasswordModal(false)}
-                              className="px-4 py-2 rounded-xl border text-sm"
-                            >
-                              Cancel
-                            </button>
-
-                            <button
-                              disabled={settingPassword}
-                              onClick={handleGoogleSetPassword}
-                              className="px-4 py-2 rounded-xl bg-black text-white text-sm disabled:opacity-50 flex items-center gap-2"
-                            >
-                              {settingPassword ? (
-                                <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" />
-                              ) : null}
-                              {settingPassword ? "Setting..." : "Set Password"}
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </>
-                )
-                }
+                {/* Case 3: Google login, password already set → Reset Password */}
+                {authProvider.auth_provider === "GOOGLE" && authProvider.password_set === true && (
+                  <button
+                    onClick={() => setPasswordModal(true)}
+                    className="w-full text-left p-2 rounded-xl border hover:bg-neutral-50 flex gap-3 items-center"
+                  >
+                    <p className="p-3 bg-cyan-300 rounded-xl"><MdOutlinePassword size={20} /></p>
+                    Reset Password
+                  </button>
+                )}
               </div>
               {passwordModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">

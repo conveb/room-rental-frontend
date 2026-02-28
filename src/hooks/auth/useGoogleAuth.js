@@ -27,7 +27,7 @@ export const useGoogleAuth = () => {
          // Refresh user data in auth context
         await fetchCurrentUser();
         toast.success("Logged in successfully!");
-        navigate("/");
+        navigate("/auth/user/accommodation");
       }
     } catch (err) {
       const msg = err.response?.data?.detail || "Google login failed";
@@ -47,7 +47,7 @@ export const useGoogleAuth = () => {
       if (response.status === 200 || response.status === 201) {
         await login();
         toast.success("Password set successfully!");
-        navigate("/dashboard"); // Or wherever you need them to go
+        navigate("/auth/user/account"); // Or wherever you need them to go
         return response.data;
       }
     } catch (err) {

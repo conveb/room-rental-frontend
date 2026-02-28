@@ -6,7 +6,7 @@ import useMyProperties from "../../../hooks/property/useMyProperties";
 import ImgSkeleton from '../../../Assets/pngs/img_skeleton.png'
 import { useNavigate } from "react-router-dom";
 
-export default function MyProperties({role}) {
+export default function MyProperties({ role }) {
   console.log(role);
   const navigate = useNavigate();
   const { properties, loading, error, deleteProperty, updateProperty, actionLoading } = useMyProperties();
@@ -154,6 +154,15 @@ export default function MyProperties({role}) {
           </div>
         ))}
       </div>
+        {!loading && !error && properties.length === 0 && (
+          <div className="flex flex-col items-center justify-center py-20 text-center ">
+            <h3 className="text-lg font-semibold text-gray-800 mb-1">No properties yet</h3>
+            <p className="text-sm text-gray-400 mb-6">
+              You haven't listed any properties. Start by adding your first one.
+            </p>
+            
+          </div>
+        )}
 
       {/* EDIT MODAL */}
       {/* {editingProperty && (

@@ -26,5 +26,5 @@ export const usePropertyDetails = (propertyId) => {
     return () => { isMounted = false; };
   }, [propertyId]);
 
-  return { property, loading };
+  return {  property, loading };
 };
