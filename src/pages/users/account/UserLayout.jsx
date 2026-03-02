@@ -31,9 +31,9 @@ const UserLayout = () => {
 
       {/* HEADER */}
       <header className="fixed top-0 left-0 right-0   bg-white border-b border-gray-100   z-40">
-      <div className=" bg-red-200">
-        <VerifyPhoneNumber isPhoneVerified={userData?.phone ? true : false} />
-      </div>
+        <div className=" bg-red-200">
+          <VerifyPhoneNumber isPhoneVerified={userData?.phone ? true : false} />
+        </div>
         <div className="container mx-auto flex items-center justify-between  h-16 px-3 md:px-0">
 
           {/* LEFT: LOGO & SEARCH */}
@@ -110,6 +110,28 @@ const UserLayout = () => {
                 </span>
               )}
             </Link>
+              <div className="border border-black border-2  rounded-full">
+
+            <div className="block md:hidden h-10 w-10 bg-slate-100 rounded-full flex items-center justify-center overflow-hidden">
+              {userData?.avatar_id ? (
+                <img
+                  src={Characters.find((c) => c.id === Number(userData.avatar_id))?.img}
+                  alt="profile"
+                  className="w-full h-full object-cover"
+                />
+              ) : userData?.full_name ? (
+                // Show first letter if name exists
+                <span className="text-gray-700 font-bold uppercase text-xl">
+                  {userData.full_name.charAt(0)}
+                </span>
+              ) : (
+                // Fallback to icon if absolutely no data is available
+                <FaRegUserCircle className="text-gray-400 text-xl" />
+              )}
+            </div>
+              </div>
+
+
 
           </div>
 
@@ -120,7 +142,7 @@ const UserLayout = () => {
 
 
       {/* MAIN CONTENT AREA */}
-      <main className={`flex-1 ${userData?.phone? "mt-16" : "mt-28"} pb-20 md:pb-6 overflow-auto`}>
+      <main className={`flex-1 ${userData?.phone ? "mt-16" : "mt-28"} pb-20 md:pb-6 overflow-auto`}>
         <Outlet />
       </main>
 
