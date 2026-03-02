@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { toast } from "sonner";
 import { useCreateProperty } from "../../../hooks/property/useCreateProperty";
 // Sub-components
 import PropertyImageUpload from "../components/PropertyImageUpload";
 import LocationPicker from "../components/LocationPicker";
 import PropertyFormFields from "../components/PropertyFormFields";
-
-
 
 export default function AddProperties() {
   const [formData, setFormData] = useState({
@@ -16,12 +14,15 @@ export default function AddProperties() {
     size_m2: "",
     max_people: "",
     furnished: true,
+    is_domicile_allowed: false,
+    is_caf_eligible: false,
+    contract_file: null,
     rooms: "",
     bathrooms: "",
     rent_per_month: "",
     charges: "",
     security_deposit: "",
-    available_from: new Date(),
+    available_from: new Date().toISOString().split('T')[0],
     minimum_stay_months: "",
     location_id: "",
     address: "",
@@ -40,24 +41,61 @@ export default function AddProperties() {
   const [selectedAmenities, setSelectedAmenities] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
+  const submitButtonRef = useRef(null);
   const { createProperty, loading: isPublishing } = useCreateProperty();
 
-  const handleInputChange = (e) => {
+  // Cleanup function
+  useEffect(() => {
+    return () => {
+      if (coverImage?.preview) URL.revokeObjectURL(coverImage.preview);
+      images.forEach(img => {
+        if (img?.preview) URL.revokeObjectURL(img.preview);
+      });
+    };
+  }, [coverImage, images]);
+
+  const handleInputChange = useCallback((e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  }, []);
 
-  const handleLocationUpdate = (locationData) => {
+  const handleLocationUpdate = useCallback((locationData) => {
     setFormData((prev) => ({ ...prev, ...locationData }));
-  };
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isSubmitting || isPublishing) return;
-    if (!coverImage) return toast.error("Please upload a cover image.");
-    if (!formData.location_id) return toast.error("Please select a location.");
+    
+    // Disable submit button immediately
+    if (submitButtonRef.current) {
+      submitButtonRef.current.disabled = true;
+    }
+    
+    // Prevent double submission
+    if (isSubmitting || isPublishing) {
+      toast.warning("Already submitting...");
+      return;
+    }
+
+    // Validate required fields
+    if (!coverImage) {
+      toast.error("Please upload a cover image.");
+      if (submitButtonRef.current) {
+        submitButtonRef.current.disabled = false;
+      }
+      return;
+    }
+    
+    if (!formData.location_id) {
+      toast.error("Please select a location.");
+      if (submitButtonRef.current) {
+        submitButtonRef.current.disabled = false;
+      }
+      return;
+    }
 
     setIsSubmitting(true);
+
     try {
       const submissionData = {
         ...formData,
@@ -67,12 +105,19 @@ export default function AddProperties() {
       };
 
       await createProperty(submissionData);
-      toast.success("Property published successfully!");
-      // Optional: Reset state or redirect here
+      
+      // Success - you can redirect or reset form here
+      // toast.success("Property published successfully!"); // This is already in useCreateProperty
+      
     } catch (err) {
-      toast.error(err.message || "Submission failed");
+      // Error is already handled in useCreateProperty
+      console.error("Submission error:", err);
     } finally {
       setIsSubmitting(false);
+      // Re-enable submit button
+      if (submitButtonRef.current) {
+        submitButtonRef.current.disabled = false;
+      }
     }
   };
 
@@ -85,27 +130,28 @@ export default function AddProperties() {
       <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 p-2">
         {/* LEFT COLUMN: MEDIA & MAP */}
         <div className="space-y-6">
-          <PropertyImageUpload 
-            coverImage={coverImage} 
-            setCoverImage={setCoverImage} 
-            images={images} 
-            setImages={setImages} 
+          <PropertyImageUpload
+            coverImage={coverImage}
+            setCoverImage={setCoverImage}
+            images={images}
+            setImages={setImages}
           />
-          <LocationPicker 
-            formData={formData} 
-            onLocationChange={handleLocationUpdate} 
+          <LocationPicker
+            formData={formData}
+            onLocationChange={handleLocationUpdate}
           />
         </div>
 
         {/* RIGHT COLUMN: PROPERTY DETAILS */}
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 h-fit">
-          <PropertyFormFields 
-            formData={formData} 
+          <PropertyFormFields
+            formData={formData}
             setFormData={setFormData}
             handleInputChange={handleInputChange}
             selectedAmenities={selectedAmenities}
             setSelectedAmenities={setSelectedAmenities}
             isSubmitting={isSubmitting || isPublishing}
+            submitButtonRef={submitButtonRef}
           />
         </div>
       </form>

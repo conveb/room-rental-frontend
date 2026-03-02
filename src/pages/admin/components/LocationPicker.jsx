@@ -1,40 +1,62 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useMemo, useEffect } from "react";
 import { MdMyLocation, MdMap, MdLink } from "react-icons/md";
 import { Dialog } from "primereact/dialog";
 import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from "react-leaflet";
 import { toast } from "sonner";
 
-// Component to handle auto-centering map
+// ✅ Only re-center when center actually changes
 function ChangeView({ center }) {
   const map = useMap();
-  map.setView(center, map.getZoom());
+  useEffect(() => {
+    map.setView(center, map.getZoom());
+  }, [center[0], center[1]]); // eslint-disable-line react-hooks/exhaustive-deps
   return null;
 }
 
 export default function LocationPicker({ formData, onLocationChange }) {
   const [mapVisible, setMapVisible] = useState(false);
   const [mapUrl, setMapUrl] = useState("");
-  
+
+  // Fixed: Only depend on latitude and longitude, not the entire formData
   const currentPosition = useMemo(() => [
-    formData.latitude || 9.9312, 
+    formData.latitude || 9.9312,
     formData.longitude || 76.2673
   ], [formData.latitude, formData.longitude]);
 
   const updateLocationDetails = useCallback(async (lat, lng) => {
     try {
       const response = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`
+        `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`
       );
       const data = await response.json();
-      
+
       if (data.address) {
+        // Build a precise address from components rather than using display_name
+        const a = data.address;
+        const houseNumber = a.house_number || "";
+        const road = a.road || a.pedestrian || a.footway || a.path || "";
+        const suburb = a.suburb || a.neighbourhood || a.quarter || "";
+        const city = a.city || a.town || a.village || a.municipality || "";
+        const region = a.state || a.county || "";
+        const country = a.country || "";
+        const postcode = a.postcode || "";
+
+        // Build a clean precise address string
+        const preciseAddress = [
+          [houseNumber, road].filter(Boolean).join(" "),
+          suburb,
+          [city, postcode].filter(Boolean).join(" "),
+          region,
+          country
+        ].filter(Boolean).join(", ");
+
         onLocationChange({
           latitude: lat,
           longitude: lng,
-          address: data.display_name,
-          city: data.address.city || data.address.town || data.address.village || "",
-          region: data.address.state || data.address.county || "",
-          country: data.address.country || "",
+          address: preciseAddress || data.display_name,
+          city,
+          region,
+          country,
         });
       }
     } catch (err) {
@@ -46,7 +68,12 @@ export default function LocationPicker({ formData, onLocationChange }) {
     if (!navigator.geolocation) return toast.error("Geolocation not supported");
     navigator.geolocation.getCurrentPosition(
       (pos) => updateLocationDetails(pos.coords.latitude, pos.coords.longitude),
-      () => toast.error("Access denied")
+      () => toast.error("Access denied"),
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0
+      }
     );
   };
 
@@ -93,11 +120,11 @@ export default function LocationPicker({ formData, onLocationChange }) {
 
       <div className="space-y-2 pt-2 border-t border-dashed">
         <div className="grid grid-cols-3 gap-2">
-          <input value={formData.city} readOnly placeholder="City" className="border p-2 rounded-lg bg-slate-50 text-[10px]" />
-          <input value={formData.region} readOnly placeholder="Region" className="border p-2 rounded-lg bg-slate-50 text-[10px]" />
-          <input value={formData.country} readOnly placeholder="Country" className="border p-2 rounded-lg bg-slate-50 text-[10px]" />
+          <input value={formData.city || ''} readOnly placeholder="City" className="border p-2 rounded-lg bg-slate-50 text-[10px]" />
+          <input value={formData.region || ''} readOnly placeholder="Region" className="border p-2 rounded-lg bg-slate-50 text-[10px]" />
+          <input value={formData.country || ''} readOnly placeholder="Country" className="border p-2 rounded-lg bg-slate-50 text-[10px]" />
         </div>
-        <textarea value={formData.address} readOnly rows={2} className="w-full border p-2 rounded-lg bg-slate-50 text-[10px] resize-none" placeholder="Detected Address" />
+        <textarea value={formData.address || ''} readOnly rows={2} className="w-full border p-2 rounded-lg bg-slate-50 text-[10px] resize-none" placeholder="Detected Address" />
       </div>
 
       <Dialog header="Pick Location" visible={mapVisible} style={{ width: "95vw", maxWidth: "800px" }} onHide={() => setMapVisible(false)}>

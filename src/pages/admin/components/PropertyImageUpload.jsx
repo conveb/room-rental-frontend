@@ -1,28 +1,67 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { MdAddCircle, MdDelete } from "react-icons/md";
 
 const PropertyImageUpload = ({ coverImage, setCoverImage, images, setImages }) => {
-  
+  // Use refs to track URLs that need cleanup
+  const coverUrlRef = useRef(null);
+  const imageUrlsRef = useRef(new Set());
+
   const handleCoverSelect = (e) => {
     const file = e.target.files[0];
-    if (file) setCoverImage({ file, preview: URL.createObjectURL(file) });
+    if (file) {
+      // Revoke previous cover URL if it exists
+      if (coverUrlRef.current) {
+        URL.revokeObjectURL(coverUrlRef.current);
+      }
+      const newPreview = URL.createObjectURL(file);
+      coverUrlRef.current = newPreview;
+      setCoverImage({ file, preview: newPreview });
+    }
   };
 
   const handleImageSelect = (e) => {
     const files = Array.from(e.target.files);
     const remaining = 5 - images.length;
-    const mapped = files.slice(0, remaining).map(file => ({
-      file, preview: URL.createObjectURL(file)
-    }));
+    const mapped = files.slice(0, remaining).map(file => {
+      const preview = URL.createObjectURL(file);
+      imageUrlsRef.current.add(preview);
+      return { file, preview };
+    });
     setImages(prev => [...prev, ...mapped]);
   };
 
+  const removeImage = (indexToRemove) => {
+    const imageToRemove = images[indexToRemove];
+    if (imageToRemove?.preview) {
+      URL.revokeObjectURL(imageToRemove.preview);
+      imageUrlsRef.current.delete(imageToRemove.preview);
+    }
+    setImages(images.filter((_, i) => i !== indexToRemove));
+  };
+
+  const removeCover = () => {
+    if (coverUrlRef.current) {
+      URL.revokeObjectURL(coverUrlRef.current);
+      coverUrlRef.current = null;
+    }
+    setCoverImage(null);
+  };
+
+  // Cleanup on unmount
   useEffect(() => {
     return () => {
-      if (coverImage?.preview) URL.revokeObjectURL(coverImage.preview);
-      images.forEach(img => URL.revokeObjectURL(img.preview));
+      // Cleanup cover image URL
+      if (coverUrlRef.current) {
+        URL.revokeObjectURL(coverUrlRef.current);
+      }
+      
+      // Cleanup all gallery image URLs
+      imageUrlsRef.current.forEach(url => {
+        URL.revokeObjectURL(url);
+      });
+      imageUrlsRef.current.clear();
     };
-  }, [coverImage, images]);
+  }, []);
 
   return (
     <div className="space-y-4">
@@ -38,7 +77,7 @@ const PropertyImageUpload = ({ coverImage, setCoverImage, images, setImages }) =
           ) : (
             <div className="relative h-40 rounded-xl overflow-hidden border">
               <img src={coverImage.preview} className="w-full h-full object-cover" alt="Cover" />
-              <button type="button" onClick={() => setCoverImage(null)} className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full shadow-lg"><MdDelete /></button>
+              <button type="button" onClick={removeCover} className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full shadow-lg"><MdDelete /></button>
             </div>
           )}
         </div>
@@ -56,8 +95,8 @@ const PropertyImageUpload = ({ coverImage, setCoverImage, images, setImages }) =
         <div className="grid grid-cols-5 gap-2">
           {images.map((img, index) => (
             <div key={index} className="relative h-16 rounded-lg overflow-hidden border">
-              <img src={img.preview} className="w-full h-full object-cover" />
-              <button type="button" onClick={() => setImages(images.filter((_, i) => i !== index))} className="absolute top-0 right-0 bg-red-500 text-white p-0.5 rounded-full text-[10px]"><MdDelete /></button>
+              <img src={img.preview} className="w-full h-full object-cover" alt={`Gallery ${index}`} />
+              <button type="button" onClick={() => removeImage(index)} className="absolute top-0 right-0 bg-red-500 text-white p-0.5 rounded-full text-[10px]"><MdDelete /></button>
             </div>
           ))}
         </div>

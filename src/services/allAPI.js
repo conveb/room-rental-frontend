@@ -8,6 +8,8 @@ export const sendOtpAPI = (payload) => commonAPI("post", "/api/v1/auth/email/", 
 export const AuthAPI = () => commonAPI("get", "/api/v1/auth/me");
 export const forgotPasswordApi = (payload) =>commonAPI("post", "/api/v1/auth/forgot-password/", payload);
 export const createGooglePasswordApi = (payload) =>commonAPI("post", "/api/v1/google/setpassword/", payload);
+export const verifyPhoneApi = (data) =>commonAPI("post", "api/v1/phone/send-otp/", data);
+export const verifyPhoneOtpApi = (data) =>commonAPI("post", "api/v1/phone/verify-user-otp/", data);
 export const LogoutAPI = () => commonAPI("post", "/api/v1/logout/");
 
 export const getAllPropertiesAPI = async () => { return await commonAPI("get", "/api/v1/properties");};
@@ -65,6 +67,8 @@ export const getUsersAuditApi= ()=>commonAPI('get','/api/v1/admin/users/audit-lo
 export const getLogsAuditApi= ()=>commonAPI('get','/api/v1/audit-logs/')
 
 export const getReportedLandownersApi= ()=>commonAPI('get','/api/v1/admin/reported-landowners/') 
+export const getLandOwnerDashboardOverviewApi= ()=>commonAPI('get','api/v1/landowners/dashboard/') 
+
 
 export const listAmenitiesApi= ()=>commonAPI('get','/api/v1/amenities') 
 export const createAmenities= (data)=>commonAPI('post','/api/v1/amenities/',data) 

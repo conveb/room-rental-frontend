@@ -10,6 +10,7 @@ import { useAuth } from "../../../context/AuthContext";
 import { useUserProfile } from "../../../hooks/users/useUserProfile";
 import { useNotifications } from "../../../context/NotificationContext";
 import { Characters } from "./characterCollection";
+import VerifyPhoneNumber from "../components/VerifyPhoneNumber";
 
 const navItems = [
   { to: "/auth/user/accommodation", label: "Explore", icon: <HiMiniHome /> },
@@ -30,6 +31,9 @@ const UserLayout = () => {
 
       {/* HEADER */}
       <header className="fixed top-0 left-0 right-0   bg-white border-b border-gray-100   z-40">
+      <div className=" bg-red-200">
+        <VerifyPhoneNumber isPhoneVerified={userData?.phone ? true : false} />
+      </div>
         <div className="container mx-auto flex items-center justify-between  h-16 px-3 md:px-0">
 
           {/* LEFT: LOGO & SEARCH */}
@@ -116,7 +120,7 @@ const UserLayout = () => {
 
 
       {/* MAIN CONTENT AREA */}
-      <main className="flex-1 pt-16 pb-20 md:pb-6 overflow-auto">
+      <main className={`flex-1 ${userData?.phone? "mt-16" : "mt-28"} pb-20 md:pb-6 overflow-auto`}>
         <Outlet />
       </main>
 

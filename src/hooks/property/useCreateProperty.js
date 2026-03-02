@@ -1,38 +1,59 @@
-import { useState } from "react";
+import { useState, useCallback, useRef } from "react";
 import { toast } from "sonner";
 import { createPropertyApi } from "../../services/allAPI";
 
 export const useCreateProperty = () => {
   const [loading, setLoading] = useState(false);
+  const abortControllerRef = useRef(null);
 
-  const createProperty = async (values) => {
+  const createProperty = useCallback(async (values) => {
+    // Prevent multiple simultaneous submissions
+    if (loading) {
+      toast.warning("Already submitting...");
+      return;
+    }
+    
     setLoading(true);
+    
+    // Cancel previous request if exists
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    
+    // Create new abort controller for this request
+    abortControllerRef.current = new AbortController();
+    
     try {
       const formData = new FormData();
 
       // 1. Append Text fields with type-safe handling
       Object.keys(values).forEach((key) => {
-        if (key !== "images" && key !== "cover_image" && key !== "amenities" && key !== "instructions") {
+        // Exclude file upload fields and array fields
+        if (key !== "images" && 
+            key !== "cover_image" && 
+            key !== "amenities" && 
+            key !== "instructions" && 
+            key !== "contract_file") {
           let val = values[key];
+
+          // Skip null/undefined values
+          if (val === null || val === undefined) return;
 
           // Format Date objects to YYYY-MM-DD
           if (val instanceof Date) {
             val = val.toISOString().split('T')[0];
           }
 
-          // FIX: Handle Booleans (Convert true to 1 or "true" based on backend needs)
+          // Handle Booleans
           if (typeof val === "boolean") {
             val = val ? "true" : "false"; 
           }
 
-          // FIX: Don't append empty strings or nulls for optional numeric fields
-          if (val !== "" && val !== null && val !== undefined) {
-            formData.append(key, val);
-          }
+          formData.append(key, String(val));
         }
       });
 
-      // Since this is an array of objects, we must stringify it for Multipart/Form-Data
+      // Handle instructions array
       if (values.instructions && Array.isArray(values.instructions)) {
         formData.append("instructions", JSON.stringify(values.instructions));
       }
@@ -48,36 +69,84 @@ export const useCreateProperty = () => {
         });
       }
 
-      // 3. Append Amenities individually (Standard for Django/Rest Framework lists)
+      // Append contract_file PDF file
+      if (values.contract_file) {
+        formData.append("contract_file", values.contract_file);
+      }
+
+      // 3. Append Amenities individually
       if (values.amenities && Array.isArray(values.amenities)) {
         values.amenities.forEach(id => {
-          formData.append("amenities", id);
+          if (id) formData.append("amenities", id);
         });
       }
 
-      // Debugging: View exactly what is being sent in the console
-      // for (let pair of formData.entries()) { console.log(pair[0] + ': ' + pair[1]); }
-
-      const response = await createPropertyApi(formData);
+      // Make API call with abort signal
+      const response = await createPropertyApi(formData, {
+        signal: abortControllerRef.current.signal
+      });
+      
+      // Single success toast
       toast.success("Property published successfully!");
       return response.data;
 
     } catch (err) {
+      // Don't show errors if request was aborted
+      if (err.name === 'AbortError' || err.code === 'ERR_CANCELED') {
+        return;
+      }
+      
+      // Handle different error types
       if (err.response && err.response.data) {
         const serverErrors = err.response.data;
-        // The catch block now handles both arrays and single strings safely
-        Object.entries(serverErrors).forEach(([field, messages]) => {
-          const errorMsg = Array.isArray(messages) ? messages.join(", ") : messages;
-          toast.error(`${field}: ${errorMsg}`);
-        });
+        
+        // Check if it's a validation error object
+        if (typeof serverErrors === 'object') {
+          // Collect all error messages into one string
+          const errorMessages = [];
+          
+          Object.entries(serverErrors).forEach(([field, messages]) => {
+            if (Array.isArray(messages)) {
+              messages.forEach(msg => {
+                errorMessages.push(`${field}: ${msg}`);
+              });
+            } else if (typeof messages === 'string') {
+              errorMessages.push(`${field}: ${messages}`);
+            }
+          });
+          
+          // Show all errors in a single toast (limit to first 3 to avoid overflow)
+          if (errorMessages.length > 0) {
+            const displayErrors = errorMessages.slice(0, 3);
+            const remainingCount = errorMessages.length - 3;
+            
+            const errorText = displayErrors.join('\n') + 
+              (remainingCount > 0 ? `\n...and ${remainingCount} more errors` : '');
+            
+            toast.error(
+              <div className="whitespace-pre-line max-h-40 overflow-y-auto">
+                {errorText}
+              </div>
+            );
+          } else {
+            toast.error("Validation failed. Please check your inputs.");
+          }
+        } else {
+          // Single error message
+          toast.error(String(serverErrors));
+        }
+      } else if (err.message) {
+        toast.error(err.message);
       } else {
         toast.error("An unexpected error occurred.");
       }
+      
       throw err;
     } finally {
       setLoading(false);
+      abortControllerRef.current = null;
     }
-  };
+  }, [loading]);
 
   return { createProperty, loading };
 };
