@@ -20,7 +20,7 @@ const Users = ({
   const [showStatusModal, setShowStatusModal] = useState(false); // Renamed from showBlockModal
   const [selectedUser, setSelectedUser] = useState(null);
   const [reason, setReason] = useState("");
-  const [statusTab, setStatusTab] = useState('active'); 
+  const [statusTab, setStatusTab] = useState('active');
   const [actionType, setActionType] = useState('block'); // 'block' or 'unblock'
 
   const handleStatusUpdate = async () => {
@@ -40,13 +40,18 @@ const Users = ({
   };
 
   // Filter users based on status tab
-  const tabFilteredUsers = filteredUsers.filter(u => 
-    statusTab === 'active' ? u.is_active : !u.is_active
-  );
+  // Filter users based on status tab
+  const tabFilteredUsers = filteredUsers.filter(u => {
+    if (statusTab === 'deleted') return u.is_deleted;
+    if (statusTab === 'active') return u.is_active && !u.is_deleted;
+    if (statusTab === 'blocked') return !u.is_active && !u.is_deleted;
+    return true;
+  });
 
   // Get counts for tabs
   const activeCount = filteredUsers.filter(u => u.is_active).length;
   const blockedCount = filteredUsers.filter(u => !u.is_active).length;
+  const deletedCount = filteredUsers.filter(u => u.is_deleted).length;
 
   return (
     <div className="space-y-4">
@@ -73,43 +78,56 @@ const Users = ({
       </div>
 
       {/* Status Tabs */}
-      <div className="flex gap-1 border-b">
+      <div className="flex border-b">
         <button
           onClick={() => setStatusTab('active')}
-          className={`relative px-4 py-2 text-sm font-medium transition-colors ${
-            statusTab === 'active'
-              ? 'text-green-600 border-b-2 border-green-600'
-              : 'text-gray-500 hover:text-gray-700'
-          }`}
+          className={`relative px-2 py-2 text-sm font-medium transition-colors ${statusTab === 'active'
+            ? 'text-green-600 border-b-2 border-green-600'
+            : 'text-gray-500 hover:text-gray-700'
+            }`}
         >
           <div className="flex items-center gap-2">
             <span>Active Users</span>
-            <span className={`text-xs px-2 py-0.5 rounded-full ${
-              statusTab === 'active' 
-                ? 'bg-green-100 text-green-700' 
-                : 'bg-gray-100 text-gray-600'
-            }`}>
+            <span className={`text-xs px-0 py-0.5 rounded-full ${statusTab === 'active'
+              ? 'bg-green-100 text-green-700'
+              : 'bg-gray-100 text-gray-600'
+              }`}>
               {activeCount}
             </span>
           </div>
         </button>
-        
+
         <button
           onClick={() => setStatusTab('blocked')}
-          className={`relative px-4 py-2 text-sm font-medium transition-colors ${
-            statusTab === 'blocked'
-              ? 'text-red-600 border-b-2 border-red-600'
-              : 'text-gray-500 hover:text-gray-700'
-          }`}
+          className={`relative px-2 py-2 text-sm font-medium transition-colors ${statusTab === 'blocked'
+            ? 'text-red-600 border-b-2 border-red-600'
+            : 'text-gray-500 hover:text-gray-700'
+            }`}
         >
           <div className="flex items-center gap-2">
             <span>Blocked Users</span>
-            <span className={`text-xs px-2 py-0.5 rounded-full ${
-              statusTab === 'blocked' 
-                ? 'bg-red-100 text-red-700' 
-                : 'bg-gray-100 text-gray-600'
-            }`}>
+            <span className={`text-xs px-0 py-0.5 rounded-full ${statusTab === 'blocked'
+              ? 'bg-red-100 text-red-700'
+              : 'bg-gray-100 text-gray-600'
+              }`}>
               {blockedCount}
+            </span>
+          </div>
+        </button>
+        <button
+          onClick={() => setStatusTab('deleted')}
+          className={`relative px-2 py-2 text-sm font-medium transition-colors ${statusTab === 'deleted'
+            ? 'text-gray-900 border-b-2 border-gray-900'
+            : 'text-gray-500 hover:text-gray-700'
+            }`}
+        >
+          <div className="flex items-center gap-2">
+            <span>Deleted Users</span>
+            <span className={`text-xs px-0 py-0.5 rounded-full ${statusTab === 'deleted'
+              ? 'bg-gray-200 text-gray-800'
+              : 'bg-gray-100 text-gray-600'
+              }`}>
+              {deletedCount}
             </span>
           </div>
         </button>
@@ -137,9 +155,8 @@ const Users = ({
             >
               {/* Avatar */}
               <div
-                className={`w-14 h-14 rounded-xl flex items-center justify-center overflow-hidden text-lg font-semibold text-black ${
-                  u.avatar ? "bg-gray-200" : getAvatarColor(u.full_name)
-                }`}
+                className={`w-14 h-14 rounded-xl flex items-center justify-center overflow-hidden text-lg font-semibold text-black ${u.avatar ? "bg-gray-200" : getAvatarColor(u.full_name)
+                  }`}
               >
                 {u.avatar_id && character ? (
                   <img
@@ -160,14 +177,16 @@ const Users = ({
               </div>
 
               {/* Status Badge */}
+              {/* Status Badge */}
               <span
-                className={`px-3 py-1 text-xs rounded-2xl ${
-                  u.is_active 
-                    ? "bg-green-100 text-green-800" 
-                    : "bg-red-100 text-red-800"
-                }`}
+                className={`px-3 py-1 text-xs rounded-2xl ${u.is_deleted
+                    ? "bg-gray-100 text-gray-600"
+                    : u.is_active
+                      ? "bg-green-100 text-green-800"
+                      : "bg-red-100 text-red-800"
+                  }`}
               >
-                {u.is_active ? "Active" : "Blocked"}
+                {u.is_deleted ? "Deleted" : u.is_active ? "Active" : "Blocked"}
               </span>
             </div>
           );
@@ -238,14 +257,13 @@ const Users = ({
               <button
                 disabled={blocking || (actionType === 'block' && !reason)}
                 onClick={handleStatusUpdate}
-                className={`px-4 py-2 rounded-xl text-white disabled:opacity-50 transition ${
-                  actionType === 'block' 
-                    ? 'bg-red-500 hover:bg-red-600' 
-                    : 'bg-green-500 hover:bg-green-600'
-                }`}
+                className={`px-4 py-2 rounded-xl text-white disabled:opacity-50 transition ${actionType === 'block'
+                  ? 'bg-red-500 hover:bg-red-600'
+                  : 'bg-green-500 hover:bg-green-600'
+                  }`}
               >
-                {blocking 
-                  ? (actionType === 'block' ? 'Blocking...' : 'Unblocking...') 
+                {blocking
+                  ? (actionType === 'block' ? 'Blocking...' : 'Unblocking...')
                   : (actionType === 'block' ? 'Block User' : 'Unblock User')}
               </button>
             </div>

@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { toast } from "sonner";
 import { useCreateProperty } from "../../../hooks/property/useCreateProperty";
-// Sub-components
 import PropertyImageUpload from "../components/PropertyImageUpload";
 import LocationPicker from "../components/LocationPicker";
 import PropertyFormFields from "../components/PropertyFormFields";
 
 export default function AddProperties() {
+  const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -41,58 +41,37 @@ export default function AddProperties() {
   const [selectedAmenities, setSelectedAmenities] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
+  // Keep the ref at the top level
   const submitButtonRef = useRef(null);
   const { createProperty, loading: isPublishing } = useCreateProperty();
 
-  // Cleanup function
-  useEffect(() => {
-    return () => {
-      if (coverImage?.preview) URL.revokeObjectURL(coverImage.preview);
-      images.forEach(img => {
-        if (img?.preview) URL.revokeObjectURL(img.preview);
-      });
-    };
-  }, [coverImage, images]);
+  // Navigation Logic
+  const handleNext = () => {
+    if (currentStep === 1 && !coverImage) {
+      return toast.error("Please upload a cover image.");
+    }
+    if (currentStep === 2 && !formData.address) {
+      return toast.error("Please select a location.");
+    }
+    setCurrentStep(prev => prev + 1);
+  };
 
-  const handleInputChange = useCallback((e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  }, []);
+  const handleBack = () => setCurrentStep(prev => prev - 1);
 
   const handleLocationUpdate = useCallback((locationData) => {
-    setFormData((prev) => ({ ...prev, ...locationData }));
+    // We manually set a location_id here since the original version 
+    // requires it for validation
+    setFormData((prev) => ({ 
+        ...prev, 
+        ...locationData, 
+        location_id: locationData.location_id || "manual_selection" 
+    }));
   }, []);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     
-    // Disable submit button immediately
-    if (submitButtonRef.current) {
-      submitButtonRef.current.disabled = true;
-    }
-    
-    // Prevent double submission
-    if (isSubmitting || isPublishing) {
-      toast.warning("Already submitting...");
-      return;
-    }
-
-    // Validate required fields
-    if (!coverImage) {
-      toast.error("Please upload a cover image.");
-      if (submitButtonRef.current) {
-        submitButtonRef.current.disabled = false;
-      }
-      return;
-    }
-    
-    if (!formData.location_id) {
-      toast.error("Please select a location.");
-      if (submitButtonRef.current) {
-        submitButtonRef.current.disabled = false;
-      }
-      return;
-    }
+    if (isSubmitting || isPublishing) return;
 
     setIsSubmitting(true);
 
@@ -105,56 +84,82 @@ export default function AddProperties() {
       };
 
       await createProperty(submissionData);
-      
-      // Success - you can redirect or reset form here
-      // toast.success("Property published successfully!"); // This is already in useCreateProperty
-      
     } catch (err) {
-      // Error is already handled in useCreateProperty
       console.error("Submission error:", err);
     } finally {
       setIsSubmitting(false);
-      // Re-enable submit button
-      if (submitButtonRef.current) {
-        submitButtonRef.current.disabled = false;
-      }
     }
   };
 
   return (
-    <div className="text-xs md:text-sm md:p-6 mx-auto bg-slate-50 min-h-screen">
-      <div className="flex justify-between items-center mb-6 px-2">
-        <h1 className="text-xl md:text-2xl font-bold text-gray-800 tracking-tight">Add New Property</h1>
+    <div className="max-w-7xl mx-auto p-2 md:p-6 bg-slate-50 min-h-screen">
+      <h1 className="text-xl md:text-2xl font-bold mb-6">Add New Property</h1>
+
+      {/* Progress Header */}
+      <div className="flex gap-2 mb-8">
+        {[1, 2, 3].map(num => (
+          <div key={num} className={`h-2 flex-1 rounded-full ${currentStep >= num ? 'bg-black' : 'bg-gray-200'}`} />
+        ))}
       </div>
 
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 p-2">
-        {/* LEFT COLUMN: MEDIA & MAP */}
-        <div className="space-y-6">
+      <div className="bg-white p-2 rounded-2xl shadow-sm border border-gray-100">
+        {/* STEP 1: IMAGES */}
+        {currentStep === 1 && (
           <PropertyImageUpload
             coverImage={coverImage}
             setCoverImage={setCoverImage}
             images={images}
             setImages={setImages}
           />
+        )}
+
+        {/* STEP 2: LOCATION */}
+        {currentStep === 2 && (
           <LocationPicker
             formData={formData}
             onLocationChange={handleLocationUpdate}
           />
-        </div>
+        )}
 
-        {/* RIGHT COLUMN: PROPERTY DETAILS */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 h-fit">
-          <PropertyFormFields
-            formData={formData}
-            setFormData={setFormData}
-            handleInputChange={handleInputChange}
-            selectedAmenities={selectedAmenities}
-            setSelectedAmenities={setSelectedAmenities}
-            isSubmitting={isSubmitting || isPublishing}
-            submitButtonRef={submitButtonRef}
-          />
-        </div>
-      </form>
+        {/* STEP 3: FORM FIELDS */}
+        {currentStep === 3 && (
+          <form onSubmit={handleSubmit}>
+            <PropertyFormFields
+              formData={formData}
+              setFormData={setFormData}
+              handleInputChange={(e) => {
+                const { name, value } = e.target;
+                setFormData(prev => ({ ...prev, [name]: value }));
+              }}
+              selectedAmenities={selectedAmenities}
+              setSelectedAmenities={setSelectedAmenities}
+              isSubmitting={isSubmitting || isPublishing}
+              submitButtonRef={submitButtonRef}
+            />
+          </form>
+        )}
+      </div>
+
+      {/* Navigation Buttons */}
+      <div className="flex justify-between mt-8">
+        <button
+          type="button"
+          onClick={handleBack}
+          className={`px-6 py-2 rounded-xl border ${currentStep === 1 ? 'invisible' : 'visible'}`}
+        >
+          Back
+        </button>
+
+        {currentStep < 3 && (
+          <button
+            type="button"
+            onClick={handleNext}
+            className="bg-black text-white px-8 py-2 rounded-xl font-bold"
+          >
+            Next
+          </button>
+        )}
+      </div>
     </div>
   );
 }

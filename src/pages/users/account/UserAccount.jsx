@@ -66,9 +66,6 @@ export default function UserAccount() {
     }
     if (checkProvider) {
       setAuthProvider(checkProvider)
-      console.log(checkProvider.auth_provider)
-      console.log(checkProvider.password_set
-      )
     }
   }, [user]);
 

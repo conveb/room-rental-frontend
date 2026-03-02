@@ -54,7 +54,7 @@ const PropertyImageUpload = ({ coverImage, setCoverImage, images, setImages }) =
       if (coverUrlRef.current) {
         URL.revokeObjectURL(coverUrlRef.current);
       }
-      
+
       // Cleanup all gallery image URLs
       imageUrlsRef.current.forEach(url => {
         URL.revokeObjectURL(url);
@@ -65,17 +65,17 @@ const PropertyImageUpload = ({ coverImage, setCoverImage, images, setImages }) =
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4">
         {/* Cover Image Upload */}
         <div className="w-full">
           {!coverImage ? (
-            <label className="flex flex-col items-center justify-center border-2 border-dashed rounded-xl h-40 cursor-pointer hover:bg-blue-50 transition border-blue-200 bg-blue-50/20">
+            <label className="flex flex-col items-center justify-center border-2 border-dashed rounded-xl h-36 md:h-52 cursor-pointer hover:bg-blue-50 transition border-blue-200 bg-blue-50/20">
               <input type="file" accept="image/*" onChange={handleCoverSelect} className="hidden" />
               <MdAddCircle className="text-2xl text-blue-500 mb-1" />
               <span className="font-bold text-gray-600 text-xs">Cover Image *</span>
             </label>
           ) : (
-            <div className="relative h-40 rounded-xl overflow-hidden border">
+            <div className="relative h-36 md:h-52 rounded-xl overflow-hidden border">
               <img src={coverImage.preview} className="w-full h-full object-cover" alt="Cover" />
               <button type="button" onClick={removeCover} className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full shadow-lg"><MdDelete /></button>
             </div>
@@ -83,24 +83,43 @@ const PropertyImageUpload = ({ coverImage, setCoverImage, images, setImages }) =
         </div>
 
         {/* Gallery Upload Button */}
-        <label className={`flex flex-col items-center justify-center border-2 border-dashed rounded-xl h-40 transition ${images.length >= 5 ? 'bg-gray-100 cursor-not-allowed' : 'cursor-pointer hover:bg-gray-50'}`}>
-          <input type="file" multiple accept="image/*" onChange={handleImageSelect} className="hidden" disabled={images.length >= 5} />
-          <MdAddCircle className={`text-2xl mb-1 ${images.length >= 5 ? 'text-gray-300' : 'text-gray-400'}`} />
-          <span className="font-bold text-gray-600 text-xs">Gallery ({images.length}/5)</span>
-        </label>
+        {images.length === 0 ? (
+          /* 1. Show Big Placeholder when NO images exist */
+          <label className="flex flex-col items-center justify-center border-2 border-dashed rounded-xl h-36 md:h-52 cursor-pointer hover:bg-gray-50 transition">
+            <input type="file" multiple accept="image/*" onChange={handleImageSelect} className="hidden" />
+            <MdAddCircle className="text-2xl mb-1 text-gray-400" />
+            <span className="font-bold text-gray-600 text-xs">Gallery (0/5)</span>
+            <p className="text-[10px] text-gray-400">Click to upload property photos</p>
+          </label>
+        ) : (
+          /* 2. Show Grid + "Add More" slot when images exist */
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
+            {images.map((img, index) => (
+              <div key={index} className="relative h-36 md:h-52 rounded-lg overflow-hidden border group">
+                <img src={img.preview} className="w-full h-full object-cover" alt={`Gallery ${index}`} />
+                <button
+                  type="button"
+                  onClick={() => removeImage(index)}
+                  className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full text-[10px] opacity-0 group-hover:opacity-100 transition"
+                >
+                  <MdDelete />
+                </button>
+              </div>
+            ))}
+
+            {/* Small "Add More" slot if limit not reached */}
+            {images.length < 5 && (
+              <label className="flex flex-col items-center justify-center border-2 border-dashed rounded-lg h-36 md:h-52 cursor-pointer hover:bg-gray-50 transition">
+                <input type="file" multiple accept="image/*" onChange={handleImageSelect} className="hidden" />
+                <MdAddCircle className="text-lg text-gray-400" />
+                <span className="text-[10px] text-gray-500">{images.length}/5</span>
+              </label>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Gallery Previews */}
-      {images.length > 0 && (
-        <div className="grid grid-cols-5 gap-2">
-          {images.map((img, index) => (
-            <div key={index} className="relative h-16 rounded-lg overflow-hidden border">
-              <img src={img.preview} className="w-full h-full object-cover" alt={`Gallery ${index}`} />
-              <button type="button" onClick={() => removeImage(index)} className="absolute top-0 right-0 bg-red-500 text-white p-0.5 rounded-full text-[10px]"><MdDelete /></button>
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   );
 };

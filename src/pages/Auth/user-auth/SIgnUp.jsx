@@ -175,7 +175,7 @@ const SignUp = () => {
       return;
     }
 
-    const timer = setTimeout(() => setCounter(counter - 1), 1000);
+    const timer = setTimeout(() => setCounter(counter - 1), 5000);
     return () => clearTimeout(timer);
   }, [counter, isTimerActive]);
 

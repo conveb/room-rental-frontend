@@ -17,7 +17,7 @@ export const usePhoneVerification = () => {
         if (timer > 0) {
             interval = setInterval(() => {
                 setTimer((prevTimer) => prevTimer - 1);
-            }, 1000);
+            }, 5000);
         }
         return () => clearInterval(interval);
     }, [timer]);
