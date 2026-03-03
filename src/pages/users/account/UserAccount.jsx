@@ -7,7 +7,7 @@ import { FaCheck } from "react-icons/fa6";
 import UserFeedback from "./UserFeedback";
 import { useAuth } from "../../../context/AuthContext";
 import { useUserProfile } from "../../../hooks/users/useUserProfile";
-
+import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 import { MdOutlinePassword } from "react-icons/md";
 import { TiUserDelete } from "react-icons/ti";
 import { AiOutlineLogout } from "react-icons/ai";
@@ -50,6 +50,7 @@ export default function UserAccount() {
   const [editValues, setEditValues] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
+  const [showPass, setShowPass] = useState(false);
   const hasAvatarChanged = Number(selectedAvatar) !== Number(user?.avatar_id);
 
   const { handleSetPassword, loading: settingPassword } = useGoogleAuth();
@@ -392,7 +393,7 @@ export default function UserAccount() {
                 {authProvider.auth_provider === "GOOGLE" && authProvider.password_set === false && (
                   <button
                     onClick={() => setGooglePasswordModal(true)}
-                    className="w-full text-left p-2 rounded-xl border flex gap-3 items-center"
+                    className="w-full text-left p-2 rounded-xl border flex gap-3 items-center pointer-events-auto"
                   >
                     <div className="p-3 bg-gray-100 rounded-xl"><FcGoogle size={20} /></div>
                     <div className="text-left">
@@ -402,6 +403,67 @@ export default function UserAccount() {
                       </p>
                     </div>
                   </button>
+                )}
+                {/* Google Set Password Modal */}
+                {googlePasswordModal && (
+                  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+                    <div className="bg-white rounded-2xl w-full max-w-md p-6 space-y-4">
+                      <h2 className="text-lg font-semibold">Set Your Password</h2>
+                      <p className="text-sm text-gray-500">
+                        Since you logged in with Google, you need to create a password to login manually later.
+                      </p>
+                      <div className="relative">
+
+                        <input
+                          type={showPass ? "text" : "password"}
+                          placeholder="New password"
+                          value={googlePasswordForm.new_password}
+                          onChange={(e) =>
+                            setGooglePasswordForm({ ...googlePasswordForm, new_password: e.target.value })
+                          }
+                          className="w-full rounded-xl border px-4 py-3 text-sm"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPass(!showPass)}
+                          className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black transition-colors"
+                        >
+                          {showPass ? <IoEyeOutline size={20} /> : <IoEyeOffOutline size={20} />}
+                        </button>
+                      </div>
+                      <div className="relative">
+                        <input
+                          type={showPass ? "text" : "password"}
+                          placeholder="Confirm new password"
+                          value={googlePasswordForm.confirm_password}
+                          onChange={(e) =>
+                            setGooglePasswordForm({
+                              ...googlePasswordForm,
+                              confirm_password: e.target.value,
+                            })
+                          }
+                          className="w-full rounded-xl border px-4 py-3 text-sm"
+                        />
+                      </div>
+
+                      <div className="flex justify-end gap-3 pt-2">
+                        <button
+                          onClick={() => setGooglePasswordModal(false)}
+                          className="px-4 py-2 rounded-xl border text-sm"
+                        >
+                          Cancel
+                        </button>
+
+                        <button
+                          disabled={settingPassword}
+                          onClick={handleGoogleSetPassword}
+                          className="px-4 py-2 rounded-xl bg-black text-white text-sm disabled:opacity-50"
+                        >
+                          {settingPassword ? "Setting up..." : "Set Password"}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 )}
 
                 {/* Case 3: Google login, password already set → Reset Password */}

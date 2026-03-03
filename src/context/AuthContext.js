@@ -39,9 +39,10 @@ export const AuthProvider = ({ children }) => {
         return null;
       }
     } catch {
-      setUser(null);
-      sessionStorage.removeItem(SESSION_HINT_KEY);
-      setSessionHint(false);
+      // setUser(null);
+      // sessionStorage.removeItem(SESSION_HINT_KEY);
+      // setSessionHint(false);
+      console.error("Auth check failed, but waiting for interceptor...");
     } finally {
       setLoading(false);
       setIsInitialized(true);

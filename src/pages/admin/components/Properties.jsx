@@ -2,6 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import ImgSkeleton from '../../../Assets/pngs/img_skeleton.png';
+import { TbTrashFilled } from 'react-icons/tb';
 
 const Properties = ({
   properties,
@@ -32,12 +33,12 @@ const Properties = ({
         propertiesToShow.map(p => (
           <div
             key={p.id}
-            className="border p-2 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-3"
-          >
+            className="border p-2 rounded-2xl flex flex-row justify-between items-center md:items-center md:gap-3"
+            >
             {/* Left Section: Navigates to details */}
             <Link
               to={`/auth/admin/accommodation-details/${p.id}`}
-              className="flex gap-3 items-center flex-1" // flex-1 makes it take up available space
+              className="flex gap-3 items-center flex-1 " // flex-1 makes it take up available space
             >
               <img
                 src={p.cover_image}
@@ -60,15 +61,15 @@ const Properties = ({
             </Link>
 
             {/* Right Section: Actions - OUTSIDE the Link */}
-            <div className="w-full md:w-auto flex justify-end">
+            <div className="px-2 md:px-5 flex justify-end ">
               <button
                 onClick={(e) => {
                   e.preventDefault(); // Safety measure
                   onDelete(p.id);
                 }}
-                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors"
+                className="  text-red-800"
               >
-                Delete
+                <TbTrashFilled />
               </button>
             </div>
           </div>

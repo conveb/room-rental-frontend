@@ -97,8 +97,8 @@ export default function AdminDashboard() {
         <meta name="keywords" content="react, seo, helmet" />
       </Title>
 
-      <div className="min-h-screen md:p-6">
-        <div className="max-w-7xl mx-auto space-y-0 md:space-y-6">
+      <div className="min-h-screen md:p-3">
+        <div className="max-w-7xl mx-auto space-y-0 md:space-y-3">
           <h1 className="text-2xl md:text-3xl font-bold">Admin Control Center</h1>
           <p className="text-[10px] md:text-sm text-stone-500 pb-2">
             This dashboard gives a quick overview of total students, landowners, users,

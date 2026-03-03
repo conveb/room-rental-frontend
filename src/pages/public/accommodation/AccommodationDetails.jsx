@@ -15,6 +15,10 @@ import { useBooking } from "../../../hooks/bookings/useBookings";
 import { CancelBookingApi } from "../../../services/allAPI";
 import { LuImagePlus } from "react-icons/lu";
 import { usePayment } from "../../../hooks/payout_providers/usePayment";
+import { BsDoorClosed } from "react-icons/bs";
+import { TbBath, TbCalendar, TbDoor, TbHome, TbRuler, TbUsers } from "react-icons/tb";
+import { FaEnvira } from "react-icons/fa6";
+import { RiHandCoinLine } from "react-icons/ri";
 
 const addMonths = (dateStr, months) => {
   const date = new Date(dateStr);
@@ -374,8 +378,6 @@ const AccommodationDetails = () => {
               <p className="mt-2 text-sm text-gray-600">{property.description}</p>
             </div>
 
-
-
             {/* Price & Booking */}
             <div className="rounded-2xl border bg-white p-3 md:p-5 shadow-sm space-y-4">
               <div className="flex justify-between items-center">
@@ -388,17 +390,79 @@ const AccommodationDetails = () => {
 
               {/* Property Stats */}
               <div className="grid grid-cols-2 gap-3 text-xs">
-                <div><p className="text-gray-500">Rooms</p><p className="font-medium">{property.rooms}</p></div>
-                <div><p className="text-gray-500">Bathrooms</p><p className="font-medium">{property.bathrooms}</p></div>
-                <div><p className="text-gray-500">Max people</p><p className="font-medium">{property.max_people}</p></div>
-                <div><p className="text-gray-500">Size</p><p className="font-medium">{property.size_m2} m²</p></div>
-                <div><p className="text-gray-500">Furnished</p><p className="font-medium">{property.furnished ? "Yes" : "No"}</p></div>
-                <div><p className="text-gray-500">Min Stay</p><p className="font-medium">{property.minimum_stay_months} months</p></div>
-              </div>
+                <div className="flex gap-2 items-center bg-stone-50 p-2 rounded-xl">
+                  <span>
+                    <TbDoor size={20} />
+                  </span>
+                  <div>
+                    <p className="font-medium">{property.rooms}</p>
+                    <p className="text-gray-500">Rooms</p>
+                  </div>
+                </div>
+                <div className="flex gap-2 items-center bg-stone-50 p-2 rounded-xl">
+                  <span>
+                    <TbBath size={20} />
+                  </span>
+                  <div>
+                    <p className="text-gray-500">Bathrooms</p>
+                    <p className="font-medium">{property.bathrooms}</p>
+                  </div>
+                </div>
+                <div className="flex gap-2 items-center bg-stone-50 p-2 rounded-xl">
+                  <span>
+                    <TbUsers size={20} />
+                  </span>
+                  <div>
+                    <p className="text-gray-500">Max people</p>
+                    <p className="font-medium">{property.max_people}</p>
+                  </div>
+                </div>
+                <div className="flex gap-2 items-center bg-stone-50 p-2 rounded-xl">
+                  <span>
+                    <TbRuler size={20} />
+                  </span>
+                  <div>
+                    <p className="text-gray-500">Size</p>
+                    <p className="font-medium">{property.size_m2} m²</p>
+                  </div>
+                </div>
+                <div className="flex gap-2 items-center bg-stone-50 p-2 rounded-xl">
+                  <span>
+                    <TbHome size={20} />
+                  </span>
+                  <div>
+                    <p className="text-gray-500">Furnished</p>
+                    <p className="font-medium">{property.furnished ? "Yes" : "No"}</p>
+                  </div>
+                </div>
+                <div className="flex gap-2 items-center bg-stone-50 p-2 rounded-xl">
+                  <span>
+                    <TbCalendar size={20} />
+                  </span>
+                  <div>
+                    <p className="text-gray-500">Min Stay</p>
+                    <p className="font-medium">{property.minimum_stay_months} months</p>
+                  </div>
+                </div>
 
-              <div className="grid grid-cols-2 gap-3 text-xs mt-2">
-                <div><p className="text-gray-500">DPE Class</p><p className="font-medium">{property.dpe_class}</p></div>
-                <div><p className="text-gray-500">GES Class</p><p className="font-medium">{property.ges_class}</p></div>
+                <div className="flex gap-2 items-center bg-stone-50 p-2 rounded-xl">
+                  <span>
+                    <RiHandCoinLine  size={20} />
+                  </span>
+                  <div>
+                    <p className="text-gray-500">DPE Class</p>
+                    <p className="font-medium">{property.dpe_class}</p>
+                  </div>
+                </div>
+                <div className="flex gap-2 items-center bg-stone-50 p-2 rounded-xl">
+                  <span>
+                    <FaEnvira  size={20} />
+                  </span>
+                  <div>
+                    <p className="text-gray-500">GES Class</p>
+                    <p className="font-medium">{property.ges_class}</p>
+                  </div>
+                </div>
               </div>
 
               {/* Action Buttons */}
@@ -426,10 +490,10 @@ const AccommodationDetails = () => {
                           disabled={bookingLoading}
                           className="w-full bg-red-300 text-white py-2.5 rounded-lg font-semibold hover:bg-red-700 transition-colors"
                         >
-                      {bookingLoading ? "Processing..." : "Cancel Booking Request"}
-                    </button>
-                    )
-                  }
+                          {bookingLoading ? "Processing..." : "Cancel Booking Request"}
+                        </button>
+                      )
+                    }
                   </div>
                 ) : (
                   /* 3. REQUEST BUTTON: Shows if no booking OR if the booking was cancelled */

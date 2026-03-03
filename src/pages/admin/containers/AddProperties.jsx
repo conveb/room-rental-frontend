@@ -92,7 +92,7 @@ export default function AddProperties() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-2 md:p-6 bg-slate-50 min-h-screen">
+    <div className="max-w-7xl mx-auto p-2 md:p-6 bg-white min-h-screen rounded-3xl">
       <h1 className="text-xl md:text-2xl font-bold mb-6">Add New Property</h1>
 
       {/* Progress Header */}
