@@ -7,6 +7,7 @@ import React, {
 import { AuthAPI, LogoutAPI } from "../services/allAPI";
 import { useNavigate } from "react-router-dom";
 
+
 const AuthContext = createContext(null);
 
 // Key for localStorage

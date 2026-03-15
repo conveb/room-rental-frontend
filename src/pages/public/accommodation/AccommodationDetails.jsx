@@ -583,7 +583,7 @@ const AccommodationDetails = () => {
 
             {/* Amenities */}
             <div>
-              <h2 className="text-sm font-semibold mb-2">Amenities</h2>
+              <h2 className="text-sm font-semibold mb-2">Facilities</h2>
               <div className="flex flex-wrap gap-2 text-xs">
                 {property.amenities_data?.map(a => (
                   <span key={a.amenity_id} className="px-3 py-1 border rounded-full">{a.amenity_name}</span>
