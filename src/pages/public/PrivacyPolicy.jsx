@@ -73,7 +73,7 @@ const PrivacyPolicy = () => {
       <div className="max-w-6xl mx-auto mt-12 px-4 grid grid-cols-1 md:grid-cols-4 gap-10">
 
         {/* Sticky Sidebar */}
-        <aside className="col-span-1">
+        <aside className="col-span-2 md:col-span-1">
           <div
             className="sticky top-24 rounded-2xl p-5 font-sans"
             style={{ background: "#fff", border: "1px solid #e8e0d5", boxShadow: "0 2px 16px rgba(0,0,0,0.05)" }}
@@ -106,8 +106,7 @@ const PrivacyPolicy = () => {
 
         {/* Content */}
         <div
-          className="col-span-3 rounded-3xl p-6 md:p-12 font-sans"
-          style={{ background: "#fff", border: "1px solid #e8e0d5", boxShadow: "0 2px 20px rgba(0,0,0,0.05)" }}
+          className="col-span-2 md:col-span-3 rounded-3xl p-2 md:p-12 font-sans"
         >
           <p className="text-gray-600 mb-8 leading-relaxed text-sm md:text-base">
             At <strong>Alive Paris</strong>, we take data protection seriously. This Privacy Policy explains
@@ -434,16 +433,30 @@ const PrivacyPolicy = () => {
             <div
               className="p-5 rounded-2xl text-sm md:text-base"
               style={{ background: "#f9f7f4", border: "1px solid #ede7dc" }}
-                >
+            >
               <p><strong>Alive Paris</strong></p>
               <p className="text-gray-600 mt-1">
                 Email:{" "}
-                <a href="mailto:info@aliveparis.com" className="underline" style={{ color: "#1a6b40" }}>
-                  info@aliveparis.com
+                <a href="mailto:contact@aliveparis.fr" className="underline" style={{ color: "#1a6b40" }}>
+                  contact@aliveparis.fr
                 </a>
               </p>
               <p className="text-gray-600 mt-1">Country of operation: France</p>
-              
+              <p className="text-gray-600 mt-3 text-xs">
+                You also have the right to lodge a complaint with the French data protection authority:
+                <br />
+                <strong>CNIL</strong> — Commission Nationale de l'Informatique et des Libertés
+                <br />
+                <a
+                  href="https://www.cnil.fr"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline"
+                  style={{ color: "#1a6b40" }}
+                >
+                  www.cnil.fr
+                </a>
+              </p>
             </div>
           </section>
 
