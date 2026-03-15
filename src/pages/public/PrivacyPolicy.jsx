@@ -41,10 +41,8 @@ const PrivacyPolicy = () => {
           style={{ filter: "brightness(0.55)" }}
         />
         <div className="absolute inset-0 flex flex-col items-center justify-center px-4">
-          <p className="text-xs md:text-sm tracking-[0.3em] text-amber-300 uppercase mb-3 font-sans">
-            Alive Paris · Room Rentals
-          </p>
-          <h1 className="text-4xl md:text-6xl font-bold text-white text-center leading-tight">
+         
+          <h1 className="text-4xl md:text-6xl font-bold text-white text-center leading-tight mt-10">
             Privacy Policy
           </h1>
           <p className="mt-3 text-white/70 text-sm md:text-base font-sans">
