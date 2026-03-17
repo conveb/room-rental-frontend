@@ -66,6 +66,7 @@ import { LandOwnerRoute } from "./components/routes/LandOwnerRoute";
 import UploadPassport from "./pages/landlord/UploadPassport";
 import { NotificationProvider } from "./context/NotificationContext";
 import AdminOtpVerification from "./pages/admin/requests/AdminOtpVerification";
+import BookingRequest from "./pages/public/accommodation/BookingRequest";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -93,6 +94,7 @@ function App() {
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/accommodation" element={<Accommodation baseRoute="/" />} />
           <Route path="/accommodation-details/:id" element={<AccommodationDetails />} />
+          
           <Route path="/account-suspended" element={<BlockedPage />} />
         </Route>
 
@@ -146,6 +148,7 @@ function App() {
             <Route path="account" element={<UserAccount />} />
             <Route path="feedbacks" element={<UserFeedback />} />
             <Route path="bookings" element={<UserBookings />} />
+            <Route path="request-booking/:bookingId" element={<BookingRequest />} />
             <Route path="payments" element={<UserPayments />} />
             <Route path="saved" element={<UserSaved />} />
             <Route path="support" element={<UserSupport />} />

@@ -66,7 +66,7 @@ const Users = ({
           className="border p-2 rounded-md flex-1 min-w-0"
         />
 
-        <select
+        {/* <select
           value={roleFilter}
           onChange={e => setRoleFilter(e.target.value)}
           className="border p-2 rounded-md w-[100px] sm:w-auto"
@@ -74,21 +74,21 @@ const Users = ({
           <option value="ALL">All</option>
           <option value="STUDENT">Student</option>
           <option value="LAND_OWNER">Landowner</option>
-        </select>
+        </select> */}
       </div>
 
       {/* Status Tabs */}
-      <div className="flex border-b">
+      <div className="flex border-b overflow-x-auto scrollbar-hide">
         <button
           onClick={() => setStatusTab('active')}
-          className={`relative px-2 py-2 text-sm font-medium transition-colors ${statusTab === 'active'
+          className={`relative flex-shrink-0 px-3 py-2 text-xs sm:text-sm font-medium transition-colors ${statusTab === 'active'
             ? 'text-green-600 border-b-2 border-green-600'
             : 'text-gray-500 hover:text-gray-700'
             }`}
         >
-          <div className="flex items-center gap-2">
-            <span>Active Users</span>
-            <span className={`text-xs px-0 py-0.5 rounded-full ${statusTab === 'active'
+          <div className="flex items-center gap-1.5">
+            <span>Active</span>
+            <span className={`text-xs px-1.5 py-0.5 rounded-full ${statusTab === 'active'
               ? 'bg-green-100 text-green-700'
               : 'bg-gray-100 text-gray-600'
               }`}>
@@ -99,14 +99,14 @@ const Users = ({
 
         <button
           onClick={() => setStatusTab('blocked')}
-          className={`relative px-2 py-2 text-sm font-medium transition-colors ${statusTab === 'blocked'
+          className={`relative flex-shrink-0 px-3 py-2 text-xs sm:text-sm font-medium transition-colors ${statusTab === 'blocked'
             ? 'text-red-600 border-b-2 border-red-600'
             : 'text-gray-500 hover:text-gray-700'
             }`}
         >
-          <div className="flex items-center gap-2">
-            <span>Blocked Users</span>
-            <span className={`text-xs px-0 py-0.5 rounded-full ${statusTab === 'blocked'
+          <div className="flex items-center gap-1.5">
+            <span>Blocked</span>
+            <span className={`text-xs px-1.5 py-0.5 rounded-full ${statusTab === 'blocked'
               ? 'bg-red-100 text-red-700'
               : 'bg-gray-100 text-gray-600'
               }`}>
@@ -114,16 +114,17 @@ const Users = ({
             </span>
           </div>
         </button>
+
         <button
           onClick={() => setStatusTab('deleted')}
-          className={`relative px-2 py-2 text-sm font-medium transition-colors ${statusTab === 'deleted'
+          className={`relative flex-shrink-0 px-3 py-2 text-xs sm:text-sm font-medium transition-colors ${statusTab === 'deleted'
             ? 'text-gray-900 border-b-2 border-gray-900'
             : 'text-gray-500 hover:text-gray-700'
             }`}
         >
-          <div className="flex items-center gap-2">
-            <span>Deleted Users</span>
-            <span className={`text-xs px-0 py-0.5 rounded-full ${statusTab === 'deleted'
+          <div className="flex items-center gap-1.5">
+            <span>Deleted</span>
+            <span className={`text-xs px-1.5 py-0.5 rounded-full ${statusTab === 'deleted'
               ? 'bg-gray-200 text-gray-800'
               : 'bg-gray-100 text-gray-600'
               }`}>
@@ -141,56 +142,56 @@ const Users = ({
           No {statusTab} users found
         </div>
       ) : (
-        tabFilteredUsers.map(u => {
-          const character = Characters.find((c) => String(c.id) === String(u.avatar_id));
+        <div className="flex flex-col gap-2">
+          {tabFilteredUsers.map(u => {
+            const character = Characters.find((c) => String(c.id) === String(u.avatar_id));
 
-          return (
-            <div
-              key={u.id}
-              className="relative border p-2 rounded-2xl flex gap-3 items-center cursor-pointer hover:bg-gray-50 transition"
-              onClick={() => {
-                setSelectedUser(u);
-                setShowDetails(true);
-              }}
-            >
-              {/* Avatar */}
+            return (
               <div
-                className={`w-14 h-14 rounded-xl flex items-center justify-center overflow-hidden text-lg font-semibold text-black ${u.avatar ? "bg-gray-200" : getAvatarColor(u.full_name)
-                  }`}
+                key={u.id}
+                className="relative border p-2 rounded-2xl flex gap-2 sm:gap-3 items-center cursor-pointer hover:bg-gray-50 transition"
+                onClick={() => {
+                  setSelectedUser(u);
+                  setShowDetails(true);
+                }}
               >
-                {u.avatar_id && character ? (
-                  <img
-                    src={character.img}
-                    alt={u.full_name}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  u.full_name?.charAt(0).toUpperCase()
-                )}
-              </div>
+                {/* Avatar */}
+                <div
+                  className={`w-10 h-10 sm:w-14 sm:h-14 flex-shrink-0 rounded-xl flex items-center justify-center overflow-hidden text-base sm:text-lg font-semibold text-black ${u.avatar ? "bg-gray-200" : getAvatarColor(u.full_name)
+                    }`}
+                >
+                  {u.avatar_id && character ? (
+                    <img
+                      src={character.img}
+                      alt={u.full_name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    u.full_name?.charAt(0).toUpperCase()
+                  )}
+                </div>
 
-              {/* User Info */}
-              <div className="flex-1">
-                <p className="font-medium">{u.full_name}</p>
-                <p className="text-sm text-gray-500">{u.email}</p>
-                <p className="text-xs text-gray-400">{u.role}</p>
-              </div>
+                {/* User Info */}
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-sm sm:text-base truncate">{u.full_name}</p>
+                  <p className="text-xs sm:text-sm text-gray-500 truncate">{u.email}</p>
+                </div>
 
-              {/* Status Badge */}
-              {/* Status Badge */}
-              <span
-                className={`px-3 py-1 text-xs rounded-2xl ${u.is_deleted
-                    ? "bg-gray-100 text-gray-600"
-                    : u.is_active
-                      ? "bg-green-100 text-green-800"
-                      : "bg-red-100 text-red-800"
-                  }`}
-              >
-                {u.is_deleted ? "Deleted" : u.is_active ? "Active" : "Blocked"}
-              </span>
-            </div>
-          );
-        })
+                {/* Status Badge */}
+                <span
+                  className={`flex-shrink-0 px-2 sm:px-3 py-1 text-xs rounded-2xl ${u.is_deleted
+                      ? "bg-gray-100 text-gray-600"
+                      : u.is_active
+                        ? "bg-green-100 text-green-800"
+                        : "bg-red-100 text-red-800"
+                    }`}
+                >
+                  {u.is_deleted ? "Deleted" : u.is_active ? "Active" : "Blocked"}
+                </span>
+              </div>
+            );
+          })}
+        </div>
       )}
 
       {/* Modals */}

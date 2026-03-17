@@ -47,7 +47,7 @@ const UserLayout = () => {
           </div>
 
           {/* MIDDLE: DESKTOP NAVIGATION */}
-          <nav className="hidden lg:flex items-center gap-1 mx-4">
+          {/* <nav className="hidden lg:flex items-center gap-1 mx-4">
             {navItems.map((item) => (
               <NavLink
                 key={item.to}
@@ -60,12 +60,13 @@ const UserLayout = () => {
                 {item.label}
               </NavLink>
             ))}
-          </nav>
+          </nav> */}
 
           {/* RIGHT: USER ACTIONS & PROFILE */}
           <div className="flex items-center gap-1 md:gap-3 flex-1 justify-end">
 
             {/* Desktop User Glance */}
+            <Link to="/auth/user/account" >
             <div className="hidden md:flex items-center gap-3 mr-2 pr-4 border-r border-gray-100">
               <div className="text-right">
                 <p className="text-xs font-bold text-slate-900 capitalize leading-none">
@@ -95,6 +96,7 @@ const UserLayout = () => {
                 </div>
               </div>
             </div>
+            </Link>
 
             {/* Wishlist Icon */}
             <Link to="/auth/user/saved" className=" p-2 text-slate-600 hover:bg-slate-50 rounded-full transition relative">
@@ -147,7 +149,7 @@ const UserLayout = () => {
       </main>
 
       {/* BOTTOM NAV (MOBILE) */}
-      <nav className="md:hidden fixed bottom-0 inset-x-0 m-3 rounded-[1.4rem] bg-white/90 backdrop-blur-xl border border-gray-200 shadow-2xl z-30">
+      {/* <nav className="md:hidden fixed bottom-0 inset-x-0 m-3 rounded-[1.4rem] bg-white/90 backdrop-blur-xl border border-gray-200 shadow-2xl z-30">
         <div className="flex justify-around items-center gap-1 h-16 px-1">
           {navItems.map(item => {
             const isActive = location.pathname === item.to;
@@ -173,7 +175,7 @@ const UserLayout = () => {
           })}
         </div>
 
-      </nav>
+      </nav> */}
     </div>
   );
 };

@@ -16,6 +16,7 @@ import UserProfileSkeleton from "../../skeleton/UserProfileSkeleton";
 import { toast } from "sonner";
 import { FcGoogle } from "react-icons/fc";
 import { useGoogleAuth } from "../../../hooks/auth/useGoogleAuth";
+import { FaArrowLeft } from "react-icons/fa";
 export default function UserAccount() {
   const navigate = useNavigate();
   const { user: checkProvider, logout } = useAuth();
@@ -155,6 +156,15 @@ export default function UserAccount() {
 
   return (
     <div className="min-h-screen px-5 md:p-6 mt-0 md:mx-auto md:container">
+      <div className="flex items-center gap-3">
+        <button
+          onClick={() => navigate(-1)}
+          className="h-9 w-9 rounded-full flex items-center justify-center hover:bg-stone-200 transition"
+        >
+          <FaArrowLeft size={15} />
+        </button>
+        <h1 className="text-xl font-semibold tracking-tight">Account</h1>
+      </div>
       {activeTab === "profile" && (
         <div className="space-y-5 mt-3">
           <div className="bg-white rounded-3xl p-6 shadow text-center">

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Stepper } from "primereact/stepper";
 import { StepperPanel } from "primereact/stepperpanel";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSignup } from "../../../hooks/auth/useSignup";
 import { useEmailVerification } from "../../../hooks/auth/useEmailVerification";
 import BacktoHome from "../../../components/btns/BacktoHome";
@@ -186,7 +186,7 @@ const SignUp = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col items-center px-4 sm:px-6 py-10">
+    <div className="min-h-screen bg-white flex flex-col justify-center items-center px-4 sm:px-6 py-10 h-full">
       <div className="absolute top-4 right-5">
         <BacktoHome />
       </div>
@@ -207,7 +207,7 @@ const SignUp = () => {
           <StepperPanel header="Details">
             <div className="space-y-4 mt-4">
               {/* Account Type */}
-              <div className="flex bg-white rounded-3xl p-2 gap-2">
+              {/* <div className="flex bg-white rounded-3xl p-2 gap-2">
                 {["STUDENT", "LAND_OWNER"].map((type) => (
                   <button
                     key={type}
@@ -225,7 +225,7 @@ const SignUp = () => {
                     </p>
                   </button>
                 ))}
-              </div>
+              </div> */}
               <div>
 
                 <input
@@ -328,6 +328,12 @@ const SignUp = () => {
               >
                 {loading ? "Sending OTP..." : "Next"}
               </button>
+              <p className="mt-6 text-xs text-gray-500 text-center">
+                Already have an account?{" "}
+                <Link to="/signin" className="font-semibold text-gray-900 hover:underline">
+                  Login
+                </Link>
+              </p>
             </div>
           </StepperPanel>
 
