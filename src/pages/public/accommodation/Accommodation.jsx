@@ -52,8 +52,8 @@ const handleFavoriteClick = (e, property) => {
   return (
     <div className="min-h-screen bg-gray-50 pb-14 ">
       {/* HEADER */}
-      <div className="bg-black px-4 md:px-20 pb-6 ">
-        <h1 className="text-2xl md:text-4xl font-semibold text-white text-center mb-6 pt-8">
+      <div className="bg-black px-4 md:px-20 pb-3 md:pb-6 ">
+        <h1 className="text-2xl md:text-4xl font-semibold text-white text-center mb-2 md:mb-6 pt-3 md:pt-8">
           Find Rooms
         </h1>
 
