@@ -7,8 +7,9 @@ import { IoIosNotifications } from "react-icons/io";
 import colors from "../../../theme/colors";
 import Logo from "../../../Assets/Images/logo.jpg";
 import { useAuth } from "../../../context/AuthContext";
-import { useUserProfile } from "../../../hooks/users/useUserProfile";
-import { useNotifications } from "../../../context/NotificationContext";
+// import { useUserProfile } from "../../../hooks/users/useUserProfile";
+// import { useNotifications } from "../../../context/HeaderContext";
+import { useHeader } from "../../../context/HeaderContext";
 import { Characters } from "./characterCollection";
 import VerifyPhoneNumber from "../components/VerifyPhoneNumber";
 
@@ -22,8 +23,7 @@ const navItems = [
 const UserLayout = () => {
   const location = useLocation();
   const { user } = useAuth(); // Contains email
-  const { user: userData } = useUserProfile(); // Contains full_name
-  const { unreadCount } = useNotifications();
+  const { user: userData, unreadCount } = useHeader();
 
 
   return (
@@ -112,10 +112,10 @@ const UserLayout = () => {
                 </span>
               )}
             </Link>
-            <Link to="/auth/user/account" >
-              <div className="border border-black border-2  rounded-full">
-
-                <div className="block md:hidden h-10 w-10 bg-slate-100 rounded-full flex items-center justify-center overflow-hidden">
+            <Link to="/auth/user/account">
+              {/* ✅ Add md:hidden to the outer div as well */}
+              <div className="md:hidden border-2 border-black rounded-full">
+                <div className="h-10 w-10 bg-slate-100 rounded-full flex items-center justify-center overflow-hidden">
                   {userData?.avatar_id ? (
                     <img
                       src={Characters.find((c) => c.id === Number(userData.avatar_id))?.img}
@@ -123,12 +123,10 @@ const UserLayout = () => {
                       className="w-full h-full object-cover"
                     />
                   ) : userData?.full_name ? (
-                    // Show first letter if name exists
                     <span className="text-gray-700 font-bold uppercase text-xl">
                       {userData.full_name.charAt(0)}
                     </span>
                   ) : (
-                    // Fallback to icon if absolutely no data is available
                     <FaRegUserCircle className="text-gray-400 text-xl" />
                   )}
                 </div>

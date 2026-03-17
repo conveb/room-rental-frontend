@@ -6,7 +6,8 @@ import { CiEdit } from "react-icons/ci";
 import { FaCheck } from "react-icons/fa6";
 import UserFeedback from "./UserFeedback";
 import { useAuth } from "../../../context/AuthContext";
-import { useUserProfile } from "../../../hooks/users/useUserProfile";
+// import { useUserProfile } from "../../../hooks/users/useUserProfile";
+import { useHeader } from "../../../context/HeaderContext";
 import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 import { MdOutlinePassword } from "react-icons/md";
 import { TiUserDelete } from "react-icons/ti";
@@ -21,19 +22,19 @@ export default function UserAccount() {
   const navigate = useNavigate();
   const { user: checkProvider, logout } = useAuth();
 
-  const [authProvider, setAuthProvider] = useState();
+  const [authProvider, setAuthProvider] = useState({});
 
   const {
     user,
     setUser,
-    loading,
+    profileLoading: loading,
     error,
     updating,
     changingPassword,
     updateUserProfile,
     changeUserPassword,
-    deleteUserProfile
-  } = useUserProfile();
+    deleteUserProfile,
+  } = useHeader();
 
   const [passwordModal, setPasswordModal] = useState(false);
   const [passwordForm, setPasswordForm] = useState({
@@ -41,7 +42,9 @@ export default function UserAccount() {
     new_password: "",
     confirm_password: "",
   });
-
+  const [showOldPass, setShowOldPass] = useState(false);
+  const [showNewPass, setShowNewPass] = useState(false);
+  const [showConfirmPass, setShowConfirmPass] = useState(false);
 
 
   const [activeTab, setActiveTab] = useState("profile");
@@ -492,42 +495,68 @@ export default function UserAccount() {
                   <div className="bg-white rounded-2xl w-full max-w-md p-6 space-y-4">
                     <h2 className="text-lg font-semibold">Change Password</h2>
 
-                    <input
-                      type="password"
-                      placeholder="Current password"
-                      value={passwordForm.old_password}
-                      onChange={(e) =>
-                        setPasswordForm({ ...passwordForm, old_password: e.target.value })
-                      }
-                      className="w-full rounded-xl border px-4 py-3 text-sm"
-                    />
+                    {/* Current Password */}
+                    <div className="relative">
+                      <input
+                        type={showOldPass ? "text" : "password"}
+                        placeholder="Current password"
+                        value={passwordForm.old_password}
+                        onChange={(e) => setPasswordForm({ ...passwordForm, old_password: e.target.value })}
+                        className="w-full rounded-xl border px-4 py-3 text-sm pr-11"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowOldPass(!showOldPass)}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black transition-colors"
+                      >
+                        {showOldPass ? <IoEyeOutline size={20} /> : <IoEyeOffOutline size={20} />}
+                      </button>
+                    </div>
 
-                    <input
-                      type="password"
-                      placeholder="New password"
-                      value={passwordForm.new_password}
-                      onChange={(e) =>
-                        setPasswordForm({ ...passwordForm, new_password: e.target.value })
-                      }
-                      className="w-full rounded-xl border px-4 py-3 text-sm"
-                    />
+                    {/* New Password */}
+                    <div className="relative">
+                      <input
+                        type={showNewPass ? "text" : "password"}
+                        placeholder="New password"
+                        value={passwordForm.new_password}
+                        onChange={(e) => setPasswordForm({ ...passwordForm, new_password: e.target.value })}
+                        className="w-full rounded-xl border px-4 py-3 text-sm pr-11"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowNewPass(!showNewPass)}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black transition-colors"
+                      >
+                        {showNewPass ? <IoEyeOutline size={20} /> : <IoEyeOffOutline size={20} />}
+                      </button>
+                    </div>
 
-                    <input
-                      type="password"
-                      placeholder="Confirm new password"
-                      value={passwordForm.confirm_password}
-                      onChange={(e) =>
-                        setPasswordForm({
-                          ...passwordForm,
-                          confirm_password: e.target.value,
-                        })
-                      }
-                      className="w-full rounded-xl border px-4 py-3 text-sm"
-                    />
+                    {/* Confirm Password */}
+                    <div className="relative">
+                      <input
+                        type={showConfirmPass ? "text" : "password"}
+                        placeholder="Confirm new password"
+                        value={passwordForm.confirm_password}
+                        onChange={(e) => setPasswordForm({ ...passwordForm, confirm_password: e.target.value })}
+                        className="w-full rounded-xl border px-4 py-3 text-sm pr-11"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowConfirmPass(!showConfirmPass)}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black transition-colors"
+                      >
+                        {showConfirmPass ? <IoEyeOutline size={20} /> : <IoEyeOffOutline size={20} />}
+                      </button>
+                    </div>
 
                     <div className="flex justify-end gap-3 pt-2">
                       <button
-                        onClick={() => setPasswordModal(false)}
+                        onClick={() => {
+                          setPasswordModal(false);
+                          setShowOldPass(false);
+                          setShowNewPass(false);
+                          setShowConfirmPass(false);
+                        }}
                         className="px-4 py-2 rounded-xl border text-sm"
                       >
                         Cancel
@@ -536,26 +565,22 @@ export default function UserAccount() {
                       <button
                         disabled={changingPassword}
                         onClick={async () => {
-                          if (
-                            passwordForm.new_password !==
-                            passwordForm.confirm_password
-                          ) {
+                          if (passwordForm.new_password !== passwordForm.confirm_password) {
                             toast.error("Passwords do not match");
                             return;
                           }
-
                           const result = await changeUserPassword(passwordForm);
 
                           if (result.success) {
                             toast.success("Password changed successfully");
                             setPasswordModal(false);
-                            setPasswordForm({
-                              old_password: "",
-                              new_password: "",
-                              confirm_password: "",
-                            });
+                            setPasswordForm({ old_password: "", new_password: "", confirm_password: "" });
+                            setShowOldPass(false);
+                            setShowNewPass(false);
+                            setShowConfirmPass(false);
                           } else {
-                            toast.error(result.message);
+                            // Show each error line as its own toast
+                            result.message.split("\n").forEach((msg) => toast.error(msg));
                           }
                         }}
                         className="px-4 py-2 rounded-xl bg-black text-white text-sm disabled:opacity-50"

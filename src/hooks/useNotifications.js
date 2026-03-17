@@ -1,23 +1,30 @@
 import { useState, useEffect } from "react";
 import { ListNotificationsApi } from "../services/allAPI";
 
-export const useNotifications = () => {
+export const useFetchNotifications = (isLoggedIn) => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const getNotifications = async () => {
+  const fetchNotifications = async () => {
     try {
+      setLoading(true);
       const res = await ListNotificationsApi();
-      // Access the array directly from the response object
       setNotifications(res.data?.notifications || []);
     } catch (err) {
-      console.error("Fetch error:", err);
+      console.error("Notification fetch error:", err);
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => { getNotifications(); }, []);
+  useEffect(() => {
+    if (isLoggedIn) {
+      fetchNotifications();
+    } else {
+      setNotifications([]);
+      setLoading(false);
+    }
+  }, [isLoggedIn]);
 
-  return { notifications, setNotifications, loading };
+  return { notifications, setNotifications, loading, fetchNotifications };
 };

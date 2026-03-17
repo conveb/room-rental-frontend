@@ -64,7 +64,7 @@ import AdminGroupsAndPermissions from "./pages/admin/AdminGroupsAndPermissions";
 import PrivateRoute from "./components/routes/PrivateRoute";
 import { LandOwnerRoute } from "./components/routes/LandOwnerRoute";
 import UploadPassport from "./pages/landlord/UploadPassport";
-import { NotificationProvider } from "./context/NotificationContext";
+import { HeaderProvider  } from "./context/HeaderContext";
 import AdminOtpVerification from "./pages/admin/requests/AdminOtpVerification";
 import BookingRequest from "./pages/public/accommodation/BookingRequest";
 
@@ -76,94 +76,94 @@ function App() {
       {loading && <SplashScreen onFinish={() => setLoading(false)} />}
 
       <Toaster position="top-center" />
-      <NotificationProvider>
+      <HeaderProvider >
 
-      <Routes>
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/signin" element={<SignIn />} />
-        <Route path="/signup" element={<SignUp />} />
+        <Routes>
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/signin" element={<SignIn />} />
+          <Route path="/signup" element={<SignUp />} />
 
-        <Route element={<Layouts />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/list-room" element={<ListYourRoom />} />
-          <Route path="/contact-us" element={<Contact />} />
-          <Route path="/page-not-found" element={<PageNotFound />} />
-          <Route path="/workingonit" element={<WorkingOnIt />} />
-          <Route path="/student/1" element={<UserProfilePage />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/accommodation" element={<Accommodation baseRoute="/" />} />
-          <Route path="/accommodation-details/:id" element={<AccommodationDetails />} />
-          
-          <Route path="/account-suspended" element={<BlockedPage />} />
-        </Route>
+          <Route element={<Layouts />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/list-room" element={<ListYourRoom />} />
+            <Route path="/contact-us" element={<Contact />} />
+            <Route path="/page-not-found" element={<PageNotFound />} />
+            <Route path="/workingonit" element={<WorkingOnIt />} />
+            <Route path="/student/1" element={<UserProfilePage />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/accommodation" element={<Accommodation baseRoute="/" />} />
+            <Route path="/accommodation-details/:id" element={<AccommodationDetails />} />
 
-            <Route path="verify-otp" element={<AdminOtpVerification />} />
-        <Route element={<AdminRoute />}> 
-          <Route path="/auth/admin" element={<AdminLayout />}>
-            <Route index element={<AdminDashboard />} />
-            <Route path="rooms" element={<AdminStudents />} />
-            <Route path="audits" element={<AdminAudits />} />
-            <Route path="view_bookings" element={<ViewBookings />} />
-            <Route path="manage_constants" element={<AdminManageConstants />} />
-            <Route path="notifications" element={<NotificationPage />} />
-            {/* <Route path="requests" element={<AdminRequests />} /> */}
-            {/* <Route path="admin_properties" element={<AdminMyProperty />} /> */}
-            <Route path="property/add_property" element={<AdminAddProperty roleUrl='admin' />} />
-            <Route path="property/my-property/edit-property/:id" element={<EditPropertyPage />} />
-            <Route path="property/add_country" element={<AddCountries />} />
-            <Route path="property/add_location" element={<AddLocations />} />
-            <Route path="property/add_amenities" element={<AddAmenities />} />
-            <Route path="accommodation-details/:id" element={<AccommodationDetails />} />
-            <Route path="groups&permissions" element={<AdminGroupsAndPermissions />} />
-            <Route path="bookings/booking-details/:id" element={<BookingDetails />} />
-            <Route path="reports&complaints" element={<AdminReportsAndComplaints />} />
-            <Route path="support&feedback" element={<AdminSupportAndFeedback />} />
-            <Route path="payment-providers" element={<PayoutSettings />} />
-            <Route path="student/:id" element={<StudentFullDetails />} />
-            <Route path="roomowner/:id" element={<RoomownerFullDetails />} />
+            <Route path="/account-suspended" element={<BlockedPage />} />
           </Route>
-        </Route>
 
-        <Route element={<LandOwnerRoute />}>
-          <Route path="/auth/landowner" element={<Layout />}>
-            <Route index element={<LandownerDashboard />} />
-            <Route path="notifications" element={<NotificationPage />} />
-            <Route path="support" element={<RoomOwnerSupport />} />
-            {/* <Route path="properties" element={<PropertiesList />} /> */}
-            <Route path="stats" element={<Stats />} />
-            <Route path="account" element={<RoomOwnerAccount />} />
-            <Route path="create_property" element={<CreateProperty roleUrl='admin' />} />
-            <Route path="property/my-property/edit-property" element={<EditPropertyPage />} />
-            <Route path="payout-account" element={<PayoutPage />} />
-            <Route path="bookings" element={<OwnerBookings />} />
-            <Route path="upload-passport" element={<UploadPassport />} />
+          <Route path="verify-otp" element={<AdminOtpVerification />} />
+          <Route element={<AdminRoute />}>
+            <Route path="/auth/admin" element={<AdminLayout />}>
+              <Route index element={<AdminDashboard />} />
+              <Route path="rooms" element={<AdminStudents />} />
+              <Route path="audits" element={<AdminAudits />} />
+              <Route path="view_bookings" element={<ViewBookings />} />
+              <Route path="manage_constants" element={<AdminManageConstants />} />
+              <Route path="notifications" element={<NotificationPage />} />
+              {/* <Route path="requests" element={<AdminRequests />} /> */}
+              {/* <Route path="admin_properties" element={<AdminMyProperty />} /> */}
+              <Route path="property/add_property" element={<AdminAddProperty roleUrl='admin' />} />
+              <Route path="property/my-property/edit-property/:id" element={<EditPropertyPage />} />
+              <Route path="property/add_country" element={<AddCountries />} />
+              <Route path="property/add_location" element={<AddLocations />} />
+              <Route path="property/add_amenities" element={<AddAmenities />} />
+              <Route path="accommodation-details/:id" element={<AccommodationDetails />} />
+              <Route path="groups&permissions" element={<AdminGroupsAndPermissions />} />
+              <Route path="bookings/booking-details/:id" element={<BookingDetails />} />
+              <Route path="reports&complaints" element={<AdminReportsAndComplaints />} />
+              <Route path="support&feedback" element={<AdminSupportAndFeedback />} />
+              <Route path="payment-providers" element={<PayoutSettings />} />
+              <Route path="student/:id" element={<StudentFullDetails />} />
+              <Route path="roomowner/:id" element={<RoomownerFullDetails />} />
+            </Route>
           </Route>
-        </Route>
 
-        <Route element={<PrivateRoute />}>
-          <Route path="/auth/user" element={<UserLayout />}>
-            <Route index path="accommodation" element={<Accommodation baseRoute="/auth/user/" />} />
-            <Route path="/auth/user/accommodation-details/:id" element={<AccommodationDetails />} />
-            <Route path="account" element={<UserAccount />} />
-            <Route path="feedbacks" element={<UserFeedback />} />
-            <Route path="bookings" element={<UserBookings />} />
-            <Route path="request-booking/:bookingId" element={<BookingRequest />} />
-            <Route path="payments" element={<UserPayments />} />
-            <Route path="saved" element={<UserSaved />} />
-            <Route path="support" element={<UserSupport />} />
-            <Route path="payment/:bookingId" element={<PaymentPage />} />
-            <Route path="complaints" element={<UserComplaints />} />
-            <Route path="send_feedback" element={<UserFeedback />} />
-            <Route path="report_landowner" element={<UserReportLandowner />} />
-            <Route path="report_property" element={<UserReportProperty />} />
-            <Route path="confirmation" element={<ConfirmationPage />} />
-            <Route path="notifications" element={<NotificationPage />} />
+          <Route element={<LandOwnerRoute />}>
+            <Route path="/auth/landowner" element={<Layout />}>
+              <Route index element={<LandownerDashboard />} />
+              <Route path="notifications" element={<NotificationPage />} />
+              <Route path="support" element={<RoomOwnerSupport />} />
+              {/* <Route path="properties" element={<PropertiesList />} /> */}
+              <Route path="stats" element={<Stats />} />
+              <Route path="account" element={<RoomOwnerAccount />} />
+              <Route path="create_property" element={<CreateProperty roleUrl='admin' />} />
+              <Route path="property/my-property/edit-property" element={<EditPropertyPage />} />
+              <Route path="payout-account" element={<PayoutPage />} />
+              <Route path="bookings" element={<OwnerBookings />} />
+              <Route path="upload-passport" element={<UploadPassport />} />
+            </Route>
           </Route>
-        </Route>
 
-      </Routes>
-      </NotificationProvider>
+          <Route element={<PrivateRoute />}>
+            <Route path="/auth/user" element={<UserLayout />}>
+              <Route index path="accommodation" element={<Accommodation baseRoute="/auth/user/" />} />
+              <Route path="/auth/user/accommodation-details/:id" element={<AccommodationDetails />} />
+              <Route path="account" element={<UserAccount />} />
+              <Route path="feedbacks" element={<UserFeedback />} />
+              <Route path="bookings" element={<UserBookings />} />
+              <Route path="request-booking/:bookingId" element={<BookingRequest />} />
+              <Route path="payments" element={<UserPayments />} />
+              <Route path="saved" element={<UserSaved />} />
+              <Route path="support" element={<UserSupport />} />
+              <Route path="payment/:bookingId" element={<PaymentPage />} />
+              <Route path="complaints" element={<UserComplaints />} />
+              <Route path="send_feedback" element={<UserFeedback />} />
+              <Route path="report_landowner" element={<UserReportLandowner />} />
+              <Route path="report_property" element={<UserReportProperty />} />
+              <Route path="confirmation" element={<ConfirmationPage />} />
+              <Route path="notifications" element={<NotificationPage />} />
+            </Route>
+          </Route>
+
+        </Routes>
+      </HeaderProvider >
     </>
   );
 }

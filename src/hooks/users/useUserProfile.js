@@ -64,10 +64,24 @@ export const useUserProfile = () => {
       await changeUserPasswordAPI(payload);
       return { success: true };
     } catch (err) {
+      const data = err?.response?.data;
+
+      // Backend returns field-level errors: { new_password: ["msg"], old_password: ["msg"] }
+      if (data && typeof data === "object") {
+        const messages = Object.entries(data)
+          .flatMap(([field, errors]) =>
+            Array.isArray(errors) ? errors : [errors]
+          )
+          .join("\n");
+
+        if (messages) {
+          return { success: false, message: messages };
+        }
+      }
+
       return {
         success: false,
-        message:
-          err?.response?.data?.message || "Failed to change password",
+        message: data?.message || "Failed to change password",
       };
     } finally {
       setChangingPassword(false);

@@ -1,14 +1,15 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa6";
-import { useNotifications } from "../../hooks/useNotifications";
+// import { useNotifications } from "../../context/HeaderContext";
+import { useHeader } from "../../context/HeaderContext";
 
 const NotificationPage = () => {
   const navigate = useNavigate();
-  const { notifications, setNotifications, loading } = useNotifications();
+  const { notifications, setNotifications, notifLoading: loading, fetchNotifications } = useHeader();
 
   const markAsRead = (id) => {
-    setNotifications(prev => 
+    setNotifications(prev =>
       prev.map(n => n.id === id ? { ...n, unread: false } : n)
     );
   };
@@ -23,7 +24,7 @@ const NotificationPage = () => {
   return (
     <div className="min-h-screen container mx-auto ">
       <div className="w-full max-w-none px-4 md:px-10 py-6">
-        
+
         {/* Header Section */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-4">
@@ -51,9 +52,8 @@ const NotificationPage = () => {
               <div
                 key={item.id}
                 onClick={() => markAsRead(item.id)}
-                className={`flex items-start gap-4 p-5 transition-all cursor-pointer border-b ${
-                  item.unread ? "bg-white border-l-4 border-l-blue-500 shadow-sm" : "bg-transparent opacity-70"
-                }`}
+                className={`flex items-start gap-4 p-5 transition-all cursor-pointer border-b ${item.unread ? "bg-white border-l-4 border-l-blue-500 shadow-sm" : "bg-transparent opacity-70"
+                  }`}
               >
                 <div className="mt-1">
                   <div className={`h-2.5 w-2.5 rounded-full ${item.unread ? "bg-blue-500" : "bg-transparent"}`} />
