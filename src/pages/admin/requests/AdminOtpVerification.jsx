@@ -116,7 +116,7 @@ const AdminOtpVerification = () => {
                 clearInterval(timerRef.current);
             }
 
-            sessionStorage.setItem('aliveparis_session_hint', 'true');
+            localStorage.setItem('aliveparis_session_hint', 'true');
             await login();
             navigate("/auth/admin", { replace: true });
 

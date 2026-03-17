@@ -67,35 +67,35 @@ const UserLayout = () => {
 
             {/* Desktop User Glance */}
             <Link to="/auth/user/account" >
-            <div className="hidden md:flex items-center gap-3 mr-2 pr-4 border-r border-gray-100">
-              <div className="text-right">
-                <p className="text-xs font-bold text-slate-900 capitalize leading-none">
-                  {userData?.full_name || "Guest User"}
-                </p>
-                <p className="text-[10px] text-slate-500 mt-1">
-                  {user?.email}
-                </p>
-              </div>
-              <div className="border border-black border-2 p-[2px] rounded-full">
-                <div className="h-10 w-10 bg-slate-100 rounded-full flex items-center justify-center overflow-hidden">
-                  {userData?.avatar_id ? (
-                    <img
-                      src={Characters.find((c) => c.id === Number(userData.avatar_id))?.img}
-                      alt="profile"
-                      className="w-full h-full object-cover"
-                    />
-                  ) : userData?.full_name ? (
-                    // Show first letter if name exists
-                    <span className="text-gray-700 font-bold uppercase text-2xl">
-                      {userData.full_name.charAt(0)}
-                    </span>
-                  ) : (
-                    // Fallback to icon if absolutely no data is available
-                    <FaRegUserCircle className="text-gray-400 text-xl" />
-                  )}
+              <div className="hidden md:flex items-center gap-3 mr-2 pr-4 border-r border-gray-100">
+                <div className="text-right">
+                  <p className="text-xs font-bold text-slate-900 capitalize leading-none">
+                    {userData?.full_name || "Guest User"}
+                  </p>
+                  <p className="text-[10px] text-slate-500 mt-1">
+                    {user?.email}
+                  </p>
+                </div>
+                <div className="border border-black border-2 p-[2px] rounded-full">
+                  <div className="h-10 w-10 bg-slate-100 rounded-full flex items-center justify-center overflow-hidden">
+                    {userData?.avatar_id ? (
+                      <img
+                        src={Characters.find((c) => c.id === Number(userData.avatar_id))?.img}
+                        alt="profile"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : userData?.full_name ? (
+                      // Show first letter if name exists
+                      <span className="text-gray-700 font-bold uppercase text-2xl">
+                        {userData.full_name.charAt(0)}
+                      </span>
+                    ) : (
+                      // Fallback to icon if absolutely no data is available
+                      <FaRegUserCircle className="text-gray-400 text-xl" />
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
             </Link>
 
             {/* Wishlist Icon */}
@@ -112,33 +112,35 @@ const UserLayout = () => {
                 </span>
               )}
             </Link>
-            <div className="border border-black border-2  rounded-full">
+            <Link to="/auth/user/account" >
+              <div className="border border-black border-2  rounded-full">
 
-              <div className="block md:hidden h-10 w-10 bg-slate-100 rounded-full flex items-center justify-center overflow-hidden">
-                {userData?.avatar_id ? (
-                  <img
-                    src={Characters.find((c) => c.id === Number(userData.avatar_id))?.img}
-                    alt="profile"
-                    className="w-full h-full object-cover"
-                  />
-                ) : userData?.full_name ? (
-                  // Show first letter if name exists
-                  <span className="text-gray-700 font-bold uppercase text-xl">
-                    {userData.full_name.charAt(0)}
-                  </span>
-                ) : (
-                  // Fallback to icon if absolutely no data is available
-                  <FaRegUserCircle className="text-gray-400 text-xl" />
-                )}
+                <div className="block md:hidden h-10 w-10 bg-slate-100 rounded-full flex items-center justify-center overflow-hidden">
+                  {userData?.avatar_id ? (
+                    <img
+                      src={Characters.find((c) => c.id === Number(userData.avatar_id))?.img}
+                      alt="profile"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : userData?.full_name ? (
+                    // Show first letter if name exists
+                    <span className="text-gray-700 font-bold uppercase text-xl">
+                      {userData.full_name.charAt(0)}
+                    </span>
+                  ) : (
+                    // Fallback to icon if absolutely no data is available
+                    <FaRegUserCircle className="text-gray-400 text-xl" />
+                  )}
+                </div>
               </div>
-            </div>
+            </Link>
 
 
 
           </div>
 
         </div>
-      </header>
+      </header >
 
       {/* MOBILE DRAWER */}
 
@@ -176,7 +178,7 @@ const UserLayout = () => {
         </div>
 
       </nav> */}
-    </div>
+    </div >
   );
 };
 
