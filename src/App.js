@@ -67,6 +67,7 @@ import UploadPassport from "./pages/landlord/UploadPassport";
 import { HeaderProvider  } from "./context/HeaderContext";
 import AdminOtpVerification from "./pages/admin/requests/AdminOtpVerification";
 import BookingRequest from "./pages/public/accommodation/BookingRequest";
+import ScrollToTop from "./components/ScrollToTop";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -76,6 +77,7 @@ function App() {
       {loading && <SplashScreen onFinish={() => setLoading(false)} />}
 
       <Toaster position="top-center" />
+      <ScrollToTop />
       <HeaderProvider >
 
         <Routes>

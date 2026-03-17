@@ -21,10 +21,10 @@ export const useFetchNotifications = (isLoggedIn) => {
     if (isLoggedIn) {
       fetchNotifications();
     } else {
-      setNotifications([]);
+      setNotifications([]); // ✅ clear on logout
       setLoading(false);
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn]); // ✅ re-runs when auth state changes
 
   return { notifications, setNotifications, loading, fetchNotifications };
 };

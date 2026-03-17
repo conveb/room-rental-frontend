@@ -7,7 +7,7 @@ import {
 } from "../../services/allAPI";
 import { toast } from "sonner";
 
-export const useUserProfile = () => {
+export const useUserProfile = (userId) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
@@ -106,8 +106,13 @@ export const useUserProfile = () => {
   };
 
   useEffect(() => {
-    fetchUserProfile();
-  }, []);
+    if (userId) {
+      fetchUserProfile(); // ✅ only fetch when user exists
+    } else {
+      setUser(null);      // ✅ clear on logout
+      setLoading(false);
+    }
+  }, [userId]);
 
   return {
     user,

@@ -8,9 +8,7 @@ const HeaderContext = createContext();
 export const HeaderProvider = ({ children }) => {
   const { user: authUser } = useAuth();
 
-  const { notifications, setNotifications, loading: notifLoading, fetchNotifications } =
-    useFetchNotifications(Boolean(authUser));
-
+  // ✅ Pass authUser.id so hooks re-run when user logs in
   const {
     user,
     setUser,
@@ -21,29 +19,23 @@ export const HeaderProvider = ({ children }) => {
     updateUserProfile,
     changeUserPassword,
     deleteUserProfile,
-  } = useUserProfile();
+  } = useUserProfile(authUser?.id);  // ✅ key dependency
+
+  const {
+    notifications,
+    setNotifications,
+    loading: notifLoading,
+    fetchNotifications,
+  } = useFetchNotifications(Boolean(authUser));  // ✅ already correct
 
   const unreadCount = notifications.filter((n) => n.unread).length;
 
   return (
     <HeaderContext.Provider
       value={{
-        // Profile
-        user,
-        setUser,
-        profileLoading,
-        error,
-        updating,
-        changingPassword,
-        updateUserProfile,
-        changeUserPassword,
-        deleteUserProfile,
-        // Notifications
-        notifications,
-        setNotifications,
-        unreadCount,
-        notifLoading,
-        fetchNotifications,
+        user, setUser, profileLoading, error, updating, changingPassword,
+        updateUserProfile, changeUserPassword, deleteUserProfile,
+        notifications, setNotifications, unreadCount, notifLoading, fetchNotifications,
       }}
     >
       {children}
@@ -53,8 +45,6 @@ export const HeaderProvider = ({ children }) => {
 
 export const useHeader = () => {
   const context = useContext(HeaderContext);
-  if (!context) {
-    throw new Error("useHeader must be used inside <HeaderProvider>");
-  }
+  if (!context) throw new Error("useHeader must be used inside <HeaderProvider>");
   return context;
 };
