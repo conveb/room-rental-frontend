@@ -9,11 +9,12 @@ const sections = [
   { id: "s5", title: "5. Payment Processing" },
   { id: "s6", title: "6. Landlord Module" },
   { id: "s7", title: "7. Data Retention" },
-  { id: "s8", title: "8. Your Rights (GDPR)" },
+  { id: "s8", title: "8. Your Rights" },
   { id: "s9", title: "9. Cookies" },
   { id: "s10", title: "10. Security" },
-  { id: "s11", title: "11. Policy Updates" },
-  { id: "s12", title: "12. Contact & DPO" },
+  { id: "s11", title: "11. Cross-Border Transfers" },
+  { id: "s12", title: "12. Policy Updates" },
+  { id: "s13", title: "13. Grievance Officer" },
 ];
 
 const PrivacyPolicy = () => {
@@ -41,7 +42,6 @@ const PrivacyPolicy = () => {
           style={{ filter: "brightness(0.55)" }}
         />
         <div className="absolute inset-0 flex flex-col items-center justify-center px-4">
-         
           <h1 className="text-4xl md:text-6xl font-bold text-white text-center leading-tight mt-10">
             Privacy Policy
           </h1>
@@ -51,7 +51,7 @@ const PrivacyPolicy = () => {
         </div>
       </div>
 
-      {/* GDPR Badge */}
+      {/* Compliance Badge */}
       <div className="flex justify-center mt-8 px-4">
         <div
           className="inline-flex items-center gap-3 px-5 py-3 rounded-full text-sm font-sans"
@@ -63,7 +63,7 @@ const PrivacyPolicy = () => {
           }}
         >
           <span style={{ color: "#2d6a4f" }}>●</span>
-          This policy complies with the GDPR, French Data Protection Law, and CNIL requirements.
+          This policy complies with the Digital Personal Data Protection Act, 2023 (India) and the Information Technology Act, 2000.
         </div>
       </div>
 
@@ -103,16 +103,18 @@ const PrivacyPolicy = () => {
         </aside>
 
         {/* Content */}
-        <div
-          className="col-span-2 md:col-span-3 rounded-3xl p-2 md:p-12 font-sans"
-        >
+        <div className="col-span-2 md:col-span-3 rounded-3xl p-2 md:p-12 font-sans">
+
           <p className="text-gray-600 mb-8 leading-relaxed text-sm md:text-base">
-            At <strong>Alive Paris</strong>, we take data protection seriously. This Privacy Policy explains
-            what personal information we collect, why we collect it, how we use it, and the rights you have
-            regarding your data. We operate in full compliance with the{" "}
-            <strong>General Data Protection Regulation (GDPR)</strong>, French Law No. 78-17 on Data
-            Processing, Files and Freedoms (<em>Loi Informatique et Libertés</em>), and the guidelines
-            issued by the <strong>CNIL</strong> (Commission Nationale de l'Informatique et des Libertés).
+            At <strong>Alive Paris</strong>, your privacy matters to us. This Privacy Policy describes
+            what personal information we collect, why we collect it, how we use it, and the rights you
+            hold over your data. We are a company incorporated and operating under the laws of{" "}
+            <strong>India</strong>, and this policy is governed by the{" "}
+            <strong>Digital Personal Data Protection Act, 2023 (DPDP Act)</strong> and the{" "}
+            <strong>Information Technology Act, 2000</strong> (including the IT (Amendment) Act, 2008
+            and applicable Rules). Where our services involve users located in France or the European
+            Economic Area, we also observe applicable data protection principles under the GDPR on a
+            best-efforts basis.
           </p>
 
           {/* Section 1 */}
@@ -121,11 +123,26 @@ const PrivacyPolicy = () => {
               1. Who We Are
             </h2>
             <p className="text-gray-600 leading-relaxed text-sm md:text-base">
-              <strong>Alive Paris</strong> is a room rental platform based in France, connecting tenants
-              seeking accommodation with available rental listings. As the operator of this platform, Alive
-              Paris acts as the <strong>Data Controller</strong> for all personal data collected through
-              this website, as defined under Article 4(7) of the GDPR.
+              <strong>Alive Paris</strong> is a room rental platform registered in India, providing
+              accommodation solutions primarily for students seeking rooms in France. As the operator of
+              this platform, Alive Paris acts as the <strong>Data Fiduciary</strong> as defined under
+              Section 2(i) of the Digital Personal Data Protection Act, 2023 — the entity that determines
+              the purpose and means of processing your personal data.
             </p>
+            <div
+              className="mt-4 p-4 rounded-2xl text-sm md:text-base"
+              style={{ background: "#f9f7f4", border: "1px solid #ede7dc" }}
+            >
+              <p><strong>Registered Business:</strong> Alive Paris</p>
+              <p className="text-gray-600 mt-1"><strong>Country of Incorporation:</strong> India</p>
+              <p className="text-gray-600 mt-1">
+                <strong>Email:</strong>{" "}
+                <a href="mailto:info@aliveparis.com" className="underline" style={{ color: "#1a6b40" }}>
+                  info@aliveparis.com
+                </a>
+              </p>
+              <p className="text-gray-600 mt-1"><strong>Service Region:</strong> France (student accommodation)</p>
+            </div>
           </section>
 
           {/* Section 2 */}
@@ -134,8 +151,8 @@ const PrivacyPolicy = () => {
               2. Data We Collect
             </h2>
             <p className="text-gray-600 mb-3 text-sm md:text-base">
-              We collect only the minimum data necessary to provide our services (<em>data minimisation</em>,
-              Art. 5(1)(c) GDPR):
+              We collect only the personal data necessary to provide and improve our services, consistent
+              with the principle of <em>data minimisation</em> under the DPDP Act, 2023:
             </p>
             <ul className="space-y-3 text-gray-600 text-sm md:text-base">
               {[
@@ -157,8 +174,10 @@ const PrivacyPolicy = () => {
               ))}
             </ul>
             <p className="text-gray-500 mt-4 text-xs md:text-sm italic">
-              We do not collect sensitive data (e.g. racial origin, health data, biometric data) as defined
-              under Article 9 GDPR.
+              We do not collect sensitive personal data or information (SPDI) as defined under the IT
+              (Reasonable Security Practices and Procedures and Sensitive Personal Data or Information)
+              Rules, 2011, including financial information, health data, biometric data, or passwords
+              beyond what is necessary for secure authentication.
             </p>
           </section>
 
@@ -168,30 +187,32 @@ const PrivacyPolicy = () => {
               3. How We Use Your Data
             </h2>
             <p className="text-gray-600 mb-3 text-sm md:text-base">
-              Your personal data is used <strong>solely for the following purposes</strong>, each grounded
-              in a lawful basis under Article 6 GDPR:
+              Your personal data is used <strong>solely for the following purposes</strong>, each
+              grounded in a lawful basis. Under the DPDP Act, 2023, processing is permissible on the
+              basis of your <strong>consent</strong> (Section 6) or for <strong>legitimate uses</strong>{" "}
+              (Section 7), including the performance of a contract and legal compliance:
             </p>
             <div className="space-y-3 text-sm md:text-base">
               {[
                 {
                   purpose: "Account Creation & Management",
-                  basis: "Contract (Art. 6(1)(b))",
+                  basis: "Consent / Contract",
                   desc: "Your name, email, and phone number are used to create and manage your account on the platform.",
                 },
                 {
                   purpose: "Authentication & Security",
-                  basis: "Legitimate Interest (Art. 6(1)(f))",
+                  basis: "Legitimate Use",
                   desc: "To verify your identity during login and protect the platform against fraud or unauthorised access.",
                 },
                 {
                   purpose: "Platform Communications",
-                  basis: "Contract (Art. 6(1)(b))",
+                  basis: "Contract",
                   desc: "To send you service-related notifications such as booking confirmations, account changes, or support responses.",
                 },
                 {
                   purpose: "Legal Compliance",
-                  basis: "Legal Obligation (Art. 6(1)(c))",
-                  desc: "To meet obligations under French law and respond to lawful requests from competent authorities.",
+                  basis: "Legal Obligation",
+                  desc: "To meet obligations under Indian law and respond to lawful requests from competent authorities.",
                 },
               ].map((item) => (
                 <div
@@ -223,7 +244,6 @@ const PrivacyPolicy = () => {
               className="flex gap-3 p-4 rounded-2xl mb-4"
               style={{ background: "#e8f5ee", border: "1px solid #b7dfca" }}
             >
-              <span className="text-2xl">🔒</span>
               <p className="text-gray-700 font-medium text-sm md:text-base">
                 <strong>We do not sell, rent, or share your personal data with any third parties or
                 third-party applications.</strong> Your information stays within the Alive Paris platform.
@@ -231,14 +251,14 @@ const PrivacyPolicy = () => {
             </div>
             <p className="text-gray-600 text-sm md:text-base leading-relaxed">
               We have no current commercial relationships with advertising networks, data brokers, or
-              analytics providers that receive your personal data. In the rare event that a legal authority
-              (such as a French court or law enforcement) compels disclosure under applicable French law,
-              we will comply strictly within the scope of such obligation and, where legally permitted,
-              notify you.
+              analytics providers that receive your personal data. In the event that a competent authority
+              under Indian law (such as a court, tribunal, or government agency) compels disclosure, we
+              will comply strictly within the scope of such obligation and, where legally permitted,
+              notify you promptly.
             </p>
           </section>
 
-          {/* Section 5 — Future: Stripe */}
+          {/* Section 5 */}
           <section id="s5" className="mb-10 scroll-mt-24">
             <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-3 pb-2" style={{ borderBottom: "2px solid #e8e0d5" }}>
               5. Payment Processing (Future Feature)
@@ -247,37 +267,39 @@ const PrivacyPolicy = () => {
               className="flex gap-3 p-4 rounded-2xl mb-4"
               style={{ background: "#fff8ec", border: "1px solid #f0d9a0" }}
             >
-              <span className="text-2xl">⚠️</span>
               <p className="text-gray-700 text-sm md:text-base">
                 <strong>This feature is not yet active.</strong> We are disclosing this in advance in the
-                interest of transparency and GDPR accountability.
+                interest of transparency and compliance with notice obligations under the DPDP Act, 2023.
               </p>
             </div>
             <p className="text-gray-600 text-sm md:text-base leading-relaxed">
-              In the future, we intend to integrate a <strong>payment gateway (Stripe)</strong> to enable
-              secure rental transactions on the platform. When this feature is introduced:
+              In the future, we intend to integrate a <strong>payment gateway</strong> (such as Stripe or
+              a RBI-approved payment aggregator) to enable secure rental transactions on the platform.
+              When this feature is introduced:
             </p>
             <ul className="list-disc list-inside mt-3 space-y-2 text-gray-600 text-sm md:text-base">
               <li>
-                Stripe will act as an <strong>independent data controller</strong> for payment data (card
-                details, billing information). We will never store your card details ourselves.
+                The payment processor will act as a <strong>Data Processor</strong> under our instruction,
+                subject to a formal data processing agreement. We will never store your card or banking
+                details ourselves.
               </li>
               <li>
                 Only the minimum data required to initiate a transaction (such as your name and email) may
-                be passed to Stripe, strictly for payment identification purposes.
+                be passed to the payment processor, strictly for payment identification purposes.
               </li>
               <li>
-                Stripe is a GDPR-compliant processor and maintains Standard Contractual Clauses (SCCs) for
-                any data transfers outside the EEA.
+                Any international payment processor engaged will be required to comply with applicable
+                Indian data protection laws, including data localisation requirements prescribed under
+                the Reserve Bank of India (RBI) guidelines where applicable.
               </li>
               <li>
-                You will be notified via email and prompted to review an updated Privacy Policy and, where
-                required, provide fresh consent before this feature is activated.
+                You will be notified via email and prompted to review an updated Privacy Policy and
+                provide fresh, informed consent before this feature is activated.
               </li>
             </ul>
           </section>
 
-          {/* Section 6 — Landlord Module */}
+          {/* Section 6 */}
           <section id="s6" className="mb-10 scroll-mt-24">
             <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-3 pb-2" style={{ borderBottom: "2px solid #e8e0d5" }}>
               6. Landlord Module (Future Feature)
@@ -286,10 +308,9 @@ const PrivacyPolicy = () => {
               className="flex gap-3 p-4 rounded-2xl mb-4"
               style={{ background: "#fff8ec", border: "1px solid #f0d9a0" }}
             >
-              <span className="text-2xl">⚠️</span>
               <p className="text-gray-700 text-sm md:text-base">
-                <strong>This feature is not yet active.</strong> We are disclosing this in advance as required
-                by GDPR transparency obligations (Art. 13 & 14).
+                <strong>This feature is not yet active.</strong> We are disclosing this in advance as
+                required by the notice obligations under Section 5 of the DPDP Act, 2023.
               </p>
             </div>
             <p className="text-gray-600 text-sm md:text-base leading-relaxed mb-3">
@@ -303,11 +324,11 @@ const PrivacyPolicy = () => {
             </ul>
             <p className="text-gray-600 text-sm md:text-base leading-relaxed">
               This sharing will be limited to the context of a specific rental enquiry or application and
-              will be based on your explicit consent or the performance of a contract (Art. 6(1)(a) or
-              6(1)(b) GDPR). Landlords registered on Alive Paris will be bound by data processing
-              obligations consistent with this policy. Your phone number will <strong>not</strong> be
-              shared with landlords without separate, explicit consent. You will be notified and given the
-              opportunity to review updated terms before this feature goes live.
+              will be based on your explicit, informed consent as required under Section 6 of the DPDP
+              Act, 2023. Landlords registered on Alive Paris will be bound by data processing obligations
+              consistent with this policy. Your phone number will <strong>not</strong> be shared with
+              landlords without separate, explicit consent. You will be notified and given the opportunity
+              to review updated terms before this feature goes live.
             </p>
           </section>
 
@@ -317,20 +338,21 @@ const PrivacyPolicy = () => {
               7. Data Retention
             </h2>
             <p className="text-gray-600 text-sm md:text-base leading-relaxed mb-3">
-              We retain your personal data only for as long as is necessary for the purposes set out in
-              this policy, in accordance with the <em>principe de limitation de la conservation</em>
-              (Art. 5(1)(e) GDPR):
+              We retain your personal data only for as long as is necessary to fulfil the purpose for
+              which it was collected, consistent with Section 8(7) of the DPDP Act, 2023, which requires
+              Data Fiduciaries to erase personal data once the specified purpose is no longer being served:
             </p>
             <ul className="space-y-2 text-gray-600 text-sm md:text-base list-disc list-inside">
               <li><strong>Active accounts:</strong> Data is retained for the duration of your account.</li>
               <li>
                 <strong>Deleted or dormant accounts:</strong> Personal data is deleted or anonymised
                 within <strong>12 months</strong> of account deletion or 24 months of inactivity,
-                unless a longer retention period is required by French law.
+                unless a longer retention period is required by applicable Indian law.
               </li>
               <li>
-                <strong>Legal records:</strong> Certain transactional or compliance-related records may be
-                kept for up to 5 years as required under French commercial law.
+                <strong>Legal records:</strong> Certain transactional or compliance-related records may
+                be retained for up to <strong>5–8 years</strong> as required under the Companies Act,
+                2013, Income Tax Act, 1961, or other applicable Indian statutes.
               </li>
             </ul>
           </section>
@@ -338,28 +360,26 @@ const PrivacyPolicy = () => {
           {/* Section 8 */}
           <section id="s8" className="mb-10 scroll-mt-24">
             <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-3 pb-2" style={{ borderBottom: "2px solid #e8e0d5" }}>
-              8. Your Rights Under GDPR
+              8. Your Rights
             </h2>
             <p className="text-gray-600 mb-4 text-sm md:text-base">
-              Under Articles 15–22 of the GDPR and French data protection law, you have the following rights:
+              Under the <strong>Digital Personal Data Protection Act, 2023</strong> (Sections 11–14),
+              you have the following rights as a Data Principal:
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm md:text-base">
               {[
-                { icon: "👁", right: "Right of Access", desc: "Request a copy of your personal data." },
-                { icon: "✏️", right: "Right to Rectification", desc: "Correct inaccurate or incomplete data." },
-                { icon: "🗑", right: "Right to Erasure", desc: "Request deletion of your data ('right to be forgotten')." },
-                { icon: "⏸", right: "Right to Restriction", desc: "Limit how we process your data in certain circumstances." },
-                { icon: "📦", right: "Right to Portability", desc: "Receive your data in a structured, machine-readable format." },
-                { icon: "🚫", right: "Right to Object", desc: "Object to processing based on legitimate interests." },
-                { icon: "↩️", right: "Withdraw Consent", desc: "Withdraw consent at any time where processing is consent-based." },
-                { icon: "⚖️", right: "Lodge a Complaint", desc: "File a complaint with the CNIL (www.cnil.fr)." },
+                {  right: "Right to Access", desc: "Request a summary of your personal data and the processing activities undertaken." },
+                {  right: "Right to Correction", desc: "Request correction of inaccurate, incomplete, or misleading personal data." },
+                {  right: "Right to Erasure", desc: "Request deletion of your personal data, subject to legal retention obligations." },
+                {  right: "Right to Withdraw Consent", desc: "Withdraw consent at any time; withdrawal will not affect prior lawful processing." },
+                {  right: "Right to Grievance Redressal", desc: "Lodge a complaint with our Grievance Officer (details in Section 13)." },
+                {  right: "Right to Nominate", desc: "Nominate another individual to exercise rights on your behalf in case of death or incapacity." },
               ].map((item) => (
                 <div
                   key={item.right}
                   className="flex gap-3 p-3 rounded-xl"
                   style={{ background: "#f9f7f4", border: "1px solid #ede7dc" }}
                 >
-                  <span className="text-lg">{item.icon}</span>
                   <div>
                     <strong className="text-gray-800 block">{item.right}</strong>
                     <span className="text-gray-600">{item.desc}</span>
@@ -369,10 +389,19 @@ const PrivacyPolicy = () => {
             </div>
             <p className="mt-4 text-gray-600 text-sm md:text-base">
               To exercise any of these rights, please contact us at{" "}
-              <a href="mailto:contact@aliveparis.fr" className="underline" style={{ color: "#1a6b40" }}>
-                contact@aliveparis.fr
+              <a href="mailto:info@aliveparis.com" className="underline" style={{ color: "#1a6b40" }}>
+                info@aliveparis.com
               </a>
-              . We will respond within <strong>30 days</strong> in accordance with GDPR timelines.
+              . We will respond within <strong>30 days</strong> of receiving your request.
+            </p>
+            <p className="mt-3 text-gray-500 text-xs md:text-sm">
+              If you are located in France or within the EEA, you may also have additional rights under
+              the GDPR. We endeavour to honour GDPR-equivalent rights on a best-efforts basis. You may
+              also lodge a complaint with the{" "}
+              <strong>CNIL</strong> (Commission Nationale de l'Informatique et des Libertés) at{" "}
+              <a href="https://www.cnil.fr" target="_blank" rel="noopener noreferrer" className="underline" style={{ color: "#1a6b40" }}>
+                www.cnil.fr
+              </a>.
             </p>
           </section>
 
@@ -384,9 +413,8 @@ const PrivacyPolicy = () => {
             <p className="text-gray-600 text-sm md:text-base leading-relaxed">
               We use strictly necessary cookies for session management and authentication. We do not
               currently use advertising, tracking, or analytics cookies that share data with third parties.
-              In line with CNIL guidelines, any future use of non-essential cookies will require your prior,
-              informed consent via a cookie consent banner. You may manage cookie preferences through your
-              browser settings at any time.
+              Any future use of non-essential cookies will require your prior, informed consent. You may
+              manage cookie preferences through your browser settings at any time.
             </p>
           </section>
 
@@ -396,52 +424,83 @@ const PrivacyPolicy = () => {
               10. Security
             </h2>
             <p className="text-gray-600 text-sm md:text-base leading-relaxed">
-              We implement appropriate technical and organisational measures to protect your personal data
-              against unauthorised access, loss, or disclosure, as required by Article 32 GDPR. These
-              include encrypted data transmission (HTTPS), secure password storage, and access controls
-              limiting data access to authorised personnel only. In the event of a personal data breach
-              that poses a risk to your rights and freedoms, we will notify the CNIL within 72 hours and
-              inform affected users without undue delay, as required by Art. 33–34 GDPR.
+              We implement reasonable security practices and procedures as mandated by the{" "}
+              <strong>Information Technology (Reasonable Security Practices and Procedures and Sensitive
+              Personal Data or Information) Rules, 2011</strong> and Section 8(5) of the DPDP Act, 2023.
+              These include encrypted data transmission (HTTPS), secure password storage, and access
+              controls limiting data access to authorised personnel only. In the event of a personal data
+              breach, we will notify affected users and take prompt remedial action in accordance with
+              applicable Indian law and any Rules notified under the DPDP Act.
             </p>
           </section>
 
-          {/* Section 11 */}
+          {/* Section 11 — Cross-Border Transfers */}
           <section id="s11" className="mb-10 scroll-mt-24">
             <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-3 pb-2" style={{ borderBottom: "2px solid #e8e0d5" }}>
-              11. Policy Updates
+              11. Cross-Border Data Transfers
             </h2>
+            <p className="text-gray-600 text-sm md:text-base leading-relaxed mb-3">
+              As Alive Paris serves students in France while being registered in India, your personal data
+              may be transferred across borders. Under Section 16 of the DPDP Act, 2023, the Central
+              Government may notify countries or territories to which personal data transfers are
+              permitted. We will comply with all such notifications as they are issued.
+            </p>
             <p className="text-gray-600 text-sm md:text-base leading-relaxed">
-              We may update this Privacy Policy from time to time, particularly ahead of the introduction
-              of new features (such as payment processing or the landlord module). Any material changes
-              will be communicated by email and/or a prominent notice on the platform at least{" "}
-              <strong>14 days before</strong> they take effect, unless we are legally required to implement
-              changes sooner. The date of the latest revision is displayed at the top of this page.
+              Where data is transferred outside India, we will ensure that appropriate safeguards are in
+              place — including contractual protections with any Data Processors engaged — to ensure your
+              personal data receives a level of protection consistent with the DPDP Act. For users in
+              France or the EEA, we apply supplementary measures consistent with GDPR principles to the
+              extent reasonably practicable.
             </p>
           </section>
 
           {/* Section 12 */}
-          <section id="s12" className="mb-4 scroll-mt-24">
+          <section id="s12" className="mb-10 scroll-mt-24">
             <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-3 pb-2" style={{ borderBottom: "2px solid #e8e0d5" }}>
-              12. Contact & Data Protection
+              12. Policy Updates
+            </h2>
+            <p className="text-gray-600 text-sm md:text-base leading-relaxed">
+              We may update this Privacy Policy from time to time, particularly ahead of the introduction
+              of new features (such as payment processing or the landlord module) or in response to
+              changes in applicable law. Any material changes will be communicated by email and/or a
+              prominent notice on the platform at least <strong>14 days before</strong> they take effect,
+              unless we are legally required to implement changes sooner. We will also seek fresh consent
+              where required under the DPDP Act, 2023. The date of the latest revision is displayed at
+              the top of this page.
+            </p>
+          </section>
+
+          {/* Section 13 */}
+          <section id="s13" className="mb-4 scroll-mt-24">
+            <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-3 pb-2" style={{ borderBottom: "2px solid #e8e0d5" }}>
+              13. Grievance Officer & Contact
             </h2>
             <p className="text-gray-600 text-sm md:text-base leading-relaxed mb-4">
-              For any questions about this policy or to exercise your data protection rights, please
-              contact us:
+              In accordance with the <strong>Information Technology Act, 2000</strong> and the IT
+              (Intermediary Guidelines and Digital Media Ethics Code) Rules, 2021, Alive Paris has
+              designated a <strong>Grievance Officer</strong> to address any complaints or concerns
+              regarding the processing of your personal data. You may contact them at:
             </p>
             <div
               className="p-5 rounded-2xl text-sm md:text-base"
               style={{ background: "#f9f7f4", border: "1px solid #ede7dc" }}
             >
               <p><strong>Alive Paris</strong></p>
+              <p className="text-gray-600 mt-1"><strong>Grievance Officer / Data Protection Contact</strong></p>
               <p className="text-gray-600 mt-1">
                 Email:{" "}
-                <a href="mailto:contact@aliveparis.fr" className="underline" style={{ color: "#1a6b40" }}>
-                  contact@aliveparis.fr
+                <a href="mailto:info@aliveparis.com" className="underline" style={{ color: "#1a6b40" }}>
+                  info@aliveparis.com
                 </a>
               </p>
-              <p className="text-gray-600 mt-1">Country of operation: France</p>
+              <p className="text-gray-600 mt-1">Country of Incorporation: India</p>
+              <p className="text-gray-600 mt-1">Service Region: France (student accommodation)</p>
               <p className="text-gray-600 mt-3 text-xs">
-                You also have the right to lodge a complaint with the French data protection authority:
+                We will acknowledge your grievance within <strong>48 hours</strong> and resolve it within
+                <strong> 30 days</strong> of receipt, in accordance with applicable Indian law.
+              </p>
+              <p className="text-gray-600 mt-3 text-xs">
+                Users in France or the EEA may also contact the French data protection authority:
                 <br />
                 <strong>CNIL</strong> — Commission Nationale de l'Informatique et des Libertés
                 <br />
@@ -459,7 +518,7 @@ const PrivacyPolicy = () => {
           </section>
 
           <p className="mt-10 text-gray-400 text-xs text-center">
-            © 2026 Alive Paris · Last updated: March 2026
+            © 2026 Alive Paris · Last updated: March 2026 · Governed by the laws of India
           </p>
         </div>
       </div>
