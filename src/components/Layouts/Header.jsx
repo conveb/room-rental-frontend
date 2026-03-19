@@ -102,7 +102,7 @@ export default function Header() {
           <li><Link to="/">Home</Link></li>
           <li><Link to="/about">About</Link></li>
           <li><Link to="/accommodation">Find a Room</Link></li>
-          <li><Link to="/list-room">List your room</Link></li>
+          {/* <li><Link to="/list-room">List your room</Link></li> */}
           <li><Link to="/contact-us">Contact</Link></li>
           {renderAuthButton()}
         </ul>
@@ -136,7 +136,7 @@ export default function Header() {
             <li onClick={() => setOpen(false)}><Link to="/">Home</Link></li>
             <li onClick={() => setOpen(false)}><Link to="/about">About</Link></li>
             <li onClick={() => setOpen(false)}><Link to="/accommodation">Find a Room</Link></li>
-            <li onClick={() => setOpen(false)}><Link to="/list-room">List your room</Link></li>
+            {/* <li onClick={() => setOpen(false)}><Link to="/list-room">List your room</Link></li> */}
             <li onClick={() => setOpen(false)}><Link to="/contact-us">Contact</Link></li>
             {renderAuthButton()}
           </ul>

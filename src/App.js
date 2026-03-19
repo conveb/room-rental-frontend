@@ -88,7 +88,7 @@ function App() {
           <Route element={<Layouts />}>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<AboutPage />} />
-            <Route path="/list-room" element={<ListYourRoom />} />
+            {/* <Route path="/list-room" element={<ListYourRoom />} /> */}
             <Route path="/contact-us" element={<Contact />} />
             <Route path="/page-not-found" element={<PageNotFound />} />
             <Route path="/workingonit" element={<WorkingOnIt />} />

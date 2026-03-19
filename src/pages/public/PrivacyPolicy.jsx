@@ -499,7 +499,7 @@ const PrivacyPolicy = () => {
                 We will acknowledge your grievance within <strong>48 hours</strong> and resolve it within
                 <strong> 30 days</strong> of receipt, in accordance with applicable Indian law.
               </p>
-              <p className="text-gray-600 mt-3 text-xs">
+              {/* <p className="text-gray-600 mt-3 text-xs">
                 Users in France or the EEA may also contact the French data protection authority:
                 <br />
                 <strong>CNIL</strong> — Commission Nationale de l'Informatique et des Libertés
@@ -513,7 +513,7 @@ const PrivacyPolicy = () => {
                 >
                   www.cnil.fr
                 </a>
-              </p>
+              </p> */}
             </div>
           </section>
 

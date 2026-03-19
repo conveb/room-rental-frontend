@@ -150,14 +150,12 @@ const AboutPage = () => {
                     </div>
                 </div>
             </section>
-            <section className="bg-white overflow-hidden border-t border-gray-100">
+            {/* <section className="bg-white overflow-hidden border-t border-gray-100">
                 <div className="max-w-6xl mx-auto px-6 md:px-12 py-10 md:py-24">
                     <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-0 items-stretch w-full">
 
-                        {/* LEFT SIDE: col-span-10 (The Image) */}
                         <div className="md:col-span-10 order-2 md:order-1 relative z-10">
                             <div className="relative w-full h-[500px] md:h-[850px] overflow-hidden rounded-sm group">
-                                {/* Professional Interior Image */}
                                 <div
                                     className="absolute inset-0 bg-cover bg-center transition-transform duration-[2000ms] group-hover:scale-110"
                                     style={{
@@ -165,10 +163,8 @@ const AboutPage = () => {
                                     }}
                                 />
 
-                                {/* Reverse Gradient for Right-Side Overlap Clarity */}
                                 <div className="absolute inset-0 bg-gradient-to-l from-white/50 via-transparent to-transparent" />
 
-                                {/* Owner-Centric Caption (Left-aligned on image) */}
                                 <div className="absolute bottom-12 left-12 text-white text-left hidden md:block drop-shadow-md">
                                     <p className="text-xs uppercase tracking-[0.3em] font-bold mb-2 opacity-80">Portfolio Growth</p>
                                     <p className="text-3xl font-serif italic">Secure Your Revenue</p>
@@ -180,10 +176,8 @@ const AboutPage = () => {
                             </div>
                         </div>
 
-                        {/* RIGHT SIDE: col-span-2 (The Text) */}
                         <div className="md:col-span-2 order-1 md:order-2 flex flex-col justify-between py-10 relative md:pl-10">
                             <div className="relative z-20 flex flex-col items-end text-right">
-                                {/* Overlapping Heading - Overlaps to the LEFT over the image */}
                                 <h2 className="special-font text-5xl md:text-7xl lg:text-8xl font-black leading-[0.85] tracking-tighter text-slate-900 uppercase md:w-[600px]  pointer-events-none">
                                     List Your Room.<br />
                                     Earn More.<br />
@@ -211,7 +205,7 @@ const AboutPage = () => {
 
                     </div>
                 </div>
-            </section>
+            </section> */}
 
 
             <section className="bg-slate-950 py-16 md:py-28 relative overflow-hidden">
