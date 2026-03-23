@@ -5,6 +5,16 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Smooth scroll for the whole site */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 0px;
+}
+
+* {
+  scroll-behavior: smooth;
+}
+
 /* FIX: put this inside @layer base */
 @layer base {
   body {
@@ -22,6 +32,7 @@
   font-style: normal;
   font-variation-settings: "wdth" 100;
 }
+
 .avatar-scroll::-webkit-scrollbar {
   height: 4px;
 }
@@ -39,63 +50,73 @@
   scrollbar-width: thin;
   scrollbar-color: #000 transparent;
 }
+
 /* Hide scrollbar but still allow scrolling */
 .hide-scrollbar {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;     /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
 
 .hide-scrollbar::-webkit-scrollbar {
-  display: none;             /* Chrome, Safari, Opera */
+  display: none;
+  /* Chrome, Safari, Opera */
 }
+
 /* Ensure the amenities list wraps and looks like capsules */
 .p-multiselect-label {
-    display: flex !important;
-    flex-wrap: wrap !important;
-    gap: 4px !important;
-    padding: 6px !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 4px !important;
+  padding: 6px !important;
 }
 
 .p-multiselect-token {
-    background: #e5e7eb !important; /* light gray */
-    color: #374151 !important;
-    border-radius: 9999px !important; /* perfect pill shape */
-    padding: 2px 8px !important;
-    margin: 0 !important;
+  background: #e5e7eb !important;
+  /* light gray */
+  color: #374151 !important;
+  border-radius: 9999px !important;
+  /* perfect pill shape */
+  padding: 2px 8px !important;
+  margin: 0 !important;
 }
 
 .p-multiselect-token-label {
-    font-size: 10px !important;
-    font-weight: 600 !important;
+  font-size: 10px !important;
+  font-weight: 600 !important;
 }
 
 /* //bonjour */
- .bonjour-container {
-        position: relative;
-    }
+.bonjour-container {
+  position: relative;
+}
 
-    .bonjour-text {
-        font-family: 'Lavishly Yours', cursive;
-        font-size: 150px; /* Large size like your reference */
-        fill: none;
-        stroke: white;
-        stroke-width: 1; /* The 'writing' outline */
-        stroke-linecap: round;
-        stroke-linejoin: round;
-        stroke-dasharray: 1200;
-        stroke-dashoffset: 1200;
-        animation: write 4s cubic-bezier(0.45, 0.05, 0.55, 0.95) forwards;
-    }
+.bonjour-text {
+  font-family: 'Lavishly Yours', cursive;
+  font-size: 150px;
+  /* Large size like your reference */
+  fill: none;
+  stroke: white;
+  stroke-width: 1;
+  /* The 'writing' outline */
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1200;
+  stroke-dashoffset: 1200;
+  animation: write 4s cubic-bezier(0.45, 0.05, 0.55, 0.95) forwards;
+}
 
-    @keyframes write {
-        70% {
-            fill: rgba(255, 255, 255, 0);
-        }
-        100% {
-            stroke-dashoffset: 0;
-            fill: rgba(255, 255, 255, 1); /* Fills in solid white like the image */
-        }
-    }
+@keyframes write {
+  70% {
+    fill: rgba(255, 255, 255, 0);
+  }
 
-    /* Adding a slight slant to match the image style */
- 
+  100% {
+    stroke-dashoffset: 0;
+    fill: rgba(255, 255, 255, 1);
+    /* Fills in solid white like the image */
+  }
+}
+
+/* Adding a slight slant to match the image style */

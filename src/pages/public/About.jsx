@@ -53,10 +53,10 @@ const AboutPage = () => {
 
                         {/* Rooms Counter */}
                         <div className="flex flex-col items-center group">
-                            <div className="special-font text-[2.5rem] md:text-7xl font-black text-slate-900 tracking-tighter mb-2 group-hover:text-indigo-600 transition-colors duration-300">
-                                500<span className="text-indigo-500">+</span>
+                            <div className="special-font text-[2.5rem] md:text-7xl font-black text-black tracking-tighter mb-2  transition-colors duration-300">
+                                500<span className="text-green-500">+</span>
                             </div>
-                            <div className="w-10 h-1 bg-indigo-500 mb-0 md:mb-4 rounded-full scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
+                            <div className="w-10 h-1 bg-green-500 mb-0 md:mb-4 rounded-full scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
                             <p className=" text-center text-stone-500 uppercase tracking-[0.2em] text-xs md:text-sm font-bold">
                                 Verified Rooms
                             </p>
@@ -64,10 +64,10 @@ const AboutPage = () => {
 
                         {/* Clients Counter */}
                         <div className="flex flex-col items-center group">
-                            <div className="special-font text-[2.5rem] md:text-7xl font-black text-slate-900 tracking-tighter mb-2 group-hover:text-indigo-600 transition-colors duration-300">
-                                12<span className="text-indigo-500">k</span>
+                            <div className="special-font text-[2.5rem] md:text-7xl font-black text-black tracking-tighter mb-2  transition-colors duration-300">
+                                12<span className="text-green-500">k</span>
                             </div>
-                            <div className="w-10 h-1 bg-indigo-500 mb-0 md:mb-4 rounded-full scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
+                            <div className="w-10 h-1 bg-green-500 mb-0 md:mb-4 rounded-full scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
                             <p className=" text-center text-stone-500 uppercase tracking-[0.2em] text-xs md:text-sm font-bold">
                                 Happy Students
                             </p>
@@ -75,10 +75,10 @@ const AboutPage = () => {
 
                         {/* Years Counter */}
                         <div className="flex flex-col items-center group">
-                            <div className="special-font text-[2.5rem] md:text-7xl font-black text-slate-900 tracking-tighter mb-2 group-hover:text-indigo-600 transition-colors duration-300">
-                                08<span className="text-indigo-500">+</span>
+                            <div className="special-font text-[2.5rem] md:text-7xl font-black text-black tracking-tighter mb-2  transition-colors duration-300">
+                                08<span className="text-green-500">+</span>
                             </div>
-                            <div className="w-10 h-1 bg-indigo-500 mb-0 md:mb-4 rounded-full scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
+                            <div className="w-10 h-1 bg-green-500 mb-0 md:mb-4 rounded-full scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
                             <p className=" text-center text-stone-500 uppercase tracking-[0.2em] text-xs md:text-sm font-bold">
                                 Years of Expertise
                             </p>
@@ -96,10 +96,10 @@ const AboutPage = () => {
                         <div className="md:col-span-3 flex flex-col justify-between py-10 relative">
                             <div className="relative z-20">
                                 {/* Overlapping Heading */}
-                                <h2 className="special-font text-5xl md:text-7xl lg:text-8xl font-black leading-[0.85] tracking-tighter text-slate-900 uppercase md:w-[500px] pointer-events-none">
+                                <h2 className="special-font text-5xl md:text-7xl lg:text-8xl font-black leading-[0.85] tracking-tighter text-black uppercase md:w-[500px] pointer-events-none">
                                     Move In.<br />
                                     Settle Fast.<br />
-                                    <span className="text-indigo-600">Focus.</span>
+                                    <span className="text-green-600">Focus.</span>
                                 </h2>
 
                                 <div className="mt-12 md:mt-24 space-y-6 max-w-[280px]">
@@ -109,7 +109,7 @@ const AboutPage = () => {
                                         and ready for your arrival in France.
                                     </p>
 
-                                    <button className="group flex items-center gap-3 text-xs font-bold uppercase tracking-[0.2em] text-slate-900 border-b-2 border-slate-900 pb-2 hover:text-indigo-600 hover:border-indigo-600 transition-all">
+                                    <button className="group flex items-center gap-3 text-xs font-bold uppercase tracking-[0.2em] text-black border-b-2 border-slate-900 pb-2 hover:text-indigo-600 hover:border-indigo-600 transition-all">
                                         <a href="/accommodation">Find Your Dorm</a>
                                         <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
@@ -178,7 +178,7 @@ const AboutPage = () => {
 
                         <div className="md:col-span-2 order-1 md:order-2 flex flex-col justify-between py-10 relative md:pl-10">
                             <div className="relative z-20 flex flex-col items-end text-right">
-                                <h2 className="special-font text-5xl md:text-7xl lg:text-8xl font-black leading-[0.85] tracking-tighter text-slate-900 uppercase md:w-[600px]  pointer-events-none">
+                                <h2 className="special-font text-5xl md:text-7xl lg:text-8xl font-black leading-[0.85] tracking-tighter text-black uppercase md:w-[600px]  pointer-events-none">
                                     List Your Room.<br />
                                     Earn More.<br />
                                     <span className="text-indigo-600">Grow.</span>
@@ -191,7 +191,7 @@ const AboutPage = () => {
                                         ensuring 100% occupancy and secure monthly returns.
                                     </p>
 
-                                    <button className="group flex items-center gap-3 text-xs font-bold uppercase tracking-[0.2em] text-slate-900 border-b-2 border-slate-900 pb-2 hover:text-indigo-600 hover:border-indigo-600 transition-all ml-auto">
+                                    <button className="group flex items-center gap-3 text-xs font-bold uppercase tracking-[0.2em] text-black border-b-2 border-slate-900 pb-2 hover:text-indigo-600 hover:border-indigo-600 transition-all ml-auto">
                                         <a href="/auth/owner/register">Become a Host</a>
                                         <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
@@ -208,7 +208,7 @@ const AboutPage = () => {
             </section> */}
 
 
-            <section className="bg-slate-950 py-16 md:py-28 relative overflow-hidden">
+            <section className="bg-green-950 py-16 md:py-28 relative overflow-hidden">
                
 
                 <div className="max-w-7xl mx-auto px-6 relative z-10">
@@ -222,7 +222,7 @@ const AboutPage = () => {
                                 <h2 className="special-font text-white text-5xl md:text-8xl font-black tracking-tighter  mb-12 uppercase">
                                     Redefining <br />
                                     The Art of <br />
-                                    <span className="text-indigo-400">Living.</span>
+                                    <span className="text-green-400">Living.</span>
                                 </h2>
 
                                 <div className="grid md:grid-cols-2 gap-12">
@@ -239,7 +239,7 @@ const AboutPage = () => {
                                         </p>
 
                                         <div className="pt-6 flex items-center gap-6">
-                                            <div className="h-[1px] w-12 bg-indigo-500" />
+                                            <div className="h-[1px] w-12 bg-green-500" />
                                             <span className="text-white font-bold tracking-[0.3em] uppercase text-[10px]">
                                                 Experience the pulse of France
                                             </span>

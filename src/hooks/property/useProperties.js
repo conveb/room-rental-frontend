@@ -6,7 +6,7 @@ export const useProperties = () => {
   const location = useLocation();
   const [properties, setProperties] = useState([]);
   const [filteredProperties, setFilteredProperties] = useState([]);
-  
+
   const initialFilters = {
     city: "",
     date: "",
@@ -19,7 +19,7 @@ export const useProperties = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // 1. THE CORE FILTER LOGIC
+  // 1. THE CORE FILTER LOGIC — unchanged
   const applyFilters = useCallback(() => {
     let data = [...properties];
 
@@ -45,8 +45,7 @@ export const useProperties = () => {
 
     if (filters.rooms) {
       const roomCount = parseInt(filters.rooms);
-      // Handles strict equality or "4+" logic
-      data = data.filter((p) => 
+      data = data.filter((p) =>
         filters.rooms.includes("+") ? p.rooms >= roomCount : p.rooms === roomCount
       );
     }
@@ -54,19 +53,35 @@ export const useProperties = () => {
     setFilteredProperties(data);
   }, [filters, properties]);
 
-  // 2. FETCH DATA ON MOUNT
+  // 2. FETCH DATA ON MOUNT — now reads all URL params
   useEffect(() => {
     const fetchProperties = async () => {
       try {
         setLoading(true);
         const res = await getAllPropertiesAPI();
         setProperties(res.data);
-        
-        // Handle initial URL params (e.g., ?city=Paris)
+
         const params = new URLSearchParams(location.search);
-        const cityParam = params.get("city");
-        if (cityParam) {
-          setFilters(prev => ({ ...prev, city: cityParam }));
+        const cityParam   = params.get("city");
+        const budgetParam = params.get("budget");
+        const dateParam   = params.get("date");
+        const typeParam   = params.get("type");
+        const roomsParam  = params.get("rooms");
+
+        const hasParams = cityParam || budgetParam || dateParam || typeParam || roomsParam;
+
+        if (hasParams) {
+          // Merge only the params that exist — don't overwrite with nulls
+          setFilters((prev) => ({
+            ...prev,
+            ...(cityParam   && { city: cityParam }),
+            ...(budgetParam && { budget: budgetParam }),
+            ...(dateParam   && { date: dateParam }),
+            ...(typeParam   && { type: typeParam }),
+            ...(roomsParam  && { rooms: roomsParam }),
+          }));
+          // Don't call setFilteredProperties here —
+          // the debounce useEffect below will fire once filters state updates
         } else {
           setFilteredProperties(res.data);
         }
@@ -79,13 +94,11 @@ export const useProperties = () => {
     fetchProperties();
   }, [location.search]);
 
-  // 3. AUTO-APPLY FILTERS (Debounced for Typing)
+  // 3. AUTO-APPLY FILTERS (Debounced) — unchanged
   useEffect(() => {
-    // Wait 300ms after last keystroke before filtering
     const debounceTimer = setTimeout(() => {
       applyFilters();
     }, 300);
-
     return () => clearTimeout(debounceTimer);
   }, [filters, applyFilters]);
 
@@ -102,7 +115,7 @@ export const useProperties = () => {
     filters,
     filteredProperties,
     handleFilterChange,
-    applyFilters, // Can still be called manually if needed
+    applyFilters,
     resetFilters,
   };
 };

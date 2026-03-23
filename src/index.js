@@ -9,9 +9,18 @@ import 'primeicons/primeicons.css';
 import { AuthProvider } from './context/AuthContext';
 import { BrowserRouter } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import Lenis from "lenis";
+import "lenis/dist/lenis.css";
 // import 'primeflex/primeflex.css';
 
+const lenis = new Lenis();
 
+function raf(time) {
+  lenis.raf(time);
+  requestAnimationFrame(raf);
+}
+
+requestAnimationFrame(raf);
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>

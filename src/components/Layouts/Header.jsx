@@ -1,7 +1,7 @@
 import { HiMenu, HiX } from "react-icons/hi";
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import Logo from "../../Assets/pngs/logo-silver.png";
+import Logo from "../../Assets/pngs/logo-white.png";
 import { useAuth, useSessionHint } from "../../context/AuthContext";
 import { FaRegUser } from "react-icons/fa";
 import { ImSpinner9 } from "react-icons/im";
@@ -13,135 +13,160 @@ export default function Header() {
   const sessionHint = useSessionHint();
   const { user, role, loading } = useAuth();
 
+  // ── Role-based account route ─────────────────────────────────────────────
   const getAccountRoute = (role) => {
     switch (role) {
-      case "STUDENT":
-        return "/auth/user/accommodation";
-      case "LAND_OWNER":
-        return "/auth/landowner";
-      case "ADMIN":
-        return "/auth/admin";
-      default:
-        return "/signin";
+      case "STUDENT": return "/auth/user/accommodation";
+      case "LAND_OWNER": return "/auth/landowner";
+      case "ADMIN": return "/auth/admin";
+      default: return "/signin";
     }
   };
 
-  const blackHeaderPages = [
-    "/accommodation",
-    "/student/1",
-    "/workingonit",
-    "/notifications",
-  ];
-  const BlackTextPages = ["/list-room"];
+  // ── Route-based appearance ───────────────────────────────────────────────
+  const darkBgPages = ["/accommodation", "/student/1", "/workingonit", "/notifications"];
+  const darkTextPages = ["/list-room"];
+  const isDarkBgRoute = darkBgPages.includes(location.pathname);
+  const isDarkTextRoute = darkTextPages.includes(location.pathname);
 
-  const isBlackRoute = blackHeaderPages.includes(location.pathname);
-  const isWhiteRoute = BlackTextPages.includes(location.pathname);
-
+  // ── Scroll listener ──────────────────────────────────────────────────────
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 0);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    const onScroll = () => setScrolled(window.scrollY > 10);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const renderAuthButton = () => {
-    if (sessionHint || user) {
-      return (
-        <li className="bg-black text-white rounded-full border border-stone-700">
-          <Link to={getAccountRoute(role)}>
-            <button className="p-3">
-              <FaRegUser />
-            </button>
-          </Link>
-        </li>
-      );
-    }
+  // ── Nav styles ───────────────────────────────────────────────────────────
+  const navBg = scrolled || isDarkBgRoute ? "bg-black shadow-lg" : "bg-transparent";
+  const navText = scrolled || isDarkBgRoute ? "text-white" : isDarkTextRoute ? "text-black" : "text-white";
 
-    if (loading) {
-      return (
-        <li className="flex justify-center items-center w-10 h-10 rounded-full bg-gray-700">
-          <ImSpinner9 size={16} className="animate-spin" />
-        </li>
-      );
-    }
-
+  // ── Auth button — used in BOTH header and drawer ─────────────────────────
+  // compact: true = icon-only pill for mobile header
+  const AuthButton = ({ compact = false }) => {
+  if (sessionHint || user) {
     return (
-      <li className="bg-black text-white rounded-full border border-stone-700">
-        <Link to="/signin">
-          <button className="p-3">Sign In</button>
-        </Link>
-      </li>
+      <Link to={getAccountRoute(role)}>
+        <div className={`bg-black text-white rounded-full border border-stone-700
+                         flex items-center justify-center
+                         ${compact ? "w-9 h-9" : "px-4 py-2 gap-2"}`}>
+          <FaRegUser size={compact ? 14 : 13} />
+          {!compact && <span className="text-sm">Account</span>}
+        </div>
+      </Link>
     );
-  };
+  }
 
   return (
-    <nav
-      className={`fixed top-0 left-0 right-0 z-30 w-full px-2 md:px-0 
-        transition-all duration-300 ${isWhiteRoute ? "text-black" : "text-white"} ${scrolled ? "text-white" : "text-black"}
-        ${isBlackRoute || scrolled
-          ? "bg-black shadow-lg py-2 md:py-3"
-          : "bg-transparent py-2 md:py-3"
-        }
-      `}
-    >
-      <div className="max-w-6xl mx-auto flex items-center justify-between">
+    <Link to="/signin">
+      <div className={`bg-white text-black rounded-full font-medium
+                       flex items-center justify-center transition-all duration-200
+                       hover:bg-zinc-100 active:scale-95
+                       ${compact ? "px-4 py-2 text-xs" : "px-5 py-2.5 text-sm"}`}>
+        Sign In
+      </div>
+    </Link>
+  );
+};
 
-        {/* Logo */}
-        <Link to="/" className="flex items-end gap-2">
-          <img
-            src={Logo}
-            alt="aliveparis-logo"
-            className={`transition-all duration-300 ${scrolled ? "w-8" : "w-14"} h-auto`}
-          />
-          <p className="special-font text-end">Alive Paris</p>
-        </Link>
+  return (
+    <>
+      <nav
+        className={`fixed top-0 left-0 right-0 z-30 w-full px-4 md:px-0
+          transition-all duration-300 py-3
+          ${navBg} ${navText}`}
+      >
+        <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
 
-        {/* Desktop Menu */}
-        <ul className="hidden md:flex gap-8 text-sm items-center opacity-90">
-          <li><Link to="/">Home</Link></li>
-          <li><Link to="/about">About</Link></li>
-          <li><Link to="/accommodation">Find a Room</Link></li>
-          {/* <li><Link to="/list-room">List your room</Link></li> */}
-          <li><Link to="/contact-us">Contact</Link></li>
-          {renderAuthButton()}
-        </ul>
+          {/* ── Logo ──────────────────────────────────────────────────── */}
+          <Link to="/" className="flex items-end gap-2 flex-shrink-0">
+            <img
+              src={Logo}
+              alt="aliveparis-logo"
+              className={`transition-all duration-300 h-auto ${scrolled ? "w-7" : "w-10"}`}
+            />
+            <p className="special-font text-end leading-none">Alive Paris</p>
+          </Link>
 
-        {/* Mobile Menu Icon */}
-        <div
-          className="md:hidden text-3xl cursor-pointer"
-          onClick={() => setOpen(true)}
-        >
-          <HiMenu />
-        </div>
+          {/* ── Desktop menu ──────────────────────────────────────────── */}
+          <ul className="hidden md:flex gap-8 text-sm items-center opacity-90">
+            <li><Link to="/" className="hover:opacity-70 transition-opacity">Home</Link></li>
+            <li><Link to="/about" className="hover:opacity-70 transition-opacity">About</Link></li>
+            <li><Link to="/accommodation" className="hover:opacity-70 transition-opacity">Find a Room</Link></li>
+            <li><Link to="/contact-us" className="hover:opacity-70 transition-opacity">Contact</Link></li>
+            <li><AuthButton /></li>
+          </ul>
 
-        {/* Mobile Drawer */}
-        <div
-          className={`fixed top-0 right-0 h-full w-[70%] bg-white text-black shadow-xl
-          transform transition-transform duration-300 z-50
-          ${open ? "translate-x-0" : "translate-x-full"}`}
-        >
-          <div
-            className="flex justify-end p-5 text-3xl cursor-pointer"
-            onClick={() => setOpen(false)}
-          >
-            <HiX />
+          {/* ── Mobile right side: Sign In + Hamburger ────────────────── */}
+          <div className="flex md:hidden items-center gap-3">
+            {/* Sign In always visible on mobile — outside the drawer */}
+            <AuthButton compact />
+
+            {/* Hamburger */}
+            <button
+              onClick={() => setOpen(true)}
+              aria-label="Open menu"
+              className="text-2xl"
+            >
+              <HiMenu />
+            </button>
           </div>
 
-          <p className="text-center font-light text-2xl mb-10 special-font">
-            Alive Paris
-          </p>
+        </div>
+      </nav>
 
-          <ul className="flex flex-col gap-6 text-lg px-6 text-center items-center">
-            <li onClick={() => setOpen(false)}><Link to="/">Home</Link></li>
-            <li onClick={() => setOpen(false)}><Link to="/about">About</Link></li>
-            <li onClick={() => setOpen(false)}><Link to="/accommodation">Find a Room</Link></li>
-            {/* <li onClick={() => setOpen(false)}><Link to="/list-room">List your room</Link></li> */}
-            <li onClick={() => setOpen(false)}><Link to="/contact-us">Contact</Link></li>
-            {renderAuthButton()}
-          </ul>
+      {/* ── Backdrop ──────────────────────────────────────────────────── */}
+      {open && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 md:hidden backdrop-blur-sm"
+          onClick={() => setOpen(false)}
+        />
+      )}
+
+      {/* ── Mobile drawer ─────────────────────────────────────────────── */}
+      <div
+        className={`fixed top-0 right-0 h-full w-[72%] max-w-xs bg-white text-black
+          shadow-2xl transform transition-transform duration-300 z-50 md:hidden
+          ${open ? "translate-x-0" : "translate-x-full"}`}
+      >
+        {/* Drawer header */}
+        <div className="flex items-center justify-between px-6 py-5 border-b border-zinc-100">
+          <p className="special-font text-lg">Alive Paris</p>
+          <button
+            onClick={() => setOpen(false)}
+            className="text-2xl text-zinc-500 hover:text-black transition-colors"
+            aria-label="Close menu"
+          >
+            <HiX />
+          </button>
+        </div>
+
+        {/* Nav links */}
+        <ul className="flex flex-col px-6 py-6 gap-1">
+          {[
+            { to: "/", label: "Home" },
+            { to: "/about", label: "About" },
+            { to: "/accommodation", label: "Find a Room" },
+            { to: "/contact-us", label: "Contact" },
+          ].map(({ to, label }) => (
+            <li key={to}>
+              <Link
+                to={to}
+                onClick={() => setOpen(false)}
+                className="flex items-center w-full px-3 py-3 rounded-xl text-base
+                           text-zinc-700 hover:bg-zinc-50 hover:text-black
+                           transition-colors duration-200"
+              >
+                {label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+
+        {/* Drawer footer — full-width CTA */}
+        <div className="absolute bottom-0 left-0 right-0 px-6 pb-8 pt-4 border-t border-zinc-100">
+          <AuthButton />
         </div>
       </div>
-    </nav>
+    </>
   );
 }

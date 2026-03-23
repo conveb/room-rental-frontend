@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }) => {
   );
 
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
   const navigate = useNavigate();
 

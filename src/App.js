@@ -68,6 +68,9 @@ import { HeaderProvider  } from "./context/HeaderContext";
 import AdminOtpVerification from "./pages/admin/requests/AdminOtpVerification";
 import BookingRequest from "./pages/public/accommodation/BookingRequest";
 import ScrollToTop from "./components/ScrollToTop";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+gsap.registerPlugin(ScrollTrigger);
 
 function App() {
   const [loading, setLoading] = useState(true);
