@@ -60,7 +60,7 @@ const BookingRequest = () => {
     ].join("\n");
 
     const encoded = encodeURIComponent(message);
-    window.open(`https://wa.me/918129779713?text=${encoded}`, "_blank");
+    window.open(`https://wa.me/917994317698?text=${encoded}`, "_blank");
   };
 
   return (

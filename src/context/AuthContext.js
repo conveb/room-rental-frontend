@@ -11,7 +11,6 @@ import { useNavigate } from "react-router-dom";
 const SessionHintContext = createContext(false);
 const AuthContext = createContext(null);
 
-// Key for localStorage
 const SESSION_HINT_KEY = 'aliveparis_session_hint';
 
 export const AuthProvider = ({ children }) => {
@@ -20,7 +19,7 @@ export const AuthProvider = ({ children }) => {
   );
 
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true); // start true so app waits
   const [isInitialized, setIsInitialized] = useState(false);
   const navigate = useNavigate();
 
@@ -32,7 +31,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem(SESSION_HINT_KEY);
       }
     } catch {
-      // localStorage blocked (private mode, storage full, etc.)
+      // localStorage blocked
     }
   };
 
@@ -41,7 +40,6 @@ export const AuthProvider = ({ children }) => {
       const res = await AuthAPI();
       if (res?.data) {
         setUser(res.data);
-        // User is authenticated - set session hint
         setSessionFlag(true);
         return res.data;
       } else {
@@ -50,7 +48,11 @@ export const AuthProvider = ({ children }) => {
         return null;
       }
     } catch {
-      console.error("Auth check failed, but waiting for interceptor...");
+      // Auth check failed — could be expired token, interceptor will handle refresh
+      // Do NOT navigate here — just set user null and let the app decide
+      setUser(null);
+      setSessionFlag(false);
+      return null;
     } finally {
       setLoading(false);
       setIsInitialized(true);
@@ -61,11 +63,11 @@ export const AuthProvider = ({ children }) => {
     fetchCurrentUser();
   }, []);
 
-  // Handle real session expiry
+  // Only handle REAL session expiry (refresh token also dead)
   useEffect(() => {
     const handleRealSessionExpired = () => {
-      if (user && isInitialized) {
-        console.log("🔴 Session expired - logging out");
+      // Only redirect if user was actually logged in
+      if (isInitialized) {
         setUser(null);
         setSessionFlag(false);
         navigate("/signin");
@@ -74,10 +76,9 @@ export const AuthProvider = ({ children }) => {
 
     window.addEventListener('real-session-expired', handleRealSessionExpired);
     return () => window.removeEventListener('real-session-expired', handleRealSessionExpired);
-  }, [navigate, user, isInitialized]);
+  }, [navigate, isInitialized]);
 
   const login = async () => {
-    console.log("🔵 Starting login process...");
     setLoading(true);
     return await fetchCurrentUser();
   };
@@ -85,7 +86,6 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       await LogoutAPI();
-      console.log("✅ Logout successful");
     } catch (e) {
       console.error("Logout failed", e);
     } finally {
@@ -95,9 +95,11 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Don't render children until we know auth state
+  if (!isInitialized) return null; // or a full-screen spinner
+
   return (
     <SessionHintContext.Provider value={sessionHintRef.current}>
-
       <AuthContext.Provider
         value={{
           user,
@@ -107,7 +109,6 @@ export const AuthProvider = ({ children }) => {
           fetchCurrentUser,
           isAuthenticated: Boolean(user),
           role: user?.role_name ?? null,
-
         }}
       >
         {children}

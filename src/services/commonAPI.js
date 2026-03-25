@@ -5,39 +5,66 @@ const api = axios.create({
   withCredentials: true,
 });
 
+// Queue to hold requests while token is being refreshed
+let isRefreshing = false;
+let failedQueue = [];
+
+const processQueue = (error) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve();
+    }
+  });
+  failedQueue = [];
+};
+
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
-    // 🔴 Refresh token itself failed = real session expired
-    if (originalRequest.url.includes("/api/v1/login/refresh")) {
-      // Only dispatch if it was triggered by a real user action, not initial auth check
+    // If the refresh endpoint itself failed → real session expired
+    if (originalRequest.url?.includes("/api/v1/login/refresh")) {
       if (!originalRequest._isAuthCheck) {
-        console.log("❌ Real session expired - logging out");
         window.dispatchEvent(new Event('real-session-expired'));
       }
       return Promise.reject(error);
     }
 
-    // ✅ Handle 401 for ALL endpoints including /auth/me — attempt refresh
+    // Only handle 401s, only retry once
     if (error.response?.status === 401 && !originalRequest._retry) {
+      // If a refresh is already in progress, queue this request
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        })
+          .then(() => api(originalRequest))
+          .catch((err) => Promise.reject(err));
+      }
+
       originalRequest._retry = true;
+      isRefreshing = true;
 
       try {
-        // Pass the _isAuthCheck flag so if THIS refresh fails,
-        // we know it was from initial load
         await api.post("/api/v1/login/refresh/", null, {
-          _isAuthCheck: originalRequest._isAuthCheck
+          _isAuthCheck: originalRequest._isAuthCheck,
         });
-        console.log(`✅ Token refreshed silently`);
-        return api(originalRequest); // Retry original request
+
+        // Token refreshed — retry all queued requests
+        processQueue(null);
+        return api(originalRequest);
       } catch (refreshError) {
-        // Refresh failed — only redirect if it's not just an initial auth probe
+        // Refresh failed — reject all queued requests
+        processQueue(refreshError);
+
         if (!originalRequest._isAuthCheck) {
           window.dispatchEvent(new Event('real-session-expired'));
         }
         return Promise.reject(refreshError);
+      } finally {
+        isRefreshing = false;
       }
     }
 
@@ -62,7 +89,6 @@ export const commonAPI = async (
     },
   };
 
-  // Mark auth check requests
   if (url.includes("/api/v1/auth/me")) {
     reqConfig._isAuthCheck = true;
   }
