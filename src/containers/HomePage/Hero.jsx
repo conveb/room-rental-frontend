@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { FaArrowRight } from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
 
 // Reusable dropdown that closes when clicking outside
 function Dropdown({ label, value, options, onSelect, onClear }) {
@@ -15,7 +16,7 @@ function Dropdown({ label, value, options, onSelect, onClear }) {
   }, []);
 
   return (
-    <div ref={ref} className="relative w-full">
+    <div ref={ref} className="relative w-full ">
       {/* Trigger */}
       <button
         type="button"
@@ -90,16 +91,16 @@ export default function HeroSection() {
   };
 
   return (
-    <div className="min-h-screen text-neutral-900">
+    <div className="min-h-screen bg-[#f5f2eb]">
       <header className="relative h-screen w-full">
 
         {/* Background */}
         <div
-          className="absolute inset-0 bg-cover bg-[center_25%] bg-slate-800"
+          className="absolute inset-0 bg-cover "
           style={{ backgroundImage: `url('https://res.cloudinary.com/dlfqobh58/image/upload/v1773922548/Alive_paris/xixgvlgg2q7tjx819nvm.png')` }}
           aria-hidden
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/40 to-black/25 pointer-events-none z-0" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/5 via-black/30 to-black/25 pointer-events-none z-0" />
 
         {/* Hero text */}
         <div className="relative z-20 h-full max-w-6xl mx-auto px-5 md:px-0 flex flex-col justify-start pt-32 md:pt-48">
@@ -107,9 +108,17 @@ export default function HeroSection() {
             <h1 className="special-font text-[2.5rem] md:text-[5.2rem] leading-tight text-white font-extrabold drop-shadow-lg">
               Find Affordable Monthly Rooms Across France
             </h1>
-            <p className="mt-6 md:mt-12 text-sm md:text-lg text-white/90 max-w-xl">
+            <p className="mt-6  text-sm md:text-lg text-white/90 max-w-xl">
               Browse modern rooms with quality amenities, trusted hosts, and smooth booking.
             </p>
+            <Link to="/accommodation" className="inline-block mt-6">
+            <button className="flex items-center justify-center p-1  mt-6 bg-white  hover:bg-gray-200   rounded-full">
+             <p className="px-3">
+              Search Rooms
+              </p>
+              <span className="bg-black p-3 rounded-full text-white"><FaArrowRight /></span> 
+            </button>
+            </Link>
           </div>
         </div>
 

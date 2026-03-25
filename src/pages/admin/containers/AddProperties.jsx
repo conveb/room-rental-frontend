@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useCallback, useRef } from "react";
 import { toast } from "sonner";
 import { useCreateProperty } from "../../../hooks/property/useCreateProperty";
 import PropertyImageUpload from "../components/PropertyImageUpload";
@@ -16,8 +16,9 @@ export default function AddProperties() {
     furnished: true,
     is_domicile_allowed: false,
     is_caf_eligible: false,
-    contract_file: null,
+    contract: false,
     rooms: "",
+    bhk: "",
     bathrooms: "",
     rent_per_month: "",
     charges: "",
@@ -29,10 +30,8 @@ export default function AddProperties() {
     city: "",
     region: "",
     country: "",
-    latitude: 9.9312,
-    longitude: 76.2673,
-    dpe_class: "A",
-    ges_class: "A",
+    latitude: 48.8566,
+    longitude: 2.3522,
     instructions: []
   });
 
@@ -40,12 +39,10 @@ export default function AddProperties() {
   const [images, setImages] = useState([]);
   const [selectedAmenities, setSelectedAmenities] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
-  // Keep the ref at the top level
+
   const submitButtonRef = useRef(null);
   const { createProperty, loading: isPublishing } = useCreateProperty();
 
-  // Navigation Logic
   const handleNext = () => {
     if (currentStep === 1 && !coverImage) {
       return toast.error("Please upload a cover image.");
@@ -59,22 +56,18 @@ export default function AddProperties() {
   const handleBack = () => setCurrentStep(prev => prev - 1);
 
   const handleLocationUpdate = useCallback((locationData) => {
-    // We manually set a location_id here since the original version 
-    // requires it for validation
-    setFormData((prev) => ({ 
-        ...prev, 
-        ...locationData, 
-        location_id: locationData.location_id || "manual_selection" 
+    setFormData((prev) => ({
+      ...prev,
+      ...locationData,
+      location_id: locationData.location_id || "manual_selection"
     }));
   }, []);
 
   const handleSubmit = async (e) => {
     if (e) e.preventDefault();
-    
     if (isSubmitting || isPublishing) return;
 
     setIsSubmitting(true);
-
     try {
       const submissionData = {
         ...formData,
@@ -82,7 +75,6 @@ export default function AddProperties() {
         cover_image: coverImage.file,
         images: images.map((img) => img.file),
       };
-
       await createProperty(submissionData);
     } catch (err) {
       console.error("Submission error:", err);

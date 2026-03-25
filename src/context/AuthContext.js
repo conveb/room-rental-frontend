@@ -68,7 +68,7 @@ export const AuthProvider = ({ children }) => {
         console.log("🔴 Session expired - logging out");
         setUser(null);
         setSessionFlag(false);
-        navigate("/login");
+        navigate("/signin");
       }
     };
 

@@ -1,67 +1,37 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import { MdAddCircle, MdDelete } from "react-icons/md";
 
 const PropertyImageUpload = ({ coverImage, setCoverImage, images, setImages }) => {
-  // Use refs to track URLs that need cleanup
-  const coverUrlRef = useRef(null);
-  const imageUrlsRef = useRef(new Set());
 
   const handleCoverSelect = (e) => {
     const file = e.target.files[0];
     if (file) {
-      // Revoke previous cover URL if it exists
-      if (coverUrlRef.current) {
-        URL.revokeObjectURL(coverUrlRef.current);
-      }
-      const newPreview = URL.createObjectURL(file);
-      coverUrlRef.current = newPreview;
-      setCoverImage({ file, preview: newPreview });
+      // Revoke old URL before creating new one
+      if (coverImage?.preview) URL.revokeObjectURL(coverImage.preview);
+      setCoverImage({ file, preview: URL.createObjectURL(file) });
     }
   };
 
   const handleImageSelect = (e) => {
     const files = Array.from(e.target.files);
-    const remaining = 5 - images.length;
-    const mapped = files.slice(0, remaining).map(file => {
-      const preview = URL.createObjectURL(file);
-      imageUrlsRef.current.add(preview);
-      return { file, preview };
-    });
+    const remaining = 10 - images.length;
+    const mapped = files.slice(0, remaining).map(file => ({
+      file,
+      preview: URL.createObjectURL(file)
+    }));
     setImages(prev => [...prev, ...mapped]);
   };
 
   const removeImage = (indexToRemove) => {
     const imageToRemove = images[indexToRemove];
-    if (imageToRemove?.preview) {
-      URL.revokeObjectURL(imageToRemove.preview);
-      imageUrlsRef.current.delete(imageToRemove.preview);
-    }
+    if (imageToRemove?.preview) URL.revokeObjectURL(imageToRemove.preview);
     setImages(images.filter((_, i) => i !== indexToRemove));
   };
 
   const removeCover = () => {
-    if (coverUrlRef.current) {
-      URL.revokeObjectURL(coverUrlRef.current);
-      coverUrlRef.current = null;
-    }
+    if (coverImage?.preview) URL.revokeObjectURL(coverImage.preview);
     setCoverImage(null);
   };
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      // Cleanup cover image URL
-      if (coverUrlRef.current) {
-        URL.revokeObjectURL(coverUrlRef.current);
-      }
-
-      // Cleanup all gallery image URLs
-      imageUrlsRef.current.forEach(url => {
-        URL.revokeObjectURL(url);
-      });
-      imageUrlsRef.current.clear();
-    };
-  }, []);
 
   return (
     <div className="space-y-4">
@@ -82,17 +52,15 @@ const PropertyImageUpload = ({ coverImage, setCoverImage, images, setImages }) =
           )}
         </div>
 
-        {/* Gallery Upload Button */}
+        {/* Gallery */}
         {images.length === 0 ? (
-          /* 1. Show Big Placeholder when NO images exist */
           <label className="flex flex-col items-center justify-center border-2 border-dashed rounded-xl h-36 md:h-52 cursor-pointer hover:bg-gray-50 transition">
             <input type="file" multiple accept="image/*" onChange={handleImageSelect} className="hidden" />
             <MdAddCircle className="text-2xl mb-1 text-gray-400" />
-            <span className="font-bold text-gray-600 text-xs">Gallery (0/5)</span>
+            <span className="font-bold text-gray-600 text-xs">Gallery (0/10)</span>
             <p className="text-[10px] text-gray-400">Click to upload property photos</p>
           </label>
         ) : (
-          /* 2. Show Grid + "Add More" slot when images exist */
           <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
             {images.map((img, index) => (
               <div key={index} className="relative h-36 md:h-52 rounded-lg overflow-hidden border group">
@@ -106,20 +74,16 @@ const PropertyImageUpload = ({ coverImage, setCoverImage, images, setImages }) =
                 </button>
               </div>
             ))}
-
-            {/* Small "Add More" slot if limit not reached */}
-            {images.length < 5 && (
+            {images.length < 10 && (
               <label className="flex flex-col items-center justify-center border-2 border-dashed rounded-lg h-36 md:h-52 cursor-pointer hover:bg-gray-50 transition">
                 <input type="file" multiple accept="image/*" onChange={handleImageSelect} className="hidden" />
                 <MdAddCircle className="text-lg text-gray-400" />
-                <span className="text-[10px] text-gray-500">{images.length}/5</span>
+                <span className="text-[10px] text-gray-500">{images.length}/10</span>
               </label>
             )}
           </div>
         )}
       </div>
-
-      {/* Gallery Previews */}
     </div>
   );
 };

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { usePropertyDetails } from "../../../hooks/property/usePropertyDetails";
 import AccommodationDetailsSkeleton from "../../skeleton/AccommodationDetailsSkeleton";
-import { MdOutlineReportGmailerrorred } from "react-icons/md";
+import { MdMap, MdOutlineReportGmailerrorred } from "react-icons/md";
 import { FaArrowLeft } from "react-icons/fa";
 import { toast } from "sonner";
 import { useReport } from "../../../hooks/users/useReport";
@@ -123,7 +123,7 @@ const AccommodationDetails = () => {
 
   return (
     <div>
-      <main className="max-w-6xl mx-auto px-4">
+      <main className="max-w-6xl mx-auto px-4 mt-20">
         {/* Header */}
         <div className="flex items-center gap-2 md:gap-5 my-2 md:my-5">
           <button
@@ -153,9 +153,9 @@ const AccommodationDetails = () => {
             <div>
               <div className="flex justify-between">
                 <h1 className="text-2xl md:text-3xl font-semibold">{property.title}</h1>
-                <button onClick={() => setReportType("property")}>
+                {/* <button onClick={() => setReportType("property")}>
                   <MdOutlineReportGmailerrorred size={25} />
-                </button>
+                </button> */}
               </div>
               <p className="mt-2 text-sm text-gray-600">{property.description}</p>
             </div>
@@ -186,6 +186,7 @@ const AccommodationDetails = () => {
             </div>
 
             {/* Address & Map */}
+            {/* Address & Map */}
             <div>
               <h2 className="text-sm font-semibold mb-2">Address</h2>
               <p className="text-xs text-gray-700">
@@ -193,18 +194,25 @@ const AccommodationDetails = () => {
               </p>
               <div className="mt-4">
                 <h2 className="text-sm font-semibold mb-2">Map</h2>
-                <div className="mt-2 h-48 w-full rounded-lg overflow-hidden border">
-                  <iframe
-                    width="100%"
-                    height="100%"
-                    frameBorder="0"
-                    scrolling="no"
-                    marginHeight="0"
-                    marginWidth="0"
-                    src={`https://www.openstreetmap.org/export/embed.html?bbox=${property.longitude - 0.01}%2C${property.latitude - 0.01}%2C${property.longitude + 0.01}%2C${property.latitude + 0.01}&layer=mapnik&marker=${property.latitude}%2C${property.longitude}`}
-                    title="Property Location"
-                  />
-                </div>
+                {property.latitude && property.longitude ? (
+                  <div className="mt-2 h-48 w-full rounded-lg overflow-hidden border">
+                    <iframe
+                      width="100%"
+                      height="100%"
+                      frameBorder="0"
+                      scrolling="no"
+                      marginHeight="0"
+                      marginWidth="0"
+                      src={`https://www.openstreetmap.org/export/embed.html?bbox=${property.longitude - 0.01}%2C${property.latitude - 0.01}%2C${property.longitude + 0.01}%2C${property.latitude + 0.01}&layer=mapnik&marker=${property.latitude}%2C${property.longitude}`}
+                      title="Property Location"
+                    />
+                  </div>
+                ) : (
+                  <div className="mt-2 h-48 w-full rounded-lg border border-dashed border-gray-200 bg-gray-50 flex flex-col items-center justify-center gap-2 text-gray-400">
+                    <MdMap size={28} />
+                    <p className="text-xs">Map not provided</p>
+                  </div>
+                )}
               </div>
             </div>
 

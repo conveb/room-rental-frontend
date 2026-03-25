@@ -24,7 +24,7 @@ export default function Header() {
   };
 
   // ── Route-based appearance ───────────────────────────────────────────────
-  const darkBgPages = ["/accommodation", "/student/1", "/workingonit", "/notifications"];
+  const darkBgPages = ["/accommodation", "/student/:id", "/workingonit", "/notifications",'/accommodation-details/:id'];
   const darkTextPages = ["/list-room"];
   const isDarkBgRoute = darkBgPages.includes(location.pathname);
   const isDarkTextRoute = darkTextPages.includes(location.pathname);
@@ -46,11 +46,11 @@ export default function Header() {
   if (sessionHint || user) {
     return (
       <Link to={getAccountRoute(role)}>
-        <div className={`bg-black text-white rounded-full border border-stone-700
+        <div className={`bg-white text-black rounded-full border border-stone-700
                          flex items-center justify-center
                          ${compact ? "w-9 h-9" : "px-4 py-2 gap-2"}`}>
           <FaRegUser size={compact ? 14 : 13} />
-          {!compact && <span className="text-sm">Account</span>}
+          {/* {!compact && <span className="text-sm">Account</span>} */}
         </div>
       </Link>
     );

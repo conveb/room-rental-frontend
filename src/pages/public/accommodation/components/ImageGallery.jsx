@@ -90,12 +90,12 @@ const ImageGallery = ({ images, property, isSaved, onFavoriteClick, onShare }) =
       </div>
 
       {/* Desktop Thumbnails */}
-      <div className="hidden lg:grid grid-cols-4 gap-3 mt-4">
+      <div className="hidden lg:grid grid-cols-5 gap-3 mt-4">
         {images.map((img, i) => (
           <button
             key={i}
             onClick={() => setActiveImage(img)}
-            className={`h-28 w-28 rounded-xl overflow-hidden border-2 ${
+            className={`h-24 w-24 rounded-xl overflow-hidden border-2 ${
               mainImage === img ? "border-black" : "border-transparent hover:border-gray-300"
             }`}
           >

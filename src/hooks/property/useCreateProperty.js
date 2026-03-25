@@ -26,14 +26,13 @@ export const useCreateProperty = () => {
     try {
       const formData = new FormData();
 
-      // 1. Append Text fields with type-safe handling
+      // 1. Append Text/Boolean fields with type-safe handling
       Object.keys(values).forEach((key) => {
         // Exclude file upload fields and array fields
         if (key !== "images" && 
             key !== "cover_image" && 
             key !== "amenities" && 
-            key !== "instructions" && 
-            key !== "contract_file") {
+            key !== "instructions") {
           let val = values[key];
 
           // Skip null/undefined values
@@ -44,7 +43,7 @@ export const useCreateProperty = () => {
             val = val.toISOString().split('T')[0];
           }
 
-          // Handle Booleans
+          // Handle Booleans (covers is_domicile_allowed, is_caf_eligible, contract, furnished)
           if (typeof val === "boolean") {
             val = val ? "true" : "false"; 
           }
@@ -67,11 +66,6 @@ export const useCreateProperty = () => {
         values.images.forEach((file) => {
           formData.append("images", file);
         });
-      }
-
-      // Append contract_file PDF file
-      if (values.contract_file) {
-        formData.append("contract_file", values.contract_file);
       }
 
       // 3. Append Amenities individually

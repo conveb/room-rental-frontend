@@ -116,7 +116,7 @@ export default function FeedbackSection() {
       */}
       <section
         ref={sectionRef}
-        className="relative bg-white"
+        className="relative bg-[#f5f2eb]"
         style={{
           zIndex: 10,
           borderRadius: "40px 40px 0 0",

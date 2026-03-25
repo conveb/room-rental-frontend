@@ -7,30 +7,17 @@ import { useAmenities } from "../../../hooks/admin/constants/useAmenities";
 import { useLocations } from "../../../hooks/admin/constants/useLocations";
 import InstructionModal from "./InstructionModal";
 
-const PropertyFormFields = ({ 
-  formData, 
-  setFormData, 
-  handleInputChange, 
-  selectedAmenities, 
-  setSelectedAmenities, 
+const PropertyFormFields = ({
+  formData,
+  setFormData,
+  handleInputChange,
+  selectedAmenities,
+  setSelectedAmenities,
   isSubmitting,
-  submitButtonRef  }) => {
+  submitButtonRef }) => {
   const { locations } = useLocations();
   const { amenities } = useAmenities();
   const [rulesVisible, setRulesVisible] = useState(false);
-
-  // [NEW] Handler for file upload (contract_file only)
-  const handleFileUpload = (e, fieldName) => {
-    const file = e.target.files[0];
-    if (file) {
-      // Check if it's a PDF file for contract_file
-      if (fieldName === 'contract_file' && file.type !== 'application/pdf') {
-        alert('Please upload a PDF file only for Contract File');
-        return;
-      }
-      setFormData({ ...formData, [fieldName]: file });
-    }
-  };
 
   return (
     <div className="space-y-5">
@@ -84,20 +71,20 @@ const PropertyFormFields = ({
         </div>
       </div>
 
-      {/* [NEW SECTION] Three New Fields - CORRECTED TYPES */}
+      {/* Additional Information */}
       <div className="bg-purple-50/40 p-4 rounded-xl border border-purple-100 space-y-4">
         <div className="text-[10px] font-bold text-purple-600 uppercase">Additional Information</div>
 
-        {/* 1. is_domicile_allowed - BOOLEAN (Fixed) */}
+        {/* is_domicile_allowed */}
         <div className="flex items-center justify-between py-2">
           <label className="text-[10px] font-bold text-gray-400 uppercase">Domicile Allowed</label>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center">
             <button
               type="button"
               onClick={() => setFormData({ ...formData, is_domicile_allowed: true })}
               className={`px-4 py-1.5 rounded-l-lg text-xs font-medium transition ${formData.is_domicile_allowed === true
-                  ? 'bg-purple-600 text-white'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                ? 'bg-purple-600 text-white'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
             >
               Yes
@@ -106,8 +93,8 @@ const PropertyFormFields = ({
               type="button"
               onClick={() => setFormData({ ...formData, is_domicile_allowed: false })}
               className={`px-4 py-1.5 rounded-r-lg text-xs font-medium transition ${formData.is_domicile_allowed === false
-                  ? 'bg-purple-600 text-white'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                ? 'bg-purple-600 text-white'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
             >
               No
@@ -115,16 +102,16 @@ const PropertyFormFields = ({
           </div>
         </div>
 
-        {/* 2. is_caf_eligible - BOOLEAN */}
+        {/* is_caf_eligible */}
         <div className="flex items-center justify-between py-2 border-t border-purple-200">
           <label className="text-[10px] font-bold text-gray-400 uppercase">CAF Eligible</label>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center">
             <button
               type="button"
               onClick={() => setFormData({ ...formData, is_caf_eligible: true })}
               className={`px-4 py-1.5 rounded-l-lg text-xs font-medium transition ${formData.is_caf_eligible === true
-                  ? 'bg-purple-600 text-white'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                ? 'bg-purple-600 text-white'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
             >
               Yes
@@ -133,8 +120,8 @@ const PropertyFormFields = ({
               type="button"
               onClick={() => setFormData({ ...formData, is_caf_eligible: false })}
               className={`px-4 py-1.5 rounded-r-lg text-xs font-medium transition ${formData.is_caf_eligible === false
-                  ? 'bg-purple-600 text-white'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                ? 'bg-purple-600 text-white'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
             >
               No
@@ -142,21 +129,31 @@ const PropertyFormFields = ({
           </div>
         </div>
 
-        {/* 3. contract_file - PDF FILE UPLOAD (Fixed) */}
-        <div className="space-y-2 py-2 border-t border-purple-200">
-          <label className="text-[10px] font-bold text-gray-400 uppercase">Contract File (PDF) *</label>
-          <div className="flex items-center gap-3">
-            <input
-              type="file"
-              accept=".pdf,application/pdf"
-              onChange={(e) => handleFileUpload(e, 'contract_file')}
-              className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100"
-            />
-            {formData.contract_file && (
-              <span className="text-xs text-green-600 font-medium">✓ File selected</span>
-            )}
+        {/* contract - Yes / No toggle */}
+        <div className="flex items-center justify-between py-2 border-t border-purple-200">
+          <label className="text-[10px] font-bold text-gray-400 uppercase">Contract</label>
+          <div className="flex items-center">
+            <button
+              type="button"
+              onClick={() => setFormData({ ...formData, contract: true })}
+              className={`px-4 py-1.5 rounded-l-lg text-xs font-medium transition ${formData.contract === true
+                ? 'bg-purple-600 text-white'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+            >
+              Yes
+            </button>
+            <button
+              type="button"
+              onClick={() => setFormData({ ...formData, contract: false })}
+              className={`px-4 py-1.5 rounded-r-lg text-xs font-medium transition ${formData.contract === false
+                ? 'bg-purple-600 text-white'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+            >
+              No
+            </button>
           </div>
-          <p className="text-[9px] text-gray-400">Upload PDF contract document</p>
         </div>
       </div>
 
@@ -178,10 +175,14 @@ const PropertyFormFields = ({
       </div>
 
       {/* Property Specs */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-4 gap-3">
         <div className="space-y-1">
           <label className="text-[10px] font-bold text-gray-400 uppercase">Size m² *</label>
           <input name="size_m2" value={formData.size_m2} onChange={handleInputChange} className="w-full border p-2 rounded-lg focus:border-blue-500 outline-none" required />
+        </div>
+        <div className="space-y-1">
+          <label className="text-[10px] font-bold text-gray-400 uppercase">BHK</label>
+          <input type="number" name="bhk" value={formData.bhk} onChange={handleInputChange} className="w-full border p-2 rounded-lg focus:border-blue-500 outline-none" placeholder="e.g. 2" />
         </div>
         <div className="space-y-1">
           <label className="text-[10px] font-bold text-gray-400 uppercase">Rooms *</label>
@@ -190,19 +191,6 @@ const PropertyFormFields = ({
         <div className="space-y-1">
           <label className="text-[10px] font-bold text-gray-400 uppercase">Baths *</label>
           <input name="bathrooms" value={formData.bathrooms} onChange={handleInputChange} className="w-full border p-2 rounded-lg focus:border-blue-500 outline-none" required />
-        </div>
-      </div>
-
-      {/* Energy Performance */}
-      <div className="bg-orange-50/40 p-4 rounded-xl border border-orange-100 grid grid-cols-2 gap-4">
-        <div className="col-span-2 text-[10px] font-bold text-orange-700 uppercase flex items-center gap-1"><MdInfoOutline /> Energy Performance</div>
-        <div>
-          <label className="text-[10px] font-bold text-gray-400 uppercase">DPE Class</label>
-          <Dropdown value={formData.dpe_class} options={['A', 'B', 'C', 'D', 'E', 'F', 'G']} onChange={(e) => setFormData({ ...formData, dpe_class: e.value })} className="w-full border h-9" />
-        </div>
-        <div>
-          <label className="text-[10px] font-bold text-gray-400 uppercase">GES Class</label>
-          <Dropdown value={formData.ges_class} options={['A', 'B', 'C', 'D', 'E', 'F', 'G']} onChange={(e) => setFormData({ ...formData, ges_class: e.value })} className="w-full border h-9" />
         </div>
       </div>
 

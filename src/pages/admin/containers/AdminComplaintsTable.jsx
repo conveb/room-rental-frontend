@@ -38,18 +38,26 @@ export default function AdminComplaintsTable() {
         }
     };
 
+    if (entries === null || entries.length === 0) {
+        return (
+            <div className="flex items-center justify-center py-10">
+                Dont have Any complaints
+            </div>
+        );
+    }
+
     return (
        <>
         <Title><title>Admin | Manage Complaints</title></Title>
 
-            <div className=" space-y-6">
-                <div className="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border">
-                    <h1 className="text-xl font-bold">Complaints</h1>
+            <div className="space-y-3 md:space-y-6">
+                <div className="flex justify-between items-center bg-white p-2 md:p-4 rounded-xl shadow-sm border">
+                    <h1 className="text-base md:text-xl font-bold">Complaints</h1>
                     <Dropdown
                         value={statusFilter}
                         options={[{ label: "All Status", value: "ALL" }, ...STATUS_OPTIONS]}
                         onChange={(e) => setStatusFilter(e.value)}
-                        className="w-48 text-sm"
+                        className="w-auto md:w-48 text-xs md:text-sm"
                     />
                 </div>
 

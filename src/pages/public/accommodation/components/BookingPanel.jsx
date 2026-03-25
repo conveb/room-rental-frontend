@@ -38,6 +38,7 @@ const BookingPanel = ({
 
     const handleRequestBooking = () => {
         if (!user) {
+            toast.error("Please sign in to request a booking.");
             navigate("/signin");
             return;
         }

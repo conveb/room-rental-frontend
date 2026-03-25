@@ -1,121 +1,61 @@
-import { useRef } from "react";
-import { useHeroBgAnimation } from "../../gsap/Useherobganimation";
-import { useHeroTextReveal } from "../../gsap/UseHeroTextReveal";
-import HeroSvg from '../../Assets/svgs/herosvg.svg';
+import heroImg from "../../Assets/Images/hero.jpg";
 
-// ─── Replace these with your actual assets / copy ────────────────────────────
-const BG_IMAGE =
-    'https://res.cloudinary.com/dlfqobh58/image/upload/v1773922548/Alive_paris/xixgvlgg2q7tjx819nvm.png';
+export default function HeroOne() {
+  return (
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@400&display=swap');
+        .font-playfair { font-family: 'Playfair Display', serif; }
+        .font-dm { font-family: 'DM Sans', sans-serif; }
+      `}</style>
 
-const HEADLINE_LINE_1 = "Find Affordable Monthly Rooms Across France";
-const SUBTEXT =
-    "Browse modern rooms with quality amenities, trusted hosts, and smooth booking.";
-// ─────────────────────────────────────────────────────────────────────────────
+      {/* Root: full screen, 2-column grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 w-screen h-screen overflow-hidden bg-[#f5f2eb]">
+        
+        {/* ── LEFT SIDE: HERO CONTENT ── */}
+        <div className="flex flex-col justify-center px-8 lg:pl-28 pt-16">
+          <div className="max-w-[600px]">
+            {/* Eyebrow */}
+            <p className="font-playfair text-[20px] text-[#1a1a1a] mb-6">
+              Alive Paris
+            </p>
 
-export default function Heroone() {
-    const bgRef = useRef(null);
-    const textRef = useRef(null);
+            {/* H1 Headings */}
+            <h1 className="font-playfair text-[#1a1a1a] leading-[1.06] text-[48px] md:text-[66px] font-bold">
+              Find Affordable Monthly
+            </h1>
+            <h1 className="font-playfair text-[#1a1a1a] leading-[1.1] text-[48px] md:text-[66px] font-normal italic mb-7">
+              Rooms Across France
+            </h1>
 
-    // 1️⃣  Background: low-opacity → full, with subtle de-zoom
-    useHeroBgAnimation(bgRef, 2.2, 0);
+            {/* Subtitle */}
+            <p className="font-dm text-[16px] text-[#1a1a1a] leading-relaxed mb-12 max-w-[430px]">
+              Browse modern rooms with quality amenities, trusted hosts,
+              and smooth booking.
+            </p>
 
-    // 2️⃣  Text + button: staggered bottom-to-top reveal, starts after bg begins
-    useHeroTextReveal(textRef, "[data-reveal]", 0.13, 0.6);
+            {/* Search Rooms Button */}
+            <button className="group flex items-center gap-4 border border-[#1a1a1a] rounded-full pl-7 pr-[7px] py-[7px] w-fit bg-transparent hover:bg-[#1a1a1a] transition-colors duration-300">
+              <span className="font-dm text-[16px] text-[#1a1a1a] group-hover:text-white">Search Rooms</span>
+              <span className="w-[46px] h-[46px] rounded-full bg-[#1a1a1a] flex items-center justify-center shrink-0">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                  <path d="M3.5 9H14.5M10 4.5L14.5 9L10 13.5" stroke="#EDE8D8" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </span>
+            </button>
+          </div>
+        </div>
 
-    return (
-        <section className="relative w-full h-screen min-h-[560px] overflow-hidden font-sans">
+        {/* ── RIGHT SIDE: Paris Photo ── */}
+        <div className="relative h-full w-full hidden lg:block">
+          <img 
+            src={heroImg} 
+            alt="Paris" 
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+        </div>
 
-            {/* ── Background Image ───────────────────────────────────────────── */}
-            <img
-                ref={bgRef}
-                src={BG_IMAGE}
-                alt="Hero background"
-                className="absolute inset-0  bg-[center_20%] w-full h-full object-cover object-center will-change-[opacity,transform]"
-            />
-
-            {/* ── Dark gradient overlay (always visible) ────────────────────── */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/40 to-black/65 pointer-events-none" />
-
-            {/* ── Centered content ──────────────────────────────────────────── */}
-            <div
-                ref={textRef}
-                className="relative z-10 flex flex-col items-center justify-center h-full px-6 text-center"
-            >
-                <div>
-
-                    {/* Headline */}
-                    <h1
-                        data-reveal
-                        className="text-[2.5rem] sm:text-7xl lg:text-8xl font-extrabold leading-none
-                    text-white tracking-tight drop-shadow-2xl
-                    text-left md:text-center"
-                        style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
-                    >
-                        {HEADLINE_LINE_1}
-                    </h1>
-
-                    {/* Subtext */}
-                    <p
-                        data-reveal
-                        className="mt-5 max-w-md text-base sm:text-lg text-white/80 leading-relaxed
-                    drop-shadow-md text-left md:text-center"
-                    >
-                        {SUBTEXT}
-                    </p>
-                </div>
-
-                {/* CTA buttons */}
-                <div
-                    data-reveal
-                    className="mt-8 flex flex-wrap items-start md:items-center justify-start md:justify-center gap-3"
-                >
-                    <button
-                        className="rounded-full bg-white px-8 py-3 text-sm font-semibold
-                                   text-neutral-900 tracking-wide shadow-xl
-                                   transition-all duration-300
-                                   hover:shadow-white/30 hover:scale-105
-                                   active:scale-95"
-                    >
-                        Explore
-                    </button>
-                    <button
-                        className="rounded-full border border-white/60 px-8 py-3 text-sm font-semibold
-                                   text-white tracking-wide backdrop-blur-sm bg-white/10
-                                   transition-all duration-300
-                                   hover:bg-white/20 hover:scale-105
-                                   active:scale-95"
-                    >
-                        Explore Looks
-                    </button>
-                </div>
-
-                {/* Top-right decorative image */}
-                <div className="absolute top-10 right-10">
-                    <img src={HeroSvg} alt="Hero" />
-                </div>
-
-                {/* Scroll hint */}
-                <div
-                    data-reveal
-                    className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1"
-                >
-                    <span className="text-[10px] uppercase tracking-[0.25em] text-white/50">
-                        Scroll
-                    </span>
-                    <svg
-                        width="16" height="20" viewBox="0 0 16 20" fill="none"
-                        className="animate-bounce text-white/40"
-                    >
-                        <path
-                            d="M8 0v16M1 9l7 8 7-8"
-                            stroke="currentColor"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                        />
-                    </svg>
-                </div>
-            </div>
-        </section>
-    );
+      </div>
+    </>
+  );
 }

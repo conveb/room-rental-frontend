@@ -5,6 +5,7 @@ import CitiesSection from "../../containers/HomePage/CitiesSection";
 import FAQSection from "../../containers/HomePage/FaqSection";
 import FeedbackSection from "../../containers/HomePage/FeedbackSection";
 import HeroSection from "../../containers/HomePage/Hero";
+import HeroOne from "../../containers/HomePage/Heroone";
 // import HeroSection from "../../containers/HomePage/Hero";
 import Heroone from "../../containers/HomePage/Heroone";
 import LoremSection from "../../containers/HomePage/LoremSection";
@@ -24,6 +25,7 @@ export default function Home() {
       </Title>
       <div>
         <HeroSection />
+        {/* <HeroOne/> */}
         <About />
         {/* <Heroone /> */}
         {/* <AboutSection/> */}
