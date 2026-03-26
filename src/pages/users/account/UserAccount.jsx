@@ -317,7 +317,7 @@ export default function UserAccount() {
                 className="w-full no-drop rounded-xl border px-4 py-4 text-xs text-gray-400 md:text-sm disabled:bg-neutral-50"
               />
 
-              <div className="flex justify-between items-center">
+              {/* <div className="flex justify-between items-center">
                 <label className="text-xs text-neutral-500">
                   Phone <span className="text-red-500">*</span>
                 </label>
@@ -337,7 +337,7 @@ export default function UserAccount() {
                 <p className="text-xs text-red-500 mt-1">
                   Please edit profile to add your phone number
                 </p>
-              )}
+              )} */}
 
               <div className="flex gap-2 pt-2">
                 {isEditing ? (
@@ -376,11 +376,11 @@ export default function UserAccount() {
             {/* Actions */}
             <div className="space-y-2 text-sm p-0 md:px-5 mt-10 md:mt-0">
 
-              <Link to="/auth/user/support" >
+              {/* <Link to="/auth/user/support" >
                 <button className="w-full text-left p-2 my-2 rounded-xl border hover:bg-neutral-50 flex gap-3 items-center">
                   <p className="p-3 bg-sky-300 rounded-xl"><MdFeedback size={20} /></p> Support
                 </button>
-              </Link>
+              </Link> */}
 
               <Link to="/auth/user/send_feedback">
                 <button className="w-full text-left p-2 rounded-xl border hover:bg-neutral-50 flex gap-3 items-center">

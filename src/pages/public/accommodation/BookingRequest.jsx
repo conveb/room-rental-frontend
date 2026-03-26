@@ -31,34 +31,39 @@ const BookingRequest = () => {
 
   const handleWhatsAppRequest = () => {
     const message = [
-      `*Booking Request*`,
+      `*🏠 Booking Request*`,
       ``,
       `*${property.title}*`,
+      `📍 ${propertyAddress}`,
       `Type: ${property.property_type?.replace(/_/g, " ")}`,
-      `Address: ${propertyAddress}`,
       ``,
-      `*Rent & Availability*`,
+      `*💰 Rent & Financials*`,
       `Rent: €${property.rent_per_month} / month`,
+      `Charges: ${property.charges ? `€${property.charges}` : "Not included"}`,
+      `Deposit: €${property.security_deposit}`,
+      `CAF Eligible: ${property.is_caf_eligible ? "Yes" : "No"}`,
+      ``,
+      `*📅 Availability*`,
       `Available From: ${property.available_from}`,
       `Minimum Stay: ${property.minimum_stay_months} month${property.minimum_stay_months !== 1 ? "s" : ""}`,
+      `Domicile Allowed: ${property.is_domicile_allowed ? "Yes" : "No"}`,
       ``,
-      `*Property Details*`,
-      `Rooms: ${property.rooms}`,
+      `*🏗️ Property Details*`,
+      `Rooms: ${property.rooms} (${property.bhk} BHK)`,
       `Bathrooms: ${property.bathrooms}`,
-      `Max People: ${property.max_people}`,
+      `Max Occupancy: ${property.max_people} people`,
       `Size: ${property.size_m2} m²`,
       `Furnished: ${property.furnished ? "Yes" : "No"}`,
-      `DPE Class: ${property.dpe_class}`,
-      `GES Class: ${property.ges_class}`,
+      `Contract Provided: ${property.contract ? "Yes" : "No"}`,
 
       ...(property.amenities_data?.length > 0 ? [
         ``,
-        `*Facilities*`,
+        `*✨ Facilities*`,
         ...property.amenities_data.map((a) => `- ${a.amenity_name}`),
       ] : []),
 
       ``,
-      `I am interested in booking this property. Please get back to me.`,
+      `I am interested in booking this property. Please provide the next steps for a viewing or reservation.`,
     ].join("\n");
 
     const encoded = encodeURIComponent(message);
