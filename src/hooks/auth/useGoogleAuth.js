@@ -9,7 +9,7 @@ export const useGoogleAuth = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { login, fetchCurrentUser } = useAuth();
+  const { login , fetchCurrentUser  } = useAuth();
 
   const REDIRECT_URI = "https://www.aliveparis.com/signin";
 
@@ -24,18 +24,18 @@ export const useGoogleAuth = () => {
       });
 
       if (response.status === 200 || response.status === 201) {
-        await login(); // ← use login instead of fetchCurrentUser
+         // Refresh user data in auth context
+        await fetchCurrentUser();
         toast.success("Logged in successfully!");
         navigate("/auth/user/accommodation");
       }
     } catch (err) {
       const msg = err.response?.data?.detail || "Google login failed";
       setError(msg);
-      toast.error(msg); // ← also show error toast
     } finally {
       setLoading(false);
     }
-  }, [navigate, login]); // ← now dependencies match what's used // Dependencies for the function itself ,REDIRECT_URI<-removed because its stable
+  }, [navigate,login]); // Dependencies for the function itself ,REDIRECT_URI<-removed because its stable
 
 
   const handleSetPassword = async (payload) => {
@@ -43,7 +43,7 @@ export const useGoogleAuth = () => {
     setError(null);
     try {
       const response = await createGooglePasswordApi(payload);
-
+      
       if (response.status === 200 || response.status === 201) {
         await login();
         toast.success("Password set successfully!");
@@ -69,5 +69,5 @@ export const useGoogleAuth = () => {
     }
   }, [searchParams, handleGoogleLogin]); // handleGoogleLogin is now a stable dependency
 
-  return { handleGoogleLogin, handleSetPassword, loading, error };
+  return { handleGoogleLogin,handleSetPassword, loading, error };
 };
