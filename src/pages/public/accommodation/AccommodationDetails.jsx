@@ -123,7 +123,7 @@ const AccommodationDetails = () => {
 
   return (
     <div>
-      <main className="max-w-6xl mx-auto px-4 mt-20">
+      <main className="max-w-6xl mx-auto px-4 mt-24">
         {/* Header */}
         <div className="flex items-center gap-2 md:gap-5 my-2 md:my-5">
           <button

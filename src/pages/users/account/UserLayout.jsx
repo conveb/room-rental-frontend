@@ -144,7 +144,7 @@ const UserLayout = () => {
 
 
       {/* MAIN CONTENT AREA */}
-      <main className={`flex-1 ${userData?.phone ? "mt-16" : "mt-[100px]"} pb-20 md:pb-6 overflow-auto`}>
+      <main >
         <Outlet />
       </main>
 

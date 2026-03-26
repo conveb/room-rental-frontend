@@ -36,7 +36,7 @@ const PropertyFormFields = ({
       {/* Location & Availability */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-1">
-          <label className="text-[10px] font-bold text-gray-400 uppercase ml-1">Location ID *</label>
+          <label className="text-[10px] font-bold text-gray-400 uppercase ml-1">Location*</label>
           <Dropdown value={formData.location_id} options={locations || []} optionLabel="location_name" optionValue="id" onChange={(e) => setFormData({ ...formData, location_id: e.value })} placeholder="Select Location" filter className="w-full text-xs shadow-none border" required />
         </div>
         <div className="space-y-1">
@@ -44,7 +44,9 @@ const PropertyFormFields = ({
           <Calendar
             value={formData.available_from ? new Date(formData.available_from) : null}
             onChange={(e) => {
-              const formatted = e.value ? e.value.toISOString().split('T')[0] : "";
+              const formatted = e.value
+                ? `${e.value.getFullYear()}-${String(e.value.getMonth() + 1).padStart(2, '0')}-${String(e.value.getDate()).padStart(2, '0')}`
+                : "";
               setFormData({ ...formData, available_from: formatted });
             }}
             dateFormat="yy-mm-dd"

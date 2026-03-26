@@ -24,9 +24,13 @@ export default function Header() {
   };
 
   // ── Route-based appearance ───────────────────────────────────────────────
-  const darkBgPages = ["/accommodation", "/student/:id", "/workingonit", "/notifications",'/accommodation-details/:id'];
+const darkBgPages = ["/accommodation", "/workingonit", "/notifications"];
+const darkBgPrefixes = ["/accommodation-details/", "/student/"];
+
+const isDarkBgRoute = 
+  darkBgPages.includes(location.pathname) || 
+  darkBgPrefixes.some(prefix => location.pathname.startsWith(prefix));
   const darkTextPages = ["/list-room"];
-  const isDarkBgRoute = darkBgPages.includes(location.pathname);
   const isDarkTextRoute = darkTextPages.includes(location.pathname);
 
   // ── Scroll listener ──────────────────────────────────────────────────────

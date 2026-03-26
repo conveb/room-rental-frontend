@@ -67,7 +67,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const handleRealSessionExpired = () => {
       // Only redirect if user was actually logged in
-      if (isInitialized) {
+      if (isInitialized && user) {
         setUser(null);
         setSessionFlag(false);
         navigate("/signin");
