@@ -97,16 +97,18 @@ const BookingPanel = ({
 
       {/* Property Stats */}
       <PropertyStats property={property} />
-
-      <div>
-        <button
-          onClick={handleRequestBooking}
-          className="w-full bg-black text-white py-2.5 rounded-lg font-semibold hover:bg-neutral-800 transition-colors"
-        >
-          Request booking
-        </button>
-      </div>
-
+      {
+        user?.role_name !== "ADMIN" && (
+          <div>
+            <button
+              onClick={handleRequestBooking}
+              className="w-full bg-black text-white py-2.5 rounded-lg font-semibold hover:bg-neutral-800 transition-colors"
+            >
+              Request booking
+            </button>
+          </div>
+        )
+      }
       {/* Action Buttons */}
       {/* <div className="sticky bottom-2 p-3 border rounded-xl bg-white">
         {bookingDetails && bookingDetails.status !== "CANCELLED" ? (
