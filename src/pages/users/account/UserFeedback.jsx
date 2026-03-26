@@ -47,7 +47,7 @@ const FeedbackCard = ({ fb, index }) => {
 
   return (
     <div
-      className="bg-white rounded-2xl border border-gray-100 p-4 md:p-5 shadow-sm hover:shadow-md transition-all duration-300"
+      className="bg-white rounded-2xl border border-gray-100 pt-14 p-4 md:p-5 shadow-sm hover:shadow-md transition-all duration-300"
       style={{
         animationDelay: `${index * 60}ms`,
         animation: "fadeSlideUp 0.4s ease both",
