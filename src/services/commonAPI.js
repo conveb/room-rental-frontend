@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://rental-homes-france.onrender.com",
+  baseURL: "https://api.aliveparis.com",
   withCredentials: true,
 });
 

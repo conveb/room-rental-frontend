@@ -7,9 +7,7 @@ import { useSignup } from "../../../hooks/auth/useSignup";
 import { useEmailVerification } from "../../../hooks/auth/useEmailVerification";
 import BacktoHome from "../../../components/btns/BacktoHome";
 import { toast } from "sonner";
-import { PiStudentFill } from "react-icons/pi";
-import { FaHouseUser } from "react-icons/fa";
-import { validateEmail, validateFullName, validatePassword, validatePhone } from "../../../utils/authValidation";
+import { validateEmail, validateFullName, validatePassword } from "../../../utils/authValidation";
 
 const OTP_LENGTH = 6;
 
@@ -39,7 +37,6 @@ const SignUp = () => {
   const [form, setForm] = useState({
     full_name: "",
     email: "",
-    phone: "",
     password: "",
     confirm_password: "",
     privacy_policy: false,
@@ -59,7 +56,6 @@ const SignUp = () => {
     const newErrors = {
       full_name: validateFullName(form.full_name),
       email: validateEmail(form.email),
-      phone: validatePhone(form.phone),
       password: validatePassword(form.password, form.confirm_password),
     };
 
@@ -117,7 +113,7 @@ const SignUp = () => {
 
   const handlePaste = (e) => {
     const data = e.clipboardData.getData("text").slice(0, OTP_LENGTH);
-    if (!/^\d+$/.test(data)) return; // Only allow digits
+    if (!/^\d+$/.test(data)) return;
 
     const newOtp = [...otp];
     data.split("").forEach((char, index) => {
@@ -125,7 +121,6 @@ const SignUp = () => {
     });
     setOtp(newOtp);
 
-    // Focus the last filled input or the next empty one
     const lastIndex = Math.min(data.length, OTP_LENGTH - 1);
     inputsRef.current[lastIndex]?.focus();
   };
@@ -144,7 +139,6 @@ const SignUp = () => {
         purpose: "ONBOARDING",
       });
 
-
       if (!form.privacy_policy)
         throw new Error("Privacy policy required");
 
@@ -154,7 +148,6 @@ const SignUp = () => {
       const payload = {
         email: form.email,
         full_name: form.full_name,
-        phone: form.phone,
         password: form.password,
         confirm_password: form.confirm_password,
         privacy_policy: form.privacy_policy,
@@ -206,28 +199,7 @@ const SignUp = () => {
           {/* STEP 1 */}
           <StepperPanel header="Details">
             <div className="space-y-4 mt-4">
-              {/* Account Type */}
-              {/* <div className="flex bg-white rounded-3xl p-2 gap-2">
-                {["STUDENT", "LAND_OWNER"].map((type) => (
-                  <button
-                    key={type}
-                    type="button"
-                    className={`flex-1 py-3 rounded-2xl text-sm md:text-md ${form.account_type === type
-                      ? "bg-black text-white" : "bg-gray-100"
-                      }`}
-                    onClick={() =>
-                      setForm({ ...form, account_type: type })
-                    }
-                  >
-                    <p className="flex justify-center items-center gap-2">
-                      {type === "STUDENT" ? <PiStudentFill /> : <FaHouseUser />}
-                      {type.replace("_", " ")}
-                    </p>
-                  </button>
-                ))}
-              </div> */}
               <div>
-
                 <input
                   name="full_name"
                   placeholder="Full name"
@@ -239,7 +211,6 @@ const SignUp = () => {
               </div>
 
               <div>
-
                 <input
                   name="email"
                   type="email"
@@ -249,19 +220,6 @@ const SignUp = () => {
                   className="w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
                 />
                 {errors.email && <p className="text-[10px] text-red-500 ml-1">{errors.email}</p>}
-              </div>
-
-              <div>
-
-                <input
-                  name="phone"
-                  type="tel"
-                  placeholder="Phone number"
-                  value={form.phone}
-                  onChange={handleFormChange}
-                  className="w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
-                />
-                {errors.phone && <p className="text-[10px] text-red-500 ml-1">{errors.phone}</p>}
               </div>
 
               <div className="relative">
@@ -292,9 +250,7 @@ const SignUp = () => {
                   className="w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 pr-10"
                 />
                 <span
-                  onClick={() =>
-                    setShowConfirmPassword(!showConfirmPassword)
-                  }
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500"
                 >
                   {showConfirmPassword ? <FiEye /> : <FiEyeOff />}
@@ -352,12 +308,12 @@ const SignUp = () => {
                     ref={(el) => (inputsRef.current[i] = el)}
                     value={v}
                     type="text"
-                    inputMode="numeric" // Better for mobile keyboards
-                    autoComplete="one-time-code" // Important for iOS auto-fill
+                    inputMode="numeric"
+                    autoComplete="one-time-code"
                     maxLength={1}
                     onChange={(e) => handleOtpChange(e, i)}
                     onKeyDown={(e) => handleOtpKeyDown(e, i)}
-                    onPaste={handlePaste} // New paste handler
+                    onPaste={handlePaste}
                     className="w-full max-w-[3rem] aspect-square text-center border rounded-md text-lg sm:text-xl font-semibold focus:ring-2 focus:ring-blue-600 focus:outline-none transition-all"
                   />
                 ))}

@@ -31,9 +31,9 @@ const UserLayout = () => {
 
       {/* HEADER */}
       <header className="fixed top-0 left-0 right-0   bg-white border-b border-gray-100   z-40">
-        <div className=" bg-red-200">
+        {/* <div className=" bg-red-200">
           <VerifyPhoneNumber isPhoneVerified={userData?.phone ? true : false} />
-        </div>
+        </div> */}
         <div className="container mx-auto flex items-center justify-between  h-16 px-3 md:px-0">
 
           {/* LEFT: LOGO & SEARCH */}
@@ -104,14 +104,14 @@ const UserLayout = () => {
             </Link>
 
             {/* Notifications */}
-            <Link to="/auth/user/notifications" className="relative p-2 text-slate-600 hover:bg-slate-50 rounded-full transition">
+            {/* <Link to="/auth/user/notifications" className="relative p-2 text-slate-600 hover:bg-slate-50 rounded-full transition">
               <IoIosNotifications className="text-2xl" />
               {unreadCount > 0 && (
                 <span className="absolute top-1.5 right-1.5 bg-red-500 text-white text-[10px] font-bold h-4 w-4 flex items-center justify-center rounded-full border border-white">
                   {unreadCount > 9 ? "9+" : unreadCount}
                 </span>
               )}
-            </Link>
+            </Link> */}
             <Link to="/auth/user/account">
               {/* ✅ Add md:hidden to the outer div as well */}
               <div className="md:hidden border-2 border-black rounded-full">
