@@ -64,6 +64,8 @@ export default function UserAccount() {
     confirm_password: "",
   });
 
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
   useEffect(() => {
     if (user) {
       setEditValues(user);
@@ -132,9 +134,16 @@ export default function UserAccount() {
 
 
   const handleConfirmLogout = async () => {
-    await logout();
-    navigate("/");
-    setShowModal(false);
+    setIsLoggingOut(true);
+    try {
+      await logout();
+      navigate("/");
+      setShowModal(false);
+    } catch (error) {
+      toast.error("Logout failed. Please try again.");
+    } finally {
+      setIsLoggingOut(false);
+    }
   };
 
   const handleDeleteAccount = async () => {
@@ -613,10 +622,18 @@ export default function UserAccount() {
                           Cancel
                         </button>
                         <button
-                          onClick={async () => handleConfirmLogout()}
-                          className="px-4 py-2 rounded-xl bg-red-500 text-white text-sm"
+                          disabled={isLoggingOut}
+                          onClick={handleConfirmLogout}
+                          className="px-4 py-2 rounded-xl bg-red-500 text-white text-sm font-semibold hover:bg-red-600 disabled:bg-red-300 transition-all flex items-center gap-2 min-w-[90px] justify-center"
                         >
-                          Logout
+                          {isLoggingOut ? (
+                            <>
+                              <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" />
+                              <span>Logging out...</span>
+                            </>
+                          ) : (
+                            "Logout"
+                          )}
                         </button>
                       </div>
                     </div>

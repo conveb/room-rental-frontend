@@ -24,6 +24,7 @@ const UserLayout = () => {
   const location = useLocation();
   const { user } = useAuth(); // Contains email
   const { user: userData, unreadCount } = useHeader();
+  
 
 
   return (
