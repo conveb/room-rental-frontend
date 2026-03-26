@@ -172,33 +172,7 @@ const AdminOtpVerification = () => {
                         </p>
                     </div>
 
-                    {/* Display the actual OTP from response for client reference */}
-                    {responseOtp && (
-                        <div className="mb-6 p-2 bg-red-50 border border-red-200 rounded-lg text-center">
-                            <div className="flex items-center justify-between text-center">
-                                <p className="text-xs md:text-sm text-red-800 font-medium">
-                                    Your OTP Code (for testing/reference):
-                                </p>
-                                
-                            </div>
-                            <div className="flex gap-3 items-center justify-center">
-
-                            <p className="text-2xl font-bold text-black text-center mt-2 tracking-widest">
-                                {showOtp ? responseOtp : "••••••"}
-                            </p>
-                            <button
-                                    type="button"
-                                    onClick={toggleOtpVisibility}
-                                    className="text-xs text-black"
-                                >
-                                    {showOtp ? <IoEyeOffSharp size={20}/> : <IoEyeSharp size={20}/>}
-                                </button>
-                            </div>
-                            <p className="text-xs text-red-600 text-center mt-2">
-                                Please type this code in the fields below
-                            </p>
-                        </div>
-                    )}
+                    
 
                     <form onSubmit={handleSubmit} className="space-y-6">
                         {/* OTP Input Fields - Client types here */}

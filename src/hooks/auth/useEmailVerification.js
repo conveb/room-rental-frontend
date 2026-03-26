@@ -14,7 +14,6 @@ export const useEmailVerification = () => {
     try {
       setLoading(true);
       const res = await sendOtpAPI({ email, purpose });
-      console.log(res.data.message);
       return res;
     } catch (err) {
       setError(err?.response?.data?.detail || "Failed to send OTP");
