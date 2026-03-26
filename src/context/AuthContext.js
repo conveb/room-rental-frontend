@@ -76,7 +76,7 @@ export const AuthProvider = ({ children }) => {
 
     window.addEventListener('real-session-expired', handleRealSessionExpired);
     return () => window.removeEventListener('real-session-expired', handleRealSessionExpired);
-  }, [navigate, isInitialized]);
+  }, [navigate, isInitialized, user]);
 
   const login = async () => {
     setLoading(true);
