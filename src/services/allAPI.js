@@ -8,6 +8,9 @@ export const sendOtpAPI = (payload) => commonAPI("post", "/api/v1/auth/email/", 
 export const AuthAPI = () => commonAPI("get", "/api/v1/auth/me");
 export const forgotPasswordApi = (payload) =>commonAPI("post", "/api/v1/auth/forgot-password/", payload);
 export const createGooglePasswordApi = (payload) =>commonAPI("post", "/api/v1/google/setpassword/", payload);
+export const addUserPhone = (userId, data) => 
+  commonAPI("post", `api/v1/admin/edit-phone/${userId}/`, data);
+
 export const verifyPhoneApi = (data) =>commonAPI("post", "api/v1/phone/send-otp/", data);
 export const verifyPhoneOtpApi = (data) =>commonAPI("post", "api/v1/phone/verify-user-otp/", data);
 export const LogoutAPI = () => commonAPI("post", "/api/v1/logout/");

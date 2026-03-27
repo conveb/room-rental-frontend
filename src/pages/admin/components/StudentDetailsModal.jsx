@@ -1,14 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import { useUserCompleteDetails } from "../../../hooks/users/useUserCompleteDetails";
 import { useNavigate } from "react-router-dom";
 import { MdOutlineOpenInNew, MdBlock, MdCheckCircle } from "react-icons/md";
+import { MdPhone, MdCheck } from "react-icons/md";
 import { Characters } from '../../users/account/characterCollection';
 import { toast } from "sonner";
+import { useAddUserPhone } from "../../../hooks/users/useAddUserPhone";
 
 const StudentDetailsModal = ({ id, avatar_id, role, is_active, onClose, onStatusUpdate }) => {
   const { data, loading } = useUserCompleteDetails(id);
   const navigate = useNavigate();
   const character = Characters.find((c) => String(c.id) === String(avatar_id));
+
+  const [phoneInput, setPhoneInput] = useState("");
+  const [showPhoneInput, setShowPhoneInput] = useState(false);
+  const { addUserPhoneNumber, loading: phoneLoading } = useAddUserPhone();
 
   if (!id) return null;
 
@@ -36,6 +42,21 @@ const StudentDetailsModal = ({ id, avatar_id, role, is_active, onClose, onStatus
       toast.error("Unknown user role. Cannot navigate to details.");
     }
     onClose();
+  };
+
+  const handleAddPhone = async () => {
+    if (!phoneInput.trim()) {
+      toast.error("Please enter a phone number.");
+      return;
+    }
+    const success = await addUserPhoneNumber(id, { phone: phoneInput });
+    if (success) {
+      toast.success("Phone number added successfully.");
+      setPhoneInput("");
+      setShowPhoneInput(false);
+    } else {
+      toast.error("Failed to add phone number.");
+    }
   };
 
   return (
@@ -93,6 +114,55 @@ const StudentDetailsModal = ({ id, avatar_id, role, is_active, onClose, onStatus
                 {role}
               </span>
             </div>
+          </div>
+
+          {/* PHONE NUMBER FIELD */}
+          <div className="bg-gray-50 rounded-2xl border border-gray-100 px-4 py-3">
+            <div className="flex items-center justify-between">
+              <p className="text-[10px] uppercase tracking-wider font-black text-gray-400">Phone Number</p>
+              {!showPhoneInput && (
+                <button
+                  onClick={() => setShowPhoneInput(true)}
+                  className="p-1.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-600 transition"
+                  title="Add phone number"
+                >
+                  <MdPhone size={15} />
+                </button>
+              )}
+            </div>
+
+            {showPhoneInput ? (
+              <div className="flex items-center gap-2 mt-2">
+                <input
+                  type="tel"
+                  value={phoneInput}
+                  onChange={e => setPhoneInput(e.target.value)}
+                  placeholder="Enter phone number..."
+                  className="flex-1 bg-white border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-gray-400 transition"
+                />
+                <button
+                  onClick={handleAddPhone}
+                  disabled={phoneLoading || !phoneInput.trim()}
+                  className="p-2 bg-black text-white rounded-xl hover:bg-gray-800 disabled:opacity-50 transition flex-shrink-0"
+                  title="Confirm"
+                >
+                  {phoneLoading
+                    ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    : <MdCheck size={16} />
+                  }
+                </button>
+                <button
+                  onClick={() => { setShowPhoneInput(false); setPhoneInput(""); }}
+                  className="p-2 bg-gray-100 text-gray-500 rounded-xl hover:bg-gray-200 transition flex-shrink-0 text-xs"
+                >
+                  ✕
+                </button>
+              </div>
+            ) : (
+              <p className="text-xs text-gray-400 mt-1">
+                {student_profile?.phone || "No phone number added"}
+              </p>
+            )}
           </div>
 
           {/* ACTION BUTTONS */}
