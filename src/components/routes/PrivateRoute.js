@@ -2,7 +2,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
 export default function PrivateRoute() {
-  const { user, role, isInitialized } = useAuth();
+  const { user, role, isInitialized ,loading  } = useAuth();
   console.log('[PrivateRoute] 🛡️ State:', { user, role, isInitialized, loading });
 
   if (!isInitialized) {
