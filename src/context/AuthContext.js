@@ -96,7 +96,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Don't render children until we know auth state
-  if (!isInitialized) return null; // or a full-screen spinner
+  // if (!isInitialized) return null;
 
   return (
     <SessionHintContext.Provider value={sessionHintRef.current}>
@@ -104,6 +104,7 @@ export const AuthProvider = ({ children }) => {
         value={{
           user,
           loading,
+          isInitialized,
           login,
           logout,
           fetchCurrentUser,
