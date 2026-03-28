@@ -36,24 +36,29 @@ export const AuthProvider = ({ children }) => {
   };
 
   const fetchCurrentUser = async () => {
+    console.log('[AuthContext] 🔍 fetchCurrentUser called');
     try {
       const res = await AuthAPI();
+      console.log('[AuthContext] ✅ AuthAPI success:', res?.data);
       if (res?.data) {
         setUser(res.data);
         setSessionFlag(true);
         return res.data;
       } else {
+        console.log('[AuthContext] ⚠️ AuthAPI returned no data');
         setUser(null);
         setSessionFlag(false);
         return null;
       }
-    } catch {
+    } catch (err){
       // Auth check failed — could be expired token, interceptor will handle refresh
       // Do NOT navigate here — just set user null and let the app decide
+      console.log('[AuthContext] ❌ AuthAPI failed (after interceptor):', err?.response?.status, err?.message);
       setUser(null);
       setSessionFlag(false);
       return null;
     } finally {
+      console.log('[AuthContext] 🏁 setLoading(false) + setIsInitialized(true)');
       setLoading(false);
       setIsInitialized(true);
     }

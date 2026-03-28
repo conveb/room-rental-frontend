@@ -21,14 +21,31 @@ const processQueue = (error) => {
 };
 
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    console.log('[API] ✅ Response OK:', response.config.url);
+    return response;
+  },
   async (error) => {
     const originalRequest = error.config;
 
+    console.log('[API] ❌ Error:', {
+      url: originalRequest?.url,
+      status: error.response?.status,
+      isAuthCheck: originalRequest?._isAuthCheck,
+      _retry: originalRequest?._retry,
+      isRefreshing,
+    });
+
     // If the refresh endpoint itself failed → real session expired
     if (originalRequest.url?.includes("/api/v1/login/refresh")) {
+      console.log('[API] 🔴 Refresh endpoint failed — real session expired?', {
+        isAuthCheck: originalRequest._isAuthCheck
+      });
       if (!originalRequest._isAuthCheck) {
+        console.log('[API] 🔴 Dispatching real-session-expired event');
         window.dispatchEvent(new Event('real-session-expired'));
+      } else {
+        console.log('[API] ⚠️ Refresh failed but _isAuthCheck=true, NOT dispatching event');
       }
       return Promise.reject(error);
     }
@@ -37,29 +54,38 @@ api.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       // If a refresh is already in progress, queue this request
       if (isRefreshing) {
+        console.log('[API] ⏳ Already refreshing, queuing request:', originalRequest.url);
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
         })
-          .then(() => api(originalRequest))
+          .then(() => {
+            console.log('[API] 🔄 Retrying queued request after refresh:', originalRequest.url);
+            return api(originalRequest);
+          })
           .catch((err) => Promise.reject(err));
       }
 
       originalRequest._retry = true;
       isRefreshing = true;
+      console.log('[API] 🔄 401 detected, attempting token refresh for:', originalRequest.url);
 
       try {
-        await api.post("/api/v1/login/refresh/", null, {
+        const refreshResponse = await api.post("/api/v1/login/refresh/", null, {
           _isAuthCheck: originalRequest._isAuthCheck,
         });
+        console.log('[API] ✅ Token refresh SUCCESS:', refreshResponse?.status);
 
         // Token refreshed — retry all queued requests
         processQueue(null);
+        console.log('[API] 🔄 Retrying original request after refresh:', originalRequest.url);
         return api(originalRequest);
       } catch (refreshError) {
         // Refresh failed — reject all queued requests
+        console.log('[API] 🔴 Token refresh FAILED:', refreshError?.response?.status, refreshError?.message);
         processQueue(refreshError);
 
         if (!originalRequest._isAuthCheck) {
+          console.log('[API] 🔴 Dispatching real-session-expired event');
           window.dispatchEvent(new Event('real-session-expired'));
         }
         return Promise.reject(refreshError);
