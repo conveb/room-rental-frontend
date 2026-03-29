@@ -15,6 +15,7 @@ import { usePayment } from "../../../hooks/payout_providers/usePayment";
 import ImageGallery from "./components/ImageGallery";
 import BookingPanel from "./components/BookingPanel";
 import ReportModal from "./components/ReportModal";
+import MapEmbed from "./components/MapEmbed";
 
 const AccommodationDetails = () => {
   const { user } = useAuth();
@@ -194,25 +195,14 @@ const AccommodationDetails = () => {
               </p>
               <div className="mt-4">
                 <h2 className="text-sm font-semibold mb-2">Map</h2>
-                {property.latitude && property.longitude ? (
-                  <div className="mt-2 h-48 w-full rounded-lg overflow-hidden border">
-                    <iframe
-                      width="100%"
-                      height="100%"
-                      frameBorder="0"
-                      scrolling="no"
-                      marginHeight="0"
-                      marginWidth="0"
-                      src={`https://www.openstreetmap.org/export/embed.html?bbox=${property.longitude - 0.01}%2C${property.latitude - 0.01}%2C${property.longitude + 0.01}%2C${property.latitude + 0.01}&layer=mapnik&marker=${property.latitude}%2C${property.longitude}`}
-                      title="Property Location"
-                    />
-                  </div>
-                ) : (
-                  <div className="mt-2 h-48 w-full rounded-lg border border-dashed border-gray-200 bg-gray-50 flex flex-col items-center justify-center gap-2 text-gray-400">
-                    <MdMap size={28} />
-                    <p className="text-xs">Map not provided</p>
-                  </div>
-                )}
+                <MapEmbed
+                  latitude={property.latitude}
+                  longitude={property.longitude}
+                  address={property.address}
+                  city={property.city}
+                  region={property.region}
+                  country={property.country}
+                />
               </div>
             </div>
 

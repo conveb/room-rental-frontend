@@ -14,7 +14,7 @@ const ImageGallery = ({ images, property, isSaved, onFavoriteClick, onShare }) =
   return (
     <section className="relative">
       {/* Main Image */}
-      <div className="relative aspect-[3/3] md:aspect-[4/3] rounded-[2rem] overflow-hidden bg-gray-200">
+      <div className="relative w-full aspect-square rounded-[2rem] overflow-hidden bg-gray-200">
         <img
           src={mainImage}
           alt={property.title}
@@ -26,7 +26,7 @@ const ImageGallery = ({ images, property, isSaved, onFavoriteClick, onShare }) =
         />
 
         {/* Overlay controls */}
-        <div className="absolute top-2 md:top-4 right-0 left-0 flex justify-between items-center px-4">
+        <div className="absolute top-2 md:top-4 right-0 left-0 flex justify-between items-center px-2 md:px-4">
           <span className="flex text-xs gap-1 text-white bg-black/50 px-3 py-2 rounded-full">
             <p>Available from :</p> <p>{property.available_from}</p>
           </span>
@@ -95,9 +95,8 @@ const ImageGallery = ({ images, property, isSaved, onFavoriteClick, onShare }) =
           <button
             key={i}
             onClick={() => setActiveImage(img)}
-            className={`h-24 w-24 rounded-3xl overflow-hidden border-2 ${
-              mainImage === img ? "border-black" : "border-transparent hover:border-gray-300"
-            }`}
+            className={`h-24 w-24 rounded-3xl overflow-hidden border-2 ${mainImage === img ? "border-black" : "border-transparent hover:border-gray-300"
+              }`}
           >
             <img
               src={img}
