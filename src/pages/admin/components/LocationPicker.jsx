@@ -298,9 +298,9 @@ export default function LocationPicker({ formData, onLocationChange }) {
       </div>
 
       {/* Google Maps URL import */}
-      <div className="bg-slate-50 border p-3 rounded-xl flex gap-2">
+      <div className="bg-slate-50 border p-3 rounded-xl flex flex-col sm:flex-row gap-2">
         <input
-          className="flex-1 bg-white p-2 rounded-lg text-xs border focus:ring-2 ring-blue-500/20 outline-none"
+          className="w-full sm:flex-1 bg-white p-2 rounded-lg text-xs border focus:ring-2 ring-blue-500/20 outline-none"
           placeholder="Paste Google Maps URL..."
           value={mapUrl}
           onChange={(e) => setMapUrl(e.target.value)}
@@ -308,7 +308,7 @@ export default function LocationPicker({ formData, onLocationChange }) {
         <button
           type="button"
           onClick={handleLinkPaste}
-          className="bg-indigo-600 text-white px-4 rounded-lg text-xs font-bold hover:bg-indigo-700 transition"
+          className="w-full sm:w-auto bg-indigo-600 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-indigo-700 transition"
         >
           Import
         </button>

@@ -70,6 +70,7 @@ import BookingRequest from "./pages/public/accommodation/BookingRequest";
 import ScrollToTop from "./components/ScrollToTop";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import PublicRoute from "./components/routes/PublicRoute";
 gsap.registerPlugin(ScrollTrigger);
 
 function App() {
@@ -89,6 +90,7 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
 
           <Route element={<Layouts />}>
+          <Route element={<PublicRoute />}>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<AboutPage />} />
             {/* <Route path="/list-room" element={<ListYourRoom />} /> */}
@@ -101,6 +103,7 @@ function App() {
             <Route path="/accommodation-details/:id" element={<AccommodationDetails />} />
 
             <Route path="/account-suspended" element={<BlockedPage />} />
+          </Route>
           </Route>
 
           <Route path="verify-otp" element={<AdminOtpVerification />} />
