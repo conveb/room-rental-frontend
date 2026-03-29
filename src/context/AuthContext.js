@@ -14,44 +14,27 @@ const SessionHintContext = createContext(false);
 const AuthContext = createContext(null);
 
 const SESSION_HINT_KEY = "aliveparis_session_hint";
-const USER_CACHE_KEY = "aliveparis_user_cache";
-const ROLE_CACHE_KEY = "aliveparis_role_cache";
 
 export const AuthProvider = ({ children }) => {
   const sessionHintRef = useRef(
     localStorage.getItem(SESSION_HINT_KEY) === "true"
   );
 
-  // ✅ Read from cache instantly — no waiting for API
-  const [user, setUser] = useState(() => {
-    try {
-      const cached = localStorage.getItem(USER_CACHE_KEY);
-      return cached ? JSON.parse(cached) : null;
-    } catch {
-      return null;
-    }
-  });
-
+  // ✅ Zero user data in localStorage — memory only
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-
-  // ✅ If cache exists → already initialized, skip spinner
-  const [isInitialized, setIsInitialized] = useState(() => {
-    return localStorage.getItem(SESSION_HINT_KEY) === "true";
-  });
+  const [isInitialized, setIsInitialized] = useState(false);
 
   const navigate = useNavigate();
 
-  const setSessionFlag = useCallback((value, userData = null) => {
+  // ✅ Only a boolean stored — completely safe
+  const setSessionFlag = useCallback((value) => {
     try {
-      if (value && userData) {
+      if (value) {
         localStorage.setItem(SESSION_HINT_KEY, "true");
-        localStorage.setItem(USER_CACHE_KEY, JSON.stringify(userData));
-        localStorage.setItem(ROLE_CACHE_KEY, userData?.role_name ?? "");
         sessionHintRef.current = true;
       } else {
         localStorage.removeItem(SESSION_HINT_KEY);
-        localStorage.removeItem(USER_CACHE_KEY);
-        localStorage.removeItem(ROLE_CACHE_KEY);
         sessionHintRef.current = false;
       }
     } catch {
@@ -65,8 +48,8 @@ export const AuthProvider = ({ children }) => {
       const res = await AuthAPI();
       console.log("[AuthContext] ✅ AuthAPI success:", res?.data);
       if (res?.data) {
-        setUser(res.data);
-        setSessionFlag(true, res.data);
+        setUser(res.data); // ✅ Full data lives in memory only
+        setSessionFlag(true);
         return res.data;
       } else {
         console.log("[AuthContext] ⚠️ AuthAPI returned no data");
@@ -90,21 +73,21 @@ export const AuthProvider = ({ children }) => {
     }
   }, [setSessionFlag]);
 
-  // Initial auth check on mount
+  // Initial auth check
   useEffect(() => {
     fetchCurrentUser();
   }, []);
 
-  // ✅ Mobile tab resume — re-verify silently in background
+  // ✅ Mobile tab resume — re-verify silently, no flicker
   useEffect(() => {
     const handleVisibilityChange = async () => {
       if (document.visibilityState === "visible") {
-        console.log("[AuthContext] 👁️ Tab visible again — re-verifying silently");
+        console.log("[AuthContext] 👁️ Tab visible — re-verifying silently");
         try {
           const res = await AuthAPI();
           if (res?.data) {
             setUser(res.data);
-            setSessionFlag(true, res.data);
+            setSessionFlag(true);
           } else {
             setUser(null);
             setSessionFlag(false);
@@ -113,7 +96,7 @@ export const AuthProvider = ({ children }) => {
           setUser(null);
           setSessionFlag(false);
         }
-        // ✅ No setLoading/setIsInitialized — runs silently, no flicker
+        // ✅ No setLoading/setIsInitialized — completely silent
       }
     };
 
@@ -122,7 +105,7 @@ export const AuthProvider = ({ children }) => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
   }, [setSessionFlag]);
 
-  // Handle real session expiry (both access + refresh token dead)
+  // Handle real session expiry (both tokens dead)
   useEffect(() => {
     const handleRealSessionExpired = () => {
       if (isInitialized && user) {
@@ -155,12 +138,13 @@ export const AuthProvider = ({ children }) => {
     }
   }, [navigate, setSessionFlag]);
 
-  // ✅ Memoized context value — prevents unnecessary re-renders
+  // ✅ Memoized — prevents unnecessary re-renders across entire app
   const contextValue = useMemo(
     () => ({
       user,
       loading,
       isInitialized,
+      hasSessionHint: sessionHintRef.current, // ✅ for skeleton UI
       login,
       logout,
       fetchCurrentUser,
