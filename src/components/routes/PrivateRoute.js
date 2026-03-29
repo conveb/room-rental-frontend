@@ -1,6 +1,6 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import AccommodationDetailsSkeleton from "../skeleton/AccommodationDetailsSkeleton"; // your existing skeleton
+import AccommodationDetailsSkeleton from "../../pages/skeleton/AccommodationDetailsSkeleton";
 
 export default function PrivateRoute() {
   const { user, role, isInitialized, hasSessionHint } = useAuth();
