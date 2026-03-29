@@ -161,7 +161,17 @@ export default function UserAccount() {
   }
 
   if (error) {
-    return <div className="mt-32 text-center text-red-500">{error}</div>;
+    return (
+      <div className="mt-32 flex flex-col items-center justify-center gap-4">
+        <p className="text-red-500 text-sm">{error}</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="px-6 py-2 bg-black text-white text-sm rounded-full hover:opacity-80 transition"
+        >
+          Reload page
+        </button>
+      </div>
+    );
   }
 
   if (!user) return null;

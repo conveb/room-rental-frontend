@@ -14,7 +14,7 @@ const ImageGallery = ({ images, property, isSaved, onFavoriteClick, onShare }) =
   return (
     <section className="relative">
       {/* Main Image */}
-      <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-gray-200">
+      <div className="relative aspect-[3/3] md:aspect-[4/3] rounded-[2rem] overflow-hidden bg-gray-200">
         <img
           src={mainImage}
           alt={property.title}
@@ -27,7 +27,7 @@ const ImageGallery = ({ images, property, isSaved, onFavoriteClick, onShare }) =
 
         {/* Overlay controls */}
         <div className="absolute top-2 md:top-4 right-0 left-0 flex justify-between items-center px-4">
-          <span className="flex text-xs gap-1 text-white bg-black/50 px-3 py-1 rounded-full">
+          <span className="flex text-xs gap-1 text-white bg-black/50 px-3 py-2 rounded-full">
             <p>Available from :</p> <p>{property.available_from}</p>
           </span>
           <div>
@@ -52,7 +52,7 @@ const ImageGallery = ({ images, property, isSaved, onFavoriteClick, onShare }) =
       </div>
 
       {/* Mobile Image Stack */}
-      <div className="absolute bottom-1 right-1 lg:hidden flex items-center max-w-[90vw]">
+      <div className="absolute bottom-1 right-4 left-2 lg:hidden flex items-center max-w-[90vw]">
         <div
           className={`flex gap-2 transition-all duration-300 overflow-x-auto no-scrollbar py-2 px-1
             ${openStack ? "opacity-100 translate-x-0" : "opacity-0 translate-x-12 pointer-events-none"}`}
@@ -65,7 +65,7 @@ const ImageGallery = ({ images, property, isSaved, onFavoriteClick, onShare }) =
                 setActiveImage(img);
                 setOpenStack(false);
               }}
-              className="h-14 w-14 flex-shrink-0 rounded-lg overflow-hidden border bg-white shadow-sm"
+              className="h-14 w-14 flex-shrink-0 rounded-2xl overflow-hidden border bg-white shadow-sm"
             >
               <img src={img} className="h-full w-full object-cover" alt={`thumb-${i}`} />
             </button>
@@ -90,12 +90,12 @@ const ImageGallery = ({ images, property, isSaved, onFavoriteClick, onShare }) =
       </div>
 
       {/* Desktop Thumbnails */}
-      <div className="hidden lg:grid grid-cols-5 gap-3 mt-4">
+      <div className="hidden lg:grid grid-cols-5 gap-1 mt-4">
         {images.map((img, i) => (
           <button
             key={i}
             onClick={() => setActiveImage(img)}
-            className={`h-24 w-24 rounded-xl overflow-hidden border-2 ${
+            className={`h-24 w-24 rounded-3xl overflow-hidden border-2 ${
               mainImage === img ? "border-black" : "border-transparent hover:border-gray-300"
             }`}
           >

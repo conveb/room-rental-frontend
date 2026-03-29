@@ -86,31 +86,32 @@ const BookingPanel = ({
   };
 
   return (
-    <div className="rounded-2xl border bg-white p-3 md:p-5 shadow-sm space-y-4">
-      {/* Price */}
+    <>
       <div className="flex justify-between items-center">
         <div>
           <span className="text-xl md:text-3xl font-semibold">€{property.rent_per_month}</span>
           <span className="text-sm text-gray-500"> / month</span>
         </div>
       </div>
+      <div className="rounded-2xl border bg-white p-2 md:p-5 shadow-sm space-y-4">
+        {/* Price */}
 
-      {/* Property Stats */}
-      <PropertyStats property={property} />
-      {
-        user?.role_name !== "ADMIN" && (
-          <div>
-            <button
-              onClick={handleRequestBooking}
-              className="w-full bg-black text-white py-2.5 rounded-lg font-semibold hover:bg-neutral-800 transition-colors"
-            >
-              Request booking
-            </button>
-          </div>
-        )
-      }
-      {/* Action Buttons */}
-      {/* <div className="sticky bottom-2 p-3 border rounded-xl bg-white">
+        {/* Property Stats */}
+        <PropertyStats property={property} />
+        {
+          user?.role_name !== "ADMIN" && (
+            <div>
+              <button
+                onClick={handleRequestBooking}
+                className="w-full bg-black text-white py-2.5 rounded-lg font-semibold hover:bg-neutral-800 transition-colors"
+              >
+                Request booking
+              </button>
+            </div>
+          )
+        }
+        {/* Action Buttons */}
+        {/* <div className="sticky bottom-2 p-3 border rounded-xl bg-white">
         {bookingDetails && bookingDetails.status !== "CANCELLED" ? (
           <div className="flex flex-col gap-2">
             {bookingDetails.status === "APPROVED" &&
@@ -154,7 +155,8 @@ const BookingPanel = ({
           />
         )}
       </div> */}
-    </div>
+      </div>
+    </>
   );
 };
 

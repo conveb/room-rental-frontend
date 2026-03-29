@@ -13,6 +13,12 @@ export const useProperties = () => {
     type: "",
     budget: "",
     rooms: "",
+    maxPeople: "",       // max_people on property
+    minStay: "",         // minimum_stay_months on property
+    furnished: false,
+    is_caf_eligible: false,
+    is_domicile_allowed: false,
+    contract: false,
   };
 
   const [filters, setFilters] = useState(initialFilters);
@@ -46,8 +52,37 @@ export const useProperties = () => {
     if (filters.rooms) {
       const roomCount = parseInt(filters.rooms);
       data = data.filter((p) =>
-        filters.rooms.includes("+") ? p.rooms >= roomCount : p.rooms === roomCount
+        roomCount === 3 ? p.rooms >= 3 : p.rooms === roomCount
       );
+    }
+
+    if (filters.maxPeople) {
+      const n = parseInt(filters.maxPeople);
+      data = data.filter((p) =>
+        filters.maxPeople === "4" ? p.max_people >= 4 : p.max_people === n
+      );
+    }
+
+    if (filters.minStay) {
+      data = data.filter((p) =>
+        Number(p.minimum_stay_months) <= Number(filters.minStay)
+      );
+    }
+
+    if (filters.furnished) {
+      data = data.filter((p) => p.furnished === true);
+    }
+
+    if (filters.is_caf_eligible) {
+      data = data.filter((p) => p.is_caf_eligible === true);
+    }
+
+    if (filters.is_domicile_allowed) {
+      data = data.filter((p) => p.is_domicile_allowed === true);
+    }
+
+    if (filters.contract) {
+      data = data.filter((p) => p.contract === true);
     }
 
     setFilteredProperties(data);
@@ -62,23 +97,30 @@ export const useProperties = () => {
         setProperties(res.data);
 
         const params = new URLSearchParams(location.search);
-        const cityParam   = params.get("city");
+        const cityParam = params.get("city");
         const budgetParam = params.get("budget");
-        const dateParam   = params.get("date");
-        const typeParam   = params.get("type");
-        const roomsParam  = params.get("rooms");
+        const dateParam = params.get("date");
+        const typeParam = params.get("type");
+        const roomsParam = params.get("rooms");
+        const maxPeopleParam = params.get("maxPeople");
+        const minStayParam = params.get("minStay");
+        const furnishedParam = params.get("furnished");
 
-        const hasParams = cityParam || budgetParam || dateParam || typeParam || roomsParam;
+        const hasParams = cityParam || budgetParam || dateParam || typeParam || roomsParam
+          || maxPeopleParam || minStayParam || furnishedParam;
 
         if (hasParams) {
           // Merge only the params that exist — don't overwrite with nulls
           setFilters((prev) => ({
             ...prev,
-            ...(cityParam   && { city: cityParam }),
+            ...(maxPeopleParam && { maxPeople: maxPeopleParam }),
+            ...(minStayParam && { minStay: minStayParam }),
+            ...(furnishedParam && { furnished: furnishedParam === "true" }),
+            ...(cityParam && { city: cityParam }),
             ...(budgetParam && { budget: budgetParam }),
-            ...(dateParam   && { date: dateParam }),
-            ...(typeParam   && { type: typeParam }),
-            ...(roomsParam  && { rooms: roomsParam }),
+            ...(dateParam && { date: dateParam }),
+            ...(typeParam && { type: typeParam }),
+            ...(roomsParam && { rooms: roomsParam }),
           }));
           // Don't call setFilteredProperties here —
           // the debounce useEffect below will fire once filters state updates

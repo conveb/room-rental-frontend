@@ -137,7 +137,7 @@ const AccommodationDetails = () => {
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 md:gap-10">
           {/* Image Gallery */}
           <ImageGallery
             images={images}
@@ -152,12 +152,12 @@ const AccommodationDetails = () => {
             {/* Title, Description & Report */}
             <div>
               <div className="flex justify-between">
-                <h1 className="text-2xl md:text-3xl font-semibold">{property.title}</h1>
+                <h1 className="text-xl md:text-3xl font-semibold">{property.title}</h1>
                 {/* <button onClick={() => setReportType("property")}>
                   <MdOutlineReportGmailerrorred size={25} />
                 </button> */}
               </div>
-              <p className="mt-2 text-sm text-gray-600">{property.description}</p>
+              <p className="mt-2 text-xs text-gray-600">{property.description}</p>
             </div>
 
             {/* Booking Panel (price + stats + booking actions) */}
