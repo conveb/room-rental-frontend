@@ -2,24 +2,24 @@ import { useEffect, useState, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import { getAllPropertiesAPI } from "../../services/allAPI";
 
+const initialFilters = {
+  city: "",
+  date: "",
+  type: "",
+  budget: "",
+  rooms: "",
+  maxPeople: "",       // max_people on property
+  minStay: "",         // minimum_stay_months on property
+  furnished: false,
+  is_caf_eligible: false,
+  is_domicile_allowed: false,
+  contract: false,
+};
 export const useProperties = () => {
   const location = useLocation();
   const [properties, setProperties] = useState([]);
   const [filteredProperties, setFilteredProperties] = useState([]);
 
-  const initialFilters = {
-    city: "",
-    date: "",
-    type: "",
-    budget: "",
-    rooms: "",
-    maxPeople: "",       // max_people on property
-    minStay: "",         // minimum_stay_months on property
-    furnished: false,
-    is_caf_eligible: false,
-    is_domicile_allowed: false,
-    contract: false,
-  };
 
   const [filters, setFilters] = useState(initialFilters);
   const [loading, setLoading] = useState(false);
