@@ -26,7 +26,7 @@ const PropertyCard = memo(({ property, baseRoute, isSaved, handleFavoriteClick }
                     className="pointer-events-auto p-2 rounded-full bg-white/90 backdrop-blur-sm shadow-lg hover:scale-110 active:scale-95 transition-all z-10"
                     aria-label="Toggle Favorite"
                   >
-                    {isSaved(property.id) ? (
+                    {isSaved? (
                       <FaHeart className="text-red-500 animate-pulse" size={18} />
                     ) : (
                       <FiHeart className="text-gray-600 hover:text-red-500 transition-colors" size={18} />

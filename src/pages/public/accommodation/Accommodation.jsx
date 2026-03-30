@@ -378,7 +378,7 @@ const Accommodation = ({ baseRoute }) => {
             key={property.id}
             property={property}
             baseRoute={baseRoute}
-            isSaved={isSaved(property.id)}   // pass the boolean, not the function
+            isSaved={isSaved(property.id)}        // ✅ boolean: true/false
             onFavoriteClick={handleFavoriteClick}
           />
         ))}
