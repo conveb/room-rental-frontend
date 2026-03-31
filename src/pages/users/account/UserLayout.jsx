@@ -5,7 +5,7 @@ import { IoBookmarkOutline, IoChatboxEllipsesOutline } from "react-icons/io5";
 import { FaRegCalendarCheck, FaRegUserCircle } from "react-icons/fa";
 import { IoIosNotifications } from "react-icons/io";
 import colors from "../../../theme/colors";
-import Logo from "../../../Assets/Images/logo.jpg";
+import Logo from "../../../Assets/pngs/logo-white.png";
 import { useAuth } from "../../../context/AuthContext";
 // import { useUserProfile } from "../../../hooks/users/useUserProfile";
 // import { useNotifications } from "../../../context/HeaderContext";
@@ -31,7 +31,7 @@ const UserLayout = () => {
     <div className="min-h-screen flex flex-col ">
 
       {/* HEADER */}
-      <header className="fixed top-0 left-0 right-0   bg-white border-b border-gray-100   z-40">
+      <header className="fixed top-0 left-0 right-0   bg-black border-b border-gray-100   z-40">
         {/* <div className=" bg-red-200">
           <VerifyPhoneNumber isPhoneVerified={userData?.phone ? true : false} />
         </div> */}
@@ -41,7 +41,7 @@ const UserLayout = () => {
           <div className="flex items-end gap-4 lg:gap-8 flex-1">
             <Link to="/" className="flex items-end gap-2 ">
               <img src={Logo} alt="logo" className="w-8 h-8 object-contain" />
-              <p className="font-bold text-lg  text-slate-900">Alive Paris</p>
+              <p className="font-bold text-lg  text-white">Alive Paris</p>
             </Link>
 
 
@@ -70,14 +70,14 @@ const UserLayout = () => {
             <Link to="/auth/user/account" >
               <div className="hidden md:flex items-center gap-3 mr-2 pr-4 border-r border-gray-100">
                 <div className="text-right">
-                  <p className="text-xs font-bold text-slate-900 capitalize leading-none">
+                  <p className="text-xs font-bold text-white capitalize leading-none">
                     {userData?.full_name || "Guest User"}
                   </p>
-                  <p className="text-[10px] text-slate-500 mt-1">
+                  <p className="text-[10px] text-white mt-1">
                     {user?.email}
                   </p>
                 </div>
-                <div className="border border-black border-2 p-[2px] rounded-full">
+                <div className="border border-white border-2 p-[2px] rounded-full">
                   <div className="h-10 w-10 bg-slate-100 rounded-full flex items-center justify-center overflow-hidden">
                     {userData?.avatar_id ? (
                       <img
@@ -100,7 +100,7 @@ const UserLayout = () => {
             </Link>
 
             {/* Wishlist Icon */}
-            <Link to="/auth/user/saved" className=" p-2 text-slate-600 hover:bg-slate-50 rounded-full transition relative">
+            <Link to="/auth/user/saved" className=" p-2 text-white hover:bg-slate-50 rounded-full transition relative">
               <IoBookmarkOutline className="text-xl" />
             </Link>
 
@@ -115,8 +115,8 @@ const UserLayout = () => {
             </Link> */}
             <Link to="/auth/user/account">
               {/* ✅ Add md:hidden to the outer div as well */}
-              <div className="md:hidden border-2 border-black rounded-full">
-                <div className="h-10 w-10 bg-slate-100 rounded-full flex items-center justify-center overflow-hidden">
+              <div className="md:hidden border-2 border-white rounded-full">
+                <div className="h-10 w-10 bg-white rounded-full flex items-center justify-center overflow-hidden">
                   {userData?.avatar_id ? (
                     <img
                       src={Characters.find((c) => c.id === Number(userData.avatar_id))?.img}
