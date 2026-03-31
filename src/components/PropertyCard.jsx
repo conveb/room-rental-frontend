@@ -11,9 +11,10 @@ const TAG_COLORS = {
     Popular: "bg-sky-50 text-sky-600 border-sky-100",
 };
 
-export default function PropertyCard({ property, index }) {
+export default function PropertyCard({ property}) {
     const cardRef = useRef(null);
     const imgRef = useRef(null);
+    console.log("homepage",property)
 
     useEffect(() => {
         const card = cardRef.current;
@@ -64,7 +65,7 @@ export default function PropertyCard({ property, index }) {
             card.removeEventListener("mousemove", onMove);
             card.removeEventListener("mouseleave", onLeave);
         };
-    }, [index]);
+    }, []);
 
     return (
         <div
@@ -80,7 +81,7 @@ export default function PropertyCard({ property, index }) {
             >
                 <img
                     ref={imgRef}
-                    src={property.image}
+                    src={property.cover_image}
                     alt={property.title}
                     className="absolute left-0 w-full object-cover will-change-transform"
                     style={{ height: "130%", top: "-15%" }}
@@ -123,7 +124,7 @@ export default function PropertyCard({ property, index }) {
                             className="mt-1 text-xs md:text-xs text-zinc-400 tracking-wide"
                             style={{ fontFamily: "'DM Sans', sans-serif" }}
                         >
-                            {property.location}
+                            {property.address}
                         </p>
                     </div>
                     <div>
@@ -134,7 +135,7 @@ export default function PropertyCard({ property, index }) {
                      border border-zinc-100 shadow-sm"
                             style={{ fontFamily: "'DM Sans', sans-serif" }}
                         >
-                            {property.price}
+                            {property.rent_per_month}
                         </span>
                     </div>
                 </div>
@@ -148,19 +149,21 @@ export default function PropertyCard({ property, index }) {
                             <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
                             <polyline points="9,22 9,12 15,12 15,22" />
                         </svg>
-                        {property.beds} bed
+                        {property.rooms} Rooms
                     </span>
                     <span className="flex items-center gap-1.5">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
                             <path d="M4 12h16M4 12a2 2 0 01-2-2V6a2 2 0 012-2h4l2 4H4zM20 12v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6" />
                         </svg>
-                        {property.baths} bath
+                        {property.bathrooms} bath
                     </span>
                     <span className="flex items-center gap-1.5">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                            <rect x="3" y="3" width="18" height="18" rx="2" />
-                        </svg>
-                        {property.sqm} m²
+                        
+                        {property.furnished && (
+                            <span className=" text-xs font-bold px-2 py-1 rounded-full">
+                                Furnished
+                            </span>
+                        )}
                     </span>
 
 

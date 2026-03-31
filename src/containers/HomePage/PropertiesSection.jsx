@@ -4,6 +4,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import PropertyCard from "../../components/PropertyCard";
 import { PROPERTIES } from "../../components/PropertiesData";
 import { Link } from "react-router-dom";
+import { useProperties } from "../../hooks/property/useProperties";
+import PropertyCardSkeleton from "../../pages/skeleton/PropertyCardSkeleton";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -23,6 +25,16 @@ export default function PropertiesSection() {
     const btnRef = useRef(null);
     const btnFillRef = useRef(null);
     const dividerRef = useRef(null);
+
+    const {
+        loading,
+        error,
+        filters,
+        filteredProperties,
+        handleFilterChange,
+        applyFilters,
+        resetFilters,
+    } = useProperties();
 
     useEffect(() => {
         const ctx = gsap.context(() => {
@@ -88,6 +100,8 @@ export default function PropertiesSection() {
 
         return () => ctx.revert();
     }, []);
+
+
 
     return (
         <>
@@ -166,16 +180,23 @@ export default function PropertiesSection() {
 
                 {/* Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
-                    {PROPERTIES.slice(0, 4).map((property, index) => (
-                        <Link
-                            key={property.id}
-                            to={`/accommodation-details/${property.id}`}  // ← adjust to match your route
-                        >
-                            <PropertyCard property={property} index={index} />
-                        </Link>
-                    ))}
+                    {loading
+                        ? Array.from({ length: 4 }).map((_, i) => (
+                            <PropertyCardSkeleton key={i} />
+                        ))
+                        :
+                        filteredProperties.slice(0, 4).map((property) => (
+                            <Link
+                                key={property.id}
+                                to={`/accommodation-details/${property.id}`}  // ← adjust to match your route
+                            >
+                                <PropertyCard
+                                    property={property}
+                                />
+                            </Link>
+                        ))
+                    }
                 </div>
-
                 {/* Mobile view all */}
                 <div className="mt-12 flex justify-center sm:hidden">
                     <Link
