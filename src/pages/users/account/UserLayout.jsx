@@ -31,7 +31,7 @@ const UserLayout = () => {
     <div className="min-h-screen flex flex-col ">
 
       {/* HEADER */}
-      <header className="fixed top-0 left-0 right-0   bg-black border-b border-gray-100   z-40">
+      <header className="fixed top-0 left-0 right-0   bg-black   z-40">
         {/* <div className=" bg-red-200">
           <VerifyPhoneNumber isPhoneVerified={userData?.phone ? true : false} />
         </div> */}
