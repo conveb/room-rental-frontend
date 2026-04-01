@@ -3,12 +3,12 @@ import React, {
   useContext,
   useEffect,
   useRef,
-  useState,
   useMemo,
   useCallback,
 } from "react";
 import { AuthAPI, LogoutAPI } from "../services/allAPI";
 import { useNavigate } from "react-router-dom";
+import { useQuery, useQueryClient } from "@tanstack/react-query";  // ✅ add
 
 const SessionHintContext = createContext(false);
 const AuthContext = createContext(null);
@@ -16,15 +16,12 @@ const AuthContext = createContext(null);
 const SESSION_HINT_KEY = "aliveparis_session_hint";
 
 export const AuthProvider = ({ children }) => {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
   const sessionHintRef = useRef(
     localStorage.getItem(SESSION_HINT_KEY) === "true"
   );
-
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [isInitialized, setIsInitialized] = useState(false);
-
-  const navigate = useNavigate();
 
   const setSessionFlag = useCallback((value) => {
     try {
@@ -38,123 +35,86 @@ export const AuthProvider = ({ children }) => {
     } catch {}
   }, []);
 
-  const fetchCurrentUser = useCallback(async () => {
-    console.log("[AuthContext] 🔍 fetchCurrentUser called");
-    try {
-      const res = await AuthAPI();
-      console.log("[AuthContext] ✅ AuthAPI success:", res?.data);
-      if (res?.data) {
-        setUser(res.data);
-        setSessionFlag(true);
-        return res.data;
-      } else {
-        console.log("[AuthContext] ⚠️ AuthAPI returned no data");
-        setUser(null);
+  // ✅ REPLACES: useState(user), useState(loading), useState(isInitialized)
+  // ✅ REPLACES: fetchCurrentUser, visibilitychange listener, initial useEffect
+  const {
+    data: user = null,
+    isLoading,       // true only on very first load (no cache)
+    isFetching,      // true during silent background re-verify
+  } = useQuery({
+    queryKey: ["auth", "me"],
+    queryFn: async () => {
+      try {
+        const res = await AuthAPI();
+        if (res?.data) {
+          setSessionFlag(true);
+          return res.data;
+        }
         setSessionFlag(false);
         return null;
+      } catch (err) {
+        setSessionFlag(false);
+        return null;   // return null instead of throwing — avoids error state
       }
-    } catch (err) {
-      console.log(
-        "[AuthContext] ❌ AuthAPI failed:",
-        err?.response?.status,
-        err?.message
-      );
-      setUser(null);
-      setSessionFlag(false);
-      return null;
-    } finally {
-      console.log("[AuthContext] 🏁 setLoading(false) + setIsInitialized(true)");
-      setLoading(false);
-      setIsInitialized(true);
-    }
-  }, [setSessionFlag]);
+    },
 
-  // Initial auth check on mount
-  useEffect(() => {
-    fetchCurrentUser();
-  }, []);
+    staleTime: 14 * 60 * 1000,   // 14 min — just under your 15 min access token
+    gcTime: 30 * 60 * 1000,      // keep in memory 30 min after unmount
 
-  // ✅ THE KEY FIX — fires when user returns to mobile tab
-  useEffect(() => {
-    const handleVisibilityChange = async () => {
-      if (document.visibilityState === "visible") {
-        console.log("[AuthContext] 👁️ Tab visible — re-verifying");
+    // ✅ REPLACES your visibilitychange listener entirely
+    refetchOnWindowFocus: true,
 
-        // ✅ Reset loading so routes wait for fresh auth check
-        setLoading(true);
-        setIsInitialized(false);
+    // ✅ show old user data while silently re-verifying — no blank screen
+    placeholderData: (prev) => prev,
+  });
 
-        try {
-          const res = await AuthAPI();
-          if (res?.data) {
-            setUser(res.data);
-            setSessionFlag(true);
-          } else {
-            setUser(null);
-            setSessionFlag(false);
-          }
-        } catch {
-          setUser(null);
-          setSessionFlag(false);
-        } finally {
-          // ✅ Always re-initialize so routes unblock
-          setLoading(false);
-          setIsInitialized(true);
-        }
-      }
-    };
-
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-    return () =>
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-  }, [setSessionFlag]);
-
-  // Real session expiry handler
+  // ✅ KEPT — real session expiry still works the same way
   useEffect(() => {
     const handleRealSessionExpired = () => {
-      if (isInitialized && user) {
-        console.log("[AuthContext] 🔴 Real session expired");
-        setUser(null);
+      if (user) {
+        queryClient.setQueryData(["auth", "me"], null);
         setSessionFlag(false);
         navigate("/signin");
       }
     };
-
     window.addEventListener("real-session-expired", handleRealSessionExpired);
     return () =>
       window.removeEventListener("real-session-expired", handleRealSessionExpired);
-  }, [navigate, isInitialized, user, setSessionFlag]);
+  }, [navigate, user, queryClient, setSessionFlag]);
 
+  // ✅ REPLACES: login() that called fetchCurrentUser
   const login = useCallback(async () => {
-    setLoading(true);
-    return await fetchCurrentUser();
-  }, [fetchCurrentUser]);
+    // invalidate forces TQ to refetch AuthAPI immediately
+    await queryClient.invalidateQueries({ queryKey: ["auth", "me"] });
+  }, [queryClient]);
 
+  // ✅ KEPT — logout logic unchanged, just clears TQ cache too
   const logout = useCallback(async () => {
     try {
       await LogoutAPI();
     } catch (e) {
       console.error("Logout failed", e);
     } finally {
-      setUser(null);
+      queryClient.setQueryData(["auth", "me"], null);
+      queryClient.removeQueries({ queryKey: ["auth", "me"] });
       setSessionFlag(false);
       navigate("/signin", { replace: true });
     }
-  }, [navigate, setSessionFlag]);
+  }, [navigate, queryClient, setSessionFlag]);
 
   const contextValue = useMemo(
     () => ({
       user,
-      loading,
-      isInitialized,
+      loading: isLoading,           // same API as before — your routes won't break
+      isFetching,                   // new — optional, for subtle UI indicators
+      isInitialized: !isLoading,    // same API as before
       hasSessionHint: sessionHintRef.current,
       login,
       logout,
-      fetchCurrentUser,
       isAuthenticated: Boolean(user),
       role: user?.role_name ?? null,
     }),
-    [user, loading, isInitialized, login, logout, fetchCurrentUser]
+    [user, isLoading, isFetching, login, logout]
   );
 
   return (

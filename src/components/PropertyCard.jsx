@@ -14,7 +14,6 @@ const TAG_COLORS = {
 export default function PropertyCard({ property}) {
     const cardRef = useRef(null);
     const imgRef = useRef(null);
-    console.log("homepage",property)
 
     useEffect(() => {
         const card = cardRef.current;
