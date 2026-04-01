@@ -4,22 +4,16 @@ import { useAuth } from "../../context/AuthContext";
 export default function PublicRoute() {
   const { user, role, isInitialized, hasSessionHint } = useAuth();
 
-  if (!isInitialized) {
-    // ✅ Might be logged in — wait silently (no text flash)
-    if (hasSessionHint) return null;
-    // Definitely not logged in — show public page immediately
-    return <Outlet />;
-  }
+  // Only block on very first load with a session hint
+  if (!isInitialized && hasSessionHint) return null;
 
-  if (user && role === "STUDENT") {
-    return <Navigate to="/auth/user/accommodation" replace />;
-  }
-  if (user && role === "ADMIN") {
-    return <Navigate to="/auth/admin" replace />;
-  }
-  if (user && role === "LANDOWNER") {
-    return <Navigate to="/auth/landowner" replace />;
-  }
+  // No data yet, no hint — show public page immediately
+  if (!isInitialized) return <Outlet />;
+
+  // ✅ Have data — redirect if already logged in
+  if (user && role === "STUDENT") return <Navigate to="/auth/user/accommodation" replace />;
+  if (user && role === "ADMIN") return <Navigate to="/auth/admin" replace />;
+  if (user && role === "LAND_OWNER") return <Navigate to="/auth/landowner" replace />;
 
   return <Outlet />;
 }

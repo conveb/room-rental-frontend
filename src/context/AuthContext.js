@@ -32,7 +32,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem(SESSION_HINT_KEY);
         sessionHintRef.current = false;
       }
-    } catch {}
+    } catch { }
   }, []);
 
   // ✅ REPLACES: useState(user), useState(loading), useState(isInitialized)
@@ -105,14 +105,15 @@ export const AuthProvider = ({ children }) => {
   const contextValue = useMemo(
     () => ({
       user,
-      loading: isLoading,           // same API as before — your routes won't break
-      isFetching,                   // new — optional, for subtle UI indicators
-      isInitialized: !isLoading,    // same API as before
+      // ✅ isInitialized = true as soon as we have ANY data (cached or fresh)
+      // no longer waits for network — unblocks routes immediately
+      isInitialized: !isLoading,
+      isFetching,       // silent background re-verify indicator
       hasSessionHint: sessionHintRef.current,
-      login,
-      logout,
       isAuthenticated: Boolean(user),
       role: user?.role_name ?? null,
+      login,
+      logout,
     }),
     [user, isLoading, isFetching, login, logout]
   );
