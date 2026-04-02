@@ -4,9 +4,9 @@ import Title from "../../components/Title";
 import AuditDateFilter from "./components/AuditDateFilter";
 
 const TABS = [
+  { key: "all",        label: "All Logs" },
   { key: "users",      label: "User Audits" },
   { key: "properties", label: "Property Audits" },
-  { key: "all",        label: "All Logs" },
 ];
 
 const PAGE_SIZE_OPTIONS = [10, 25, 50, 100];
