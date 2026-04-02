@@ -107,6 +107,23 @@ html {
   animation: write 4s cubic-bezier(0.45, 0.05, 0.55, 0.95) forwards;
 }
 
+/* Change the circle background for the active step */
+.p-stepper .p-stepper-number {
+  background-color: black !important;
+  color: white !important;
+}
+
+/* Change the text color of the active header label */
+.p-stepper .p-stepper-header.p-highlight .p-stepper-title {
+  color: black !important;
+}
+
+/* Change the line color between steps if needed */
+.p-stepper .p-stepper-separator {
+  background-color: #e5e7eb;
+  /* light gray line */
+}
+
 @keyframes write {
   70% {
     fill: rgba(255, 255, 255, 0);

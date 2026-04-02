@@ -9,6 +9,9 @@ import { useSignin } from "../../../hooks/auth/useSignin";
 import { useGoogleAuth } from "../../../hooks/auth/useGoogleAuth";
 import { validateEmail, validateLoginPassword } from "../../../utils/authValidation";
 
+import SigninImg from "../../../Assets/Images/signin.jpg";
+import Logo from "../../../Assets/pngs/logo-white.png";
+
 const SignIn = () => {
   const { signin, loading: manualLoading, error: manualError } = useSignin();
   const { loading: googleLoading, error: googleError } = useGoogleAuth();
@@ -51,12 +54,25 @@ const SignIn = () => {
         <BacktoHome />
       </div>
 
-      <div className="w-full max-w-5xl mx-auto flex overflow-hidden ">
+      <div className="w-full max-w-5xl mx-auto flex  overflow-hidden md:bg-stone-100 md:p-2 md:rounded-[2rem]">
         {/* LEFT PANEL */}
+        <div className="hidden relative w-full md:flex  items-center justify-center rounded-l-3xl"
+          style={{backgroundImage:`url(${SigninImg})`, backgroundSize: 'cover', backgroundPosition: 'center'}}
+          >
+          <div className="absolute bottom-0 left-0  flex flex-col  text-white p-3 rounded-b-3xl bg-gradient-to-t from-black via-black/80 to-transparent p-5">
+            <h2 className="text-2xl mb-2">Welcome Back!</h2>
+            <p className="text-sm">
+              our next great chapter starts here. Unlock your stay and live the Paris you’ve always dreamed of.
+            </p>
+          </div>
+          <div className="absolute top-5 left-5">
+            <img src={Logo} alt="logo" className="w-7"/>
+          </div>
+        </div>
 
 
         {/* RIGHT PANEL */}
-        <div className="w-full  flex items-center justify-center bg-white">
+        <div className="w-full bg-white flex items-center justify-center md:rounded-r-3xl">
           <div className="w-full max-w-md px-6 py-10">
             <div className="mb-8">
               <h1 className="text-2xl font-semibold text-gray-900">Sign in</h1>
@@ -137,13 +153,22 @@ const SignIn = () => {
                 <FcGoogle />  {googleLoading ? "Processing..." : "Sign in with Google"}
               </button>
             </form>
+            <div>
 
-            <p className="mt-6 text-xs text-gray-500 text-center">
-              New to Alive Paris?{" "}
-              <Link to="/signup" className="font-semibold text-gray-900 hover:underline">
-                Create an account
-              </Link>
-            </p>
+              <p className="mt-6 text-xs text-gray-500 text-center">
+                By signing in, you agree to our{" "}
+                {" "}and{" "}
+                <Link to="/privacy-policy" className="font-semibold text-gray-900 hover:underline">
+                  Privacy Policy
+                </Link>
+              </p>
+              <p className="mt-2 text-xs text-gray-500 text-center">
+                New to Alive Paris?{" "}
+                <Link to="/signup" className="font-semibold text-gray-900 hover:underline">
+                  Create an account
+                </Link>
+              </p>
+            </div>
           </div>
         </div>
       </div>

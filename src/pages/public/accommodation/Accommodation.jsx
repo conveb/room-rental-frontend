@@ -83,10 +83,10 @@ const Accommodation = ({ baseRoute }) => {
   ).length;
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-14 mt-14">
+    <div className="min-h-screen bg-gray-50 pb-14 mt-16 md:mt-14">
       
       {/* HEADER SECTION */}
-      <div className="bg-black px-4 md:px-8 lg:px-20 pb-4 md:pb-8">
+      <div className="bg-black px-3 md:px-8 lg:px-20 pb-4 md:pb-8">
         <div className="max-w-7xl mx-auto w-full">
           <h1 className="text-2xl md:text-4xl font-semibold text-white text-center mb-4 md:mb-8 pt-4 md:pt-10">
             Find Rooms
@@ -366,11 +366,11 @@ const Accommodation = ({ baseRoute }) => {
       )}
 
       {/* MAIN PROPERTY GRID AREA */}
-      <div className="max-w-7xl mx-auto px-4 md:px-8 mt-6">
+      <div className="max-w-7xl mx-auto px-3 md:px-8 mt-2 md:mt-6">
         {loading && <AccommodationSkeleton />}
         {error && <p className="text-center text-red-500 mt-10">{error}</p>}
 
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 items-stretch">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 md:gap-4 md:gap-6 items-stretch">
           {filteredProperties.map((property) => (
             <PropertyCard
               key={property.id}

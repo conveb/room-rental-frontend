@@ -177,7 +177,7 @@ export default function UserAccount() {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen px-5 md:p-6 mt-0 md:mx-auto md:container">
+    <div className="min-h-screen px-5 md:p-6 mt-20 md:mx-auto md:container">
       <div className="flex items-center gap-3">
         <button
           onClick={() => navigate(-1)}

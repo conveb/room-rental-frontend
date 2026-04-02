@@ -9,6 +9,9 @@ import BacktoHome from "../../../components/btns/BacktoHome";
 import { toast } from "sonner";
 import { validateEmail, validateFullName, validatePassword } from "../../../utils/authValidation";
 
+import SignupImg from "../../../Assets/Images/signup.jpg";
+import Logo from "../../../Assets/pngs/logo-white.png";
+
 const OTP_LENGTH = 6;
 
 const SignUp = () => {
@@ -76,6 +79,7 @@ const SignUp = () => {
         email: form.email,
         purpose: "ONBOARDING",
       });
+      toast.success("We've sent an OTP to your email! Please check and enter it below.");
 
       setIsTimerActive(true);
       setCounter(60);
@@ -138,6 +142,7 @@ const SignUp = () => {
         otp: otp.join(""),
         purpose: "ONBOARDING",
       });
+      toast.success("OTP verified successfully! Creating your account...");
 
       if (!form.privacy_policy)
         throw new Error("Privacy policy required");
@@ -163,19 +168,27 @@ const SignUp = () => {
 
   /* ---------------- RESEND OTP TIMER ---------------- */
   useEffect(() => {
-    if (!isTimerActive || counter === 0) {
-      if (counter === 0) setDisableResend(false);
-      return;
+    let timer;
+    if (isTimerActive && counter > 0) {
+      // Set to 1000ms for a real-time second countdown
+      timer = setInterval(() => {
+        setCounter((prev) => prev - 1);
+      }, 1000);
+    } else if (counter === 0) {
+      setDisableResend(false);
+      setIsTimerActive(false); // Stop the timer once it hits zero
+      clearInterval(timer);
     }
 
-    const timer = setTimeout(() => setCounter(counter - 1), 5000);
-    return () => clearTimeout(timer);
-  }, [counter, isTimerActive]);
+    return () => clearInterval(timer);
+  }, [isTimerActive, counter]);
 
   const handleResend = async () => {
     await resendOtp({ email: form.email, purpose: "ONBOARDING" });
+    toast.success("OTP resent successfully , check you email!");
     setCounter(60);
     setDisableResend(true);
+    setIsTimerActive(true);
   };
 
   return (
@@ -183,162 +196,179 @@ const SignUp = () => {
       <div className="absolute top-4 right-5">
         <BacktoHome />
       </div>
-      {/* Header */}
-      <div className="w-full max-w-md text-center ">
-        <h1 className="text-2xl font-semibold text-gray-800">
-          Create Account
-        </h1>
-        <p className="text-sm text-gray-600 mt-1">
-          Use your information to get started
-        </p>
-      </div>
 
-      {/* Card */}
-      <div className="w-full max-w-md p-2 sm:p-8">
-        <Stepper ref={stepperRef} linear>
-          {/* STEP 1 */}
-          <StepperPanel header="Details">
-            <div className="space-y-4 mt-4">
-              <div>
-                <input
-                  name="full_name"
-                  placeholder="Full name"
-                  value={form.full_name}
-                  onChange={handleFormChange}
-                  className="w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
-                />
-                {errors.full_name && <p className="text-[10px] text-red-500 ml-1">{errors.full_name}</p>}
-              </div>
+      <div className="w-full h-[600px] max-w-5xl mx-auto flex  overflow-hidden md:bg-stone-100 md:p-2 md:rounded-[2rem]">
+        {/* LEFT PANEL */}
+        <div className="hidden relative w-full md:flex  items-center justify-center rounded-l-3xl"
+          style={{ backgroundImage: `url(${SignupImg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+        >
+          <div className="absolute bottom-0 left-0  flex flex-col  text-white p-3 rounded-bl-3xl bg-gradient-to-t from-black via-black/80 to-transparent p-5">
+            <h2 className="text-2xl mb-2">Get Started</h2>
+            <p className="text-sm">
+             Join Alive Paris to browse our full list of student residences, manage your bookings, and secure your housing in the city.
+            </p>
+          </div>
+          <div className="absolute top-5 left-5">
+            <img src={Logo} alt="logo" className="w-7" />
+          </div>
+        </div>
 
-              <div>
-                <input
-                  name="email"
-                  type="email"
-                  placeholder="Email address"
-                  value={form.email}
-                  onChange={handleFormChange}
-                  className="w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
-                />
-                {errors.email && <p className="text-[10px] text-red-500 ml-1">{errors.email}</p>}
-              </div>
-
-              <div className="relative">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  name="password"
-                  placeholder="Password"
-                  value={form.password}
-                  onChange={handleFormChange}
-                  className="w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 pr-10"
-                />
-                <span
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500"
-                >
-                  {showPassword ? <FiEye /> : <FiEyeOff />}
-                </span>
-                {errors.password && <p className="text-[10px] text-red-500 ml-1">{errors.password}</p>}
-              </div>
-
-              <div className="relative">
-                <input
-                  type={showConfirmPassword ? "text" : "password"}
-                  name="confirm_password"
-                  placeholder="Confirm password"
-                  value={form.confirm_password}
-                  onChange={handleFormChange}
-                  className="w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 pr-10"
-                />
-                <span
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500"
-                >
-                  {showConfirmPassword ? <FiEye /> : <FiEyeOff />}
-                </span>
-                {errors.confirm_password && <p className="text-[10px] text-red-500 ml-1">{errors.confirm_password}</p>}
-              </div>
-
-              <label className={`flex items-start gap-2 text-xs transition-colors ${!form.privacy_policy ? 'text-red-500' : 'text-gray-600'}`}>
-                <input
-                  type="checkbox"
-                  name="privacy_policy"
-                  checked={form.privacy_policy}
-                  onChange={handleFormChange}
-                  className="mt-1"
-                />
-                <span>
-                  I agree to the Terms of Service and Privacy Policy <span className="text-red-500">*</span>
-                </span>
-              </label>
-
-              {(error || registerError) && (
-                <p className="text-xs text-red-600">
-                  {error || registerError}
-                </p>
-              )}
-
-              <button
-                onClick={handleCreateAccount}
-                disabled={loading || !form.privacy_policy}
-                className="w-full bg-black text-white py-2.5 rounded-lg text-sm font-medium disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-              >
-                {loading ? "Sending OTP..." : "Next"}
-              </button>
-              <p className="mt-6 text-xs text-gray-500 text-center">
-                Already have an account?{" "}
-                <Link to="/signin" className="font-semibold text-gray-900 hover:underline">
-                  Login
-                </Link>
-              </p>
-            </div>
-          </StepperPanel>
-
-          {/* STEP 2 */}
-          <StepperPanel header="Verify">
-            <div className="mt-6">
-              <p className="text-sm text-gray-700 mb-6">
-                Enter the 6-digit code sent to your email
-              </p>
-
-              {/* OTP Input Section */}
-              <div className="flex justify-between gap-1 sm:gap-2 mb-8">
-                {otp.map((v, i) => (
+        {/* Card */}
+        <div className="w-full max-w-md p-2 sm:p-8 bg-white rounded-r-3xl flex flex-col items-center justify-center">
+          {/* Header */}
+          <div className="w-full max-w-md text-center mb-5">
+            <h1 className="text-2xl font-semibold text-gray-800">
+              Create Account
+            </h1>
+            <p className="text-sm text-gray-600 mt-1">
+              Use your information to get started
+            </p>
+          </div>
+          <Stepper ref={stepperRef} linear>
+            {/* STEP 1 */}
+            <StepperPanel header="Details">
+              <div className="space-y-4 mt-4">
+                <div>
                   <input
-                    key={i}
-                    ref={(el) => (inputsRef.current[i] = el)}
-                    value={v}
-                    type="text"
-                    inputMode="numeric"
-                    autoComplete="one-time-code"
-                    maxLength={1}
-                    onChange={(e) => handleOtpChange(e, i)}
-                    onKeyDown={(e) => handleOtpKeyDown(e, i)}
-                    onPaste={handlePaste}
-                    className="w-full max-w-[3rem] aspect-square text-center border rounded-md text-lg sm:text-xl font-semibold focus:ring-2 focus:ring-blue-600 focus:outline-none transition-all"
+                    name="full_name"
+                    placeholder="Full name"
+                    value={form.full_name}
+                    onChange={handleFormChange}
+                    className="w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
                   />
-                ))}
-              </div>
+                  {errors.full_name && <p className="text-[10px] text-red-500 ml-1">{errors.full_name}</p>}
+                </div>
 
-              <div className="flex justify-between items-center">
-                <button
-                  disabled={disableResend}
-                  onClick={handleResend}
-                  className="text-sm text-blue-600 disabled:text-gray-400"
-                >
-                  Resend {disableResend && `(${counter}s)`}
-                </button>
+                <div>
+                  <input
+                    name="email"
+                    type="email"
+                    placeholder="Email address"
+                    value={form.email}
+                    onChange={handleFormChange}
+                    className="w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  />
+                  {errors.email && <p className="text-[10px] text-red-500 ml-1">{errors.email}</p>}
+                </div>
+
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    placeholder="Password"
+                    value={form.password}
+                    onChange={handleFormChange}
+                    className="w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 pr-10"
+                  />
+                  <span
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500"
+                  >
+                    {showPassword ? <FiEye /> : <FiEyeOff />}
+                  </span>
+                  {errors.password && <p className="text-[10px] text-red-500 ml-1">{errors.password}</p>}
+                </div>
+
+                <div className="relative">
+                  <input
+                    type={showConfirmPassword ? "text" : "password"}
+                    name="confirm_password"
+                    placeholder="Confirm password"
+                    value={form.confirm_password}
+                    onChange={handleFormChange}
+                    className="w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 pr-10"
+                  />
+                  <span
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500"
+                  >
+                    {showConfirmPassword ? <FiEye /> : <FiEyeOff />}
+                  </span>
+                  {errors.confirm_password && <p className="text-[10px] text-red-500 ml-1">{errors.confirm_password}</p>}
+                </div>
+
+                <label className={`flex items-center gap-2 text-xs transition-colors ${!form.privacy_policy ? 'text-red-500' : 'text-gray-600'}`}>
+                  <input
+                    type="checkbox"
+                    name="privacy_policy"
+                    checked={form.privacy_policy}
+                    onChange={handleFormChange}
+                    className="mt-1"
+                  />
+                  <span >
+                    I agree to the Terms of Service and  <Link to="/privacy-policy" className="text-red-500 font-bold underline">Privacy Policy</Link> *
+                  </span>
+                </label>
+
+                {(error || registerError) && (
+                  <p className="text-xs text-red-600">
+                    {error || registerError}
+                  </p>
+                )}
 
                 <button
-                  onClick={handleVerifyOtp}
-                  disabled={otp.join("").length !== 6 || registerLoading}
-                  className="bg-blue-600 text-white px-6 py-2 rounded-lg text-sm disabled:bg-gray-300"
+                  onClick={handleCreateAccount}
+                  disabled={loading || !form.privacy_policy}
+                  className="w-full bg-black text-white py-2.5 rounded-lg text-sm font-medium disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
                 >
-                  Verify
+                  {loading ? "Sending OTP..." : "Next"}
                 </button>
+                <p className="mt-6 text-xs text-gray-500 text-center">
+                  Already have an account?{" "}
+                  <Link to="/signin" className="font-semibold text-gray-900 hover:underline">
+                    Login
+                  </Link>
+                </p>
               </div>
-            </div>
-          </StepperPanel>
-        </Stepper>
+            </StepperPanel>
+
+            {/* STEP 2 */}
+            <StepperPanel header="Verify">
+              <div className="mt-6">
+                <p className="text-sm text-gray-700 mb-6">
+                  Enter the 6-digit code sent to your email
+                </p>
+
+                {/* OTP Input Section */}
+                <div className="flex justify-between gap-1 sm:gap-2 mb-8">
+                  {otp.map((v, i) => (
+                    <input
+                      key={i}
+                      ref={(el) => (inputsRef.current[i] = el)}
+                      value={v}
+                      type="text"
+                      inputMode="numeric"
+                      autoComplete="one-time-code"
+                      maxLength={1}
+                      onChange={(e) => handleOtpChange(e, i)}
+                      onKeyDown={(e) => handleOtpKeyDown(e, i)}
+                      onPaste={handlePaste}
+                      className="w-full max-w-[3rem] aspect-square text-center border rounded-md text-lg sm:text-xl font-semibold focus:ring-2 focus:ring-blue-600 focus:outline-none transition-all"
+                    />
+                  ))}
+                </div>
+
+                <div className="flex justify-between items-center">
+                  <button
+                    disabled={disableResend}
+                    onClick={handleResend}
+                    className="text-sm text-blue-600 disabled:text-gray-400"
+                  >
+                    Resend {disableResend && `(${counter}s)`}
+                  </button>
+
+                  <button
+                    onClick={handleVerifyOtp}
+                    disabled={otp.join("").length !== 6 || registerLoading}
+                    className="bg-blue-600 text-white px-6 py-2 rounded-lg text-sm disabled:bg-gray-300"
+                  >
+                    Verify
+                  </button>
+                </div>
+              </div>
+            </StepperPanel>
+          </Stepper>
+        </div>
       </div>
     </div>
   );

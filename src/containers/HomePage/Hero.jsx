@@ -112,11 +112,11 @@ export default function HeroSection() {
               Browse modern rooms with quality amenities, trusted hosts, and smooth booking.
             </p>
             <Link to="/accommodation" className="inline-block mt-6">
-            <button className="flex items-center justify-center p-1  mt-6 bg-white  hover:bg-gray-200   rounded-full">
-             <p className="px-3">
+            <button className="group flex items-center gap-4 bg-white border hover:border-white rounded-full pl-7 pr-[7px] py-[7px] w-fit bg-transparent hover:bg-transparent transition-colors duration-300">
+             <p className="px-3 py-2 rounded-full text-center text-sm md:text-base text-black group-hover:text-white">
               Search Rooms
               </p>
-              <span className="bg-black p-3 rounded-full text-white"><FaArrowRight /></span> 
+              <span className="bg-black group-hover:bg-white p-3 rounded-full text-white group-hover:text-black"><FaArrowRight /></span> 
             </button>
             </Link>
           </div>
