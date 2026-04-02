@@ -3,9 +3,9 @@ import { useAuditLogs } from "../../hooks/admin/useAuditLogs";
 import Title from "../../components/Title";
 
 const TABS = [
-  { key: "all", label: "All Logs" },
   { key: "users", label: "User Audits" },
   { key: "properties", label: "Property Audits" },
+  { key: "all", label: "All Logs" },
 ];
 
 const QUICK_RANGES = [
@@ -55,6 +55,11 @@ export default function AdminAuditPage() {
 
   const hasActiveFilter = dateFrom !== null || dateTo !== null;
 
+  // ─── Pagination state ────────────────────────────────────────────────
+  const PAGE_SIZE_OPTIONS = [10, 25, 50, 100];
+  const [pageSize, setPageSize]   = useState(25);
+  const [currentPage, setCurrentPage] = useState(1);
+
   // ─── Filtered logs ───────────────────────────────────────────────────
   const filteredLogs = useMemo(() => {
     if (!dateFrom && !dateTo) return logs;
@@ -65,6 +70,24 @@ export default function AdminAuditPage() {
       return true;
     });
   }, [logs, dateFrom, dateTo]);
+
+  // Reset to page 1 whenever filters or tab change
+  useEffect(() => { setCurrentPage(1); }, [activeTab, dateFrom, dateTo, pageSize]);
+
+  const totalPages  = Math.max(1, Math.ceil(filteredLogs.length / pageSize));
+  const pagedLogs   = filteredLogs.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+
+  // Page window: show up to 5 page numbers centred on current page
+  const pageWindow = useMemo(() => {
+    const delta = 2;
+    const range = [];
+    for (
+      let i = Math.max(1, currentPage - delta);
+      i <= Math.min(totalPages, currentPage + delta);
+      i++
+    ) range.push(i);
+    return range;
+  }, [currentPage, totalPages]);
 
   const renderMetadataSummary = (log) => {
     const { metadata, entity_type } = log;
@@ -214,12 +237,38 @@ export default function AdminAuditPage() {
           )}
         </div>
 
-        {/* ===== RESULTS COUNT ===== */}
-        {!loading && !error && hasActiveFilter && (
-          <p className="text-xs text-gray-400 mb-3 px-1">
-            Showing <span className="font-semibold text-gray-700">{filteredLogs.length}</span> of{" "}
-            <span className="font-semibold text-gray-700">{logs.length}</span> logs
-          </p>
+        {/* ===== RESULTS COUNT + PAGE SIZE ===== */}
+        {!loading && !error && (
+          <div className="flex items-center justify-between mb-3 px-1">
+            <p className="text-xs text-gray-400">
+              {filteredLogs.length === 0 ? (
+                "No logs"
+              ) : (
+                <>
+                  Showing{" "}
+                  <span className="font-semibold text-gray-700">
+                    {(currentPage - 1) * pageSize + 1}–{Math.min(currentPage * pageSize, filteredLogs.length)}
+                  </span>{" "}
+                  of <span className="font-semibold text-gray-700">{filteredLogs.length}</span>
+                  {hasActiveFilter && (
+                    <> (filtered from <span className="font-semibold text-gray-700">{logs.length}</span>)</>
+                  )}
+                </>
+              )}
+            </p>
+            <div className="flex items-center gap-2">
+              <label className="text-[10px] font-bold text-gray-400 uppercase">Rows</label>
+              <select
+                value={pageSize}
+                onChange={(e) => setPageSize(Number(e.target.value))}
+                className="text-xs border rounded-lg px-2 py-1 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-black/10"
+              >
+                {PAGE_SIZE_OPTIONS.map((n) => (
+                  <option key={n} value={n}>{n}</option>
+                ))}
+              </select>
+            </div>
+          </div>
         )}
 
         {/* ===== CONTENT ===== */}
@@ -232,11 +281,11 @@ export default function AdminAuditPage() {
             </div>
           )}
 
-          {!loading && filteredLogs.length > 0 && (
+          {!loading && pagedLogs.length > 0 && (
             <>
               {/* ===== MOBILE CARDS ===== */}
               <div className="space-y-4 md:hidden p-4">
-                {filteredLogs.map((log) => (
+                {pagedLogs.map((log) => (
                   <div
                     key={log.id}
                     onClick={() => setSelectedLog(log)}
@@ -274,7 +323,7 @@ export default function AdminAuditPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
-                    {filteredLogs.map((log) => (
+                    {pagedLogs.map((log) => (
                       <tr
                         key={log.id}
                         onClick={() => setSelectedLog(log)}
@@ -324,6 +373,64 @@ export default function AdminAuditPage() {
                   </tbody>
                 </table>
               </div>
+
+              {/* ===== PAGINATION FOOTER ===== */}
+              {totalPages > 1 && (
+                <div className="flex items-center justify-between px-6 py-4 border-t bg-gray-50/60">
+                  {/* Prev */}
+                  <button
+                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                    disabled={currentPage === 1}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-all disabled:opacity-30 disabled:cursor-not-allowed hover:enabled:bg-white hover:enabled:shadow-sm"
+                  >
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                    </svg>
+                    Prev
+                  </button>
+
+                  {/* Page numbers */}
+                  <div className="flex items-center gap-1">
+                    {pageWindow[0] > 1 && (
+                      <>
+                        <button onClick={() => setCurrentPage(1)} className="w-8 h-8 rounded-lg text-xs font-medium hover:bg-white hover:shadow-sm transition-all border border-transparent hover:border-gray-200">1</button>
+                        {pageWindow[0] > 2 && <span className="text-gray-300 text-xs px-1">···</span>}
+                      </>
+                    )}
+                    {pageWindow.map((p) => (
+                      <button
+                        key={p}
+                        onClick={() => setCurrentPage(p)}
+                        className={`w-8 h-8 rounded-lg text-xs font-medium transition-all ${
+                          p === currentPage
+                            ? "bg-black text-white shadow-sm"
+                            : "hover:bg-white hover:shadow-sm border border-transparent hover:border-gray-200 text-gray-600"
+                        }`}
+                      >
+                        {p}
+                      </button>
+                    ))}
+                    {pageWindow[pageWindow.length - 1] < totalPages && (
+                      <>
+                        {pageWindow[pageWindow.length - 1] < totalPages - 1 && <span className="text-gray-300 text-xs px-1">···</span>}
+                        <button onClick={() => setCurrentPage(totalPages)} className="w-8 h-8 rounded-lg text-xs font-medium hover:bg-white hover:shadow-sm transition-all border border-transparent hover:border-gray-200">{totalPages}</button>
+                      </>
+                    )}
+                  </div>
+
+                  {/* Next */}
+                  <button
+                    onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                    disabled={currentPage === totalPages}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-all disabled:opacity-30 disabled:cursor-not-allowed hover:enabled:bg-white hover:enabled:shadow-sm"
+                  >
+                    Next
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
+              )}
             </>
           )}
         </div>
