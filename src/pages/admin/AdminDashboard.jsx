@@ -37,6 +37,8 @@ export default function AdminDashboard() {
 
   const { data, loading, error } = useOverview();
 
+  console.log("Overview Data:", data, "Loading:", loading, "Error:", error);
+
   const { filteredProperties: listProperties, loading: propertiesLoading } = useProperties();
   const { bookings, loading: bookingsLoading } = useAllBookings();
   const { updateUserStatus, loading: blocking } = useBlockUser();
