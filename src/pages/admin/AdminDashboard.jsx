@@ -29,18 +29,14 @@ export default function AdminDashboard() {
   const {
     users,
     loading: usersLoading,
-    totalUsers,
-    studentsCount,
-    landOwnersCount,
   } = useAdminUsers(activeTab);
   
 
-  const { data, loading, error } = useOverview();
+ const { data: overviewData, loading: overviewLoading } = useOverview();
 
-  console.log("Overview Data:", data, "Loading:", loading, "Error:", error);
 
   const { filteredProperties: listProperties, loading: propertiesLoading } = useProperties();
-  const { bookings, loading: bookingsLoading } = useAllBookings();
+  // const { bookings, loading: bookingsLoading } = useAllBookings();
   const { updateUserStatus, loading: blocking } = useBlockUser();
 
   // ---------------- State ----------------
@@ -75,21 +71,21 @@ export default function AdminDashboard() {
     }
   };
 
-  const approveProperty = async (id) => {
-    try {
-      await approvePropertyAPI(id);
-      toast.success("Property approved successfully");
-    } catch (err) {
-      toast.error(err.message || "Failed to approve property");
-    }
-  };
+  // const approveProperty = async (id) => {
+  //   try {
+  //     await approvePropertyAPI(id);
+  //     toast.success("Property approved successfully");
+  //   } catch (err) {
+  //     toast.error(err.message || "Failed to approve property");
+  //   }
+  // };
 
   // ---------------- Derived Data ----------------
-  const recentData = bookings
-    ? [...bookings]
-      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-      .slice(0, 6)
-    : [];
+  // const recentData = bookings
+  //   ? [...bookings]
+  //     .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+  //     .slice(0, 6)
+  //   : [];
 
   return (
     <>
@@ -124,13 +120,16 @@ export default function AdminDashboard() {
           {/* Tab Content */}
           {activeTab === "overview" && (
             <Overview
-              studentsCount={studentsCount}
-              landOwnersCount={landOwnersCount}
-              totalUsers={totalUsers}
-              bookings={bookings}
-              bookingsLoading={bookingsLoading}
-              recentData={recentData}
-              getStatusStyle={getStatusStyle}
+            totalUsers={overviewData?.counts?.total_users ?? 0}
+            totalProperties={overviewData?.counts?.total_properties ?? 0}
+            activeUsers={overviewData?.counts?.active_users ?? 0}
+            landOwnersCount={overviewData?.counts?.total_landowners ?? 0}
+            bookingsLoading={overviewLoading}
+              // studentsCount={overviewData?.counts?.total_students ?? 0}
+              totalBookings={overviewData?.counts?.total_bookings ?? 0}
+              // completedBookings={overviewData?.counts?.completed_bookings ?? 0}
+              // recentData={overviewData?.recent_bookings ?? []}
+              // getStatusStyle={getStatusStyle}
             />
           )}
 
