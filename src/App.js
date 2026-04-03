@@ -107,7 +107,7 @@ function App() {
           </Route>
 
           <Route path="verify-otp" element={<AdminOtpVerification />} />
-          {/* <Route element={<AdminRoute />}> */}
+          <Route element={<AdminRoute />}>
             <Route path="/auth/admin" element={<AdminLayout />}>
               <Route index element={<AdminDashboard />} />
               <Route path="rooms" element={<AdminStudents />} />
@@ -131,7 +131,7 @@ function App() {
               <Route path="student/:id" element={<StudentFullDetails />} />
               <Route path="roomowner/:id" element={<RoomownerFullDetails />} />
             </Route>
-          {/* </Route> */}
+          </Route>
 
           <Route element={<LandOwnerRoute />}>
             <Route path="/auth/landowner" element={<Layout />}>

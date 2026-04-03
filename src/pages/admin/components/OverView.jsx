@@ -31,7 +31,7 @@ const Overview = ({
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
         <Card title="Total Users" value={totalUsers} icon={IoIosPeople} color={'bg-purple-200'} />
-        <Card title="Total Properties" value={totalProperties} icon={BsFillHousesFill} color={'bg-blue-200'} />
+        <Card title="Properties" value={totalProperties} icon={BsFillHousesFill} color={'bg-blue-200'} />
         {/* <Card title="Students" value={studentsCount} icon={PiStudent} color={'bg-sky-200'} /> */}
         {/* <Card title="Landowners" value={landOwnersCount} icon={FaPersonShelter} color={'bg-emerald-200'} /> */}
         <Card title="Active Users" value={activeUsers} icon={IoIosPeople} color={'bg-green-200'} />
