@@ -9,7 +9,8 @@ export const useGoogleAuth = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { login , fetchCurrentUser  } = useAuth();
+  const { login } = useAuth();
+  // const { login , fetchCurrentUser  } = useAuth();
 
   const REDIRECT_URI = "https://www.aliveparis.com/signin";
 
@@ -25,7 +26,8 @@ export const useGoogleAuth = () => {
 
       if (response.status === 200 || response.status === 201) {
          // Refresh user data in auth context
-        await fetchCurrentUser();
+        // await fetchCurrentUser();
+        await login();
         toast.success("Logged in successfully!");
         navigate("/auth/user/accommodation");
       }
