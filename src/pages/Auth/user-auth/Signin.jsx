@@ -50,6 +50,15 @@ const SignIn = () => {
 
   return (
     <div className="relative min-h-screen bg-white flex items-center justify-center px-4">
+      {isProcessing && (
+        <div className="fixed inset-0 z-50 bg-white/80 backdrop-blur-sm flex flex-col items-center justify-center gap-4">
+          {/* Spinner */}
+          <div className="w-10 h-10 rounded-full border-4 border-gray-200 border-t-black animate-spin" />
+          <p className="text-sm text-gray-500">
+            {googleLoading ? "Signing in with Google..." : "Signing in..."}
+          </p>
+        </div>
+      )}
       <div className="absolute top-4 right-5">
         <BacktoHome />
       </div>
