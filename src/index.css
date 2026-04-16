@@ -108,6 +108,27 @@ html {
 }
 
 /* Change the circle background for the active step */
+/* Default font size for desktop */
+.p-stepper {
+  font-size: 0.9rem;
+}
+
+/* Responsive adjustments for Tablets and Mobile */
+@media screen and (max-width: 768px) {
+  .p-stepper {
+    font-size: 0.8rem; /* Slightly smaller text for mobile */
+  }
+
+}
+
+/* Extra small screens (Phones) */
+@media screen and (max-width: 480px) {
+  .p-stepper-header {
+    padding: 0.5rem;
+  }
+  
+
+}
 .p-stepper .p-stepper-number {
   background-color: black !important;
   color: white !important;

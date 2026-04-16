@@ -117,139 +117,144 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="relative min-h-dvh bg-gray-50 flex items-center justify-center px-4 md:px-20">
-      {/* Back Button */}
-      <div className="absolute top-5 right-5">
-        <BacktoHome />
-      </div>
+    <div className="relative min-h-screen bg-gray-50 flex items-center justify-center p-2 sm:p-6 md:px-20">
+  {/* Back Button - Positioned more carefully for mobile */}
+  <div className="absolute top-4 right-4 z-10">
+    <BacktoHome />
+  </div>
 
-      {/* Card */}
-      <div className="w-full max-w-md p-8 md:p-12 bg-white rounded-xl">
-        <Stepper ref={stepperRef}>
+  {/* Card - Max width adjusts for a better feel on tablet vs mobile */}
+  <div className="w-full max-w-[440px] p-3 sm:p-8 md:p-10 bg-white rounded-2xl shadow-sm border border-gray-100 ">
+    <Stepper ref={stepperRef} linear>
 
-          {/* STEP 1 - EMAIL */}
-          <StepperPanel header="Email">
-            <h1 className="text-3xl font-semibold mb-4">
-              Forgot Password
-            </h1>
-            <p className="text-sm text-gray-500 mb-8">
-              Enter your email to receive a verification code.
-            </p>
+      {/* STEP 1 - EMAIL */}
+      <StepperPanel header="Email" >
+        <div className="pt-2">
+          <h1 className="text-2xl sm:text-3xl font-semibold mb-3 tracking-tight text-gray-900">
+            Forgot Password
+          </h1>
+          <p className="text-sm text-gray-500 mb-6 leading-relaxed">
+            Enter your email to receive a verification code.
+          </p>
 
-            <input
-              type="email"
-              placeholder="student@university.edu"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm outline-none focus:border-black focus:bg-white focus:ring-1 focus:ring-black"
-            />
+          <input
+            type="email"
+            placeholder="example@gmail.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition-all focus:border-black focus:bg-white focus:ring-1 focus:ring-black"
+          />
 
-            {error && (
-              <p className="text-xs text-red-600 mt-2">{error}</p>
-            )}
+          {error && (
+            <p className="text-xs text-red-600 mt-2 font-medium">{error}</p>
+          )}
+
+          <button
+            onClick={handleSendOtp}
+            disabled={loading}
+            className="w-full mt-6 rounded-lg bg-black px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-gray-800 disabled:bg-gray-400"
+          >
+            {loading ? "Sending..." : "Send Reset Code"}
+          </button>
+        </div>
+      </StepperPanel>
+
+      {/* STEP 2 - OTP */}
+      <StepperPanel header="Verify">
+        <div className="pt-2">
+          <p className="text-sm text-gray-600 mb-6">
+            Enter the 6-digit code sent to your email.
+          </p>
+
+          {/* OTP Grid - Adjusted gap and sizing for small screens */}
+          <div className="grid grid-cols-6 gap-2 sm:gap-3 mb-8">
+            {otp.map((v, i) => (
+              <input
+                key={i}
+                ref={(el) => (inputsRef.current[i] = el)}
+                value={v}
+                maxLength={1}
+                onChange={(e) => handleOtpChange(e, i)}
+                onKeyDown={(e) => handleOtpKeyDown(e, i)}
+                className="w-full aspect-square text-center border rounded-lg text-lg font-semibold focus:ring-2 focus:ring-black focus:border-black outline-none bg-gray-50 transition-all"
+              />
+            ))}
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-between items-center">
+            <button
+              disabled={disableResend}
+              onClick={handleResend}
+              className="text-sm font-medium text-gray-600 hover:text-black disabled:text-gray-400 transition-colors order-2 sm:order-1"
+            >
+              Resend {disableResend && `(${counter}s)`}
+            </button>
 
             <button
-              onClick={handleSendOtp}
-              disabled={loading}
-              className="w-full mt-6 rounded-lg bg-black px-4 py-2.5 text-sm font-medium text-white disabled:bg-gray-400"
+              onClick={handleVerifyOtp}
+              disabled={otp.join("").length !== 6}
+              className="w-full sm:w-auto bg-black text-white px-8 py-2.5 rounded-lg text-sm font-medium disabled:bg-gray-400 order-1 sm:order-2"
             >
-              {loading ? "Sending..." : "Send Reset Code"}
+              Verify
             </button>
-          </StepperPanel>
+          </div>
+        </div>
+      </StepperPanel>
 
-          {/* STEP 2 - OTP */}
-          <StepperPanel header="Verify">
-            <p className="text-sm mb-6">
-              Enter the 6-digit code sent to your email.
-            </p>
+      {/* STEP 3 - RESET PASSWORD */}
+      <StepperPanel header="Reset">
+        <div className="space-y-4 mt-6">
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="New password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full border border-gray-200 px-4 py-3 rounded-lg text-sm outline-none focus:ring-1 focus:ring-black focus:border-black"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black"
+            >
+              {showPassword ? <FiEye size={18} /> : <FiEyeOff size={18} />}
+            </button>
+          </div>
 
-            <div className="flex justify-between gap-2 mb-6">
-              {otp.map((v, i) => (
-                <input
-                  key={i}
-                  ref={(el) => (inputsRef.current[i] = el)}
-                  value={v}
-                  maxLength={1}
-                  onChange={(e) => handleOtpChange(e, i)}
-                  onKeyDown={(e) => handleOtpKeyDown(e, i)}
-                  className="w-12 h-12 text-center border rounded-md text-lg focus:ring-1 focus:ring-black"
-                />
-              ))}
-            </div>
+          <div className="relative">
+            <input
+              type={showConfirmPassword ? "text" : "password"}
+              placeholder="Confirm password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="w-full border border-gray-200 px-4 py-3 rounded-lg text-sm outline-none focus:ring-1 focus:ring-black focus:border-black"
+            />
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black"
+            >
+              {showConfirmPassword ? <FiEye size={18} /> : <FiEyeOff size={18} />}
+            </button>
+          </div>
 
-            <div className="flex justify-between items-center">
-              <button
-                disabled={disableResend}
-                onClick={handleResend}
-                className="text-sm text-gray-600 disabled:text-gray-400"
-              >
-                Resend {disableResend && `(${counter}s)`}
-              </button>
+          {resetError && (
+            <p className="text-xs text-red-600 font-medium">{resetError}</p>
+          )}
 
-              <button
-                onClick={handleVerifyOtp}
-                disabled={otp.join("").length !== 6}
-                className="bg-black text-white px-6 py-2 rounded-lg text-sm disabled:bg-gray-400"
-              >
-                Verify
-              </button>
-            </div>
-          </StepperPanel>
+          <button
+            onClick={handleResetPassword}
+            disabled={resetLoading}
+            className="w-full bg-black text-white py-3 rounded-lg font-medium text-sm transition-colors hover:bg-gray-800 disabled:bg-gray-400 mt-2"
+          >
+            {resetLoading ? "Updating..." : "Reset Password"}
+          </button>
+        </div>
+      </StepperPanel>
 
-          {/* STEP 3 - RESET PASSWORD */}
-          <StepperPanel header="Reset">
-            <div className="space-y-4 mt-4">
-              <div className="relative">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  placeholder="New password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full border px-3 py-2 rounded-lg"
-                />
-                <span
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
-                >
-                  {showPassword ? <FiEye /> : <FiEyeOff />}
-                </span>
-              </div>
-
-              <div className="relative">
-                <input
-                  type={showConfirmPassword ? "text" : "password"}
-                  placeholder="Confirm password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full border px-3 py-2 rounded-lg"
-                />
-                <span
-                  onClick={() =>
-                    setShowConfirmPassword(!showConfirmPassword)
-                  }
-                  className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
-                >
-                  {showConfirmPassword ? <FiEye /> : <FiEyeOff />}
-                </span>
-              </div>
-
-              {resetError && (
-                <p className="text-xs text-red-600">{resetError}</p>
-              )}
-
-              <button
-                onClick={handleResetPassword}
-                disabled={resetLoading}
-                className="w-full bg-black text-white py-2.5 rounded-lg disabled:bg-gray-400"
-              >
-                {resetLoading ? "Updating..." : "Reset Password"}
-              </button>
-            </div>
-          </StepperPanel>
-
-        </Stepper>
-      </div>
-    </div>
+    </Stepper>
+  </div>
+</div>
   );
 };
 
