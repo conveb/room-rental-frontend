@@ -166,7 +166,7 @@ const SignIn = () => {
 
               <p className="mt-6 text-xs text-gray-500 text-center">
                 By signing in, you agree to our{" "}
-                {" "}and{" "}
+                
                 <Link to="/privacy-policy" className="font-semibold text-gray-900 hover:underline">
                   Privacy Policy
                 </Link>
